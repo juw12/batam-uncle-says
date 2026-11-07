@@ -593,15 +593,15 @@ window.BUS_DATA = {
    },
    {
     "from": "Batam Centre",
-    "to": "HarbourFront",
-    "operator": "Majestic Fast Ferry",
-    "time": "20:35"
+    "to": "Tanah Merah",
+    "operator": "BatamFast",
+    "time": "13:20"
    },
    {
     "from": "Batam Centre",
     "to": "HarbourFront",
-    "operator": "Sindo Ferry",
-    "time": "20:20"
+    "operator": "Majestic Fast Ferry",
+    "time": "20:35"
    },
    {
     "from": "Batam Centre",
@@ -619,15 +619,21 @@ window.BUS_DATA = {
    },
    {
     "from": "Batam Centre",
-    "to": "Tanah Merah",
-    "operator": "BatamFast",
-    "time": "13:20"
+    "to": "HarbourFront",
+    "operator": "Sindo Ferry",
+    "time": "20:20"
    },
    {
     "from": "Batam Centre",
     "to": "Tanah Merah",
     "operator": "Sindo Ferry",
     "time": "13:20"
+   },
+   {
+    "from": "Gold Coast Bengkong",
+    "to": "HarbourFront",
+    "operator": "Sindo Ferry",
+    "time": "19:00"
    },
    {
     "from": "Harbour Bay",
@@ -665,12 +671,6 @@ window.BUS_DATA = {
     "operator": "Sindo Ferry",
     "time": "14:50",
     "days": "Saturday and Sunday only"
-   },
-   {
-    "from": "Gold Coast Bengkong",
-    "to": "HarbourFront",
-    "operator": "Sindo Ferry",
-    "time": "19:00"
    }
   ]
  },
@@ -681,118 +681,118 @@ window.BUS_DATA = {
   "verified": false,
   "list": [
    {
-    "sg": "HarbourFront",
-    "batam": "Batam Centre",
     "operator": "BatamFast",
     "first": "07:40",
     "sailings": 12,
-    "last_daily": "21:40"
+    "last_daily": "21:40",
+    "sg": "HarbourFront",
+    "batam": "Batam Centre"
    },
    {
-    "sg": "Tanah Merah",
-    "batam": "Batam Centre",
     "operator": "BatamFast",
     "first": "12:50",
     "sailings": 4,
-    "last_daily": "17:20"
+    "last_daily": "17:20",
+    "sg": "Tanah Merah",
+    "batam": "Batam Centre"
    },
    {
-    "sg": "HarbourFront",
-    "batam": "Batam Centre",
     "operator": "Majestic Fast Ferry",
     "first": "08:10",
     "sailings": 14,
-    "last_daily": "21:20"
+    "last_daily": "21:20",
+    "sg": "HarbourFront",
+    "batam": "Batam Centre"
    },
    {
-    "sg": "Tanah Merah",
-    "batam": "Batam Centre",
     "operator": "Majestic Fast Ferry",
     "first": "08:15",
     "sailings": 6,
     "last_daily": "20:45",
-    "days": "weekdays"
+    "days": "weekdays",
+    "sg": "Tanah Merah",
+    "batam": "Batam Centre"
    },
    {
-    "sg": "Tanah Merah",
-    "batam": "Batam Centre",
     "operator": "Majestic Fast Ferry",
     "first": "08:15",
     "sailings": 9,
     "last_daily": "20:45",
-    "days": "weekends and holidays"
+    "days": "weekends and holidays",
+    "sg": "Tanah Merah",
+    "batam": "Batam Centre"
    },
    {
-    "sg": "HarbourFront",
-    "batam": "Batam Centre",
     "operator": "Sindo Ferry",
     "first": "08:00",
     "sailings": 12,
-    "last_daily": "21:50"
+    "last_daily": "21:50",
+    "sg": "HarbourFront",
+    "batam": "Batam Centre"
    },
    {
-    "sg": "Tanah Merah",
-    "batam": "Batam Centre",
     "operator": "Sindo Ferry",
     "first": "10:20",
     "sailings": 5,
-    "last_daily": "16:30"
+    "last_daily": "16:30",
+    "sg": "Tanah Merah",
+    "batam": "Batam Centre"
    },
    {
-    "sg": "HarbourFront",
-    "batam": "Gold Coast Bengkong",
     "operator": "Sindo Ferry",
     "first": "09:35",
     "sailings": 2,
-    "last_daily": "10:30"
+    "last_daily": "10:30",
+    "sg": "HarbourFront",
+    "batam": "Gold Coast Bengkong"
    },
    {
-    "sg": "HarbourFront",
-    "batam": "Harbour Bay",
     "operator": "Horizon Fast Ferry",
     "first": "08:15",
     "sailings": 13,
-    "last_daily": "21:35"
+    "last_daily": "21:35",
+    "sg": "HarbourFront",
+    "batam": "Harbour Bay"
    },
    {
-    "sg": "Tanah Merah",
-    "batam": "Nongsa Pura",
     "operator": "BatamFast",
     "first": "08:00",
     "sailings": 8,
-    "last_daily": "20:20"
+    "last_daily": "20:20",
+    "sg": "Tanah Merah",
+    "batam": "Nongsa Pura"
    },
    {
-    "sg": "HarbourFront",
-    "batam": "Sekupang",
     "operator": "BatamFast",
     "first": "08:20",
     "sailings": 5,
-    "last_daily": "19:30"
+    "last_daily": "19:30",
+    "sg": "HarbourFront",
+    "batam": "Sekupang"
    },
    {
-    "sg": "HarbourFront",
-    "batam": "Sekupang",
     "operator": "Majestic Fast Ferry",
     "first": "08:45",
     "sailings": 5,
-    "last_daily": "20:40"
+    "last_daily": "20:40",
+    "sg": "HarbourFront",
+    "batam": "Sekupang"
    },
    {
-    "sg": "HarbourFront",
-    "batam": "Sekupang",
     "operator": "Sindo Ferry",
     "first": "08:30",
     "sailings": 9,
-    "last_daily": "20:30"
+    "last_daily": "20:30",
+    "sg": "HarbourFront",
+    "batam": "Sekupang"
    },
    {
-    "sg": "HarbourFront",
-    "batam": "Waterfront City",
     "operator": "Sindo Ferry",
     "first": "10:00",
     "sailings": 2,
-    "days": "Saturday and Sunday only"
+    "days": "Saturday and Sunday only",
+    "sg": "HarbourFront",
+    "batam": "Waterfront City"
    }
   ]
  }

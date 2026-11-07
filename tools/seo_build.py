@@ -239,8 +239,21 @@ def terminal_pages(data, photos, place_photos, partners):
         minutes = [int(n) for f in ferries for n in f["minutes"].split("-")]
         firsts = sorted(r["first"] for r in terminal_routes) or sorted(f["first_last_from_sg"].split(" / ")[0] for f in ferries)
         lasts = sorted(r["last_daily"] for r in terminal_routes if r.get("last_daily")) or firsts
-        all_in = [f["return_all_in_sgd"] for f in ferries if f.get("return_all_in_sgd")]
-        fare_fact = f"from <strong>S${min(all_in)}</strong> return, all-in" if all_in else "see each operator's fare note below"
+        fares = [(f.get("return_all_in_sgd") or f.get("return_all_in_est_sgd"), bool(f.get("return_all_in_sgd")), f["operator"]) for f in ferries]
+        fares = [x for x in fares if x[0]]
+        if not fares:
+            fare_fact = "see each operator's fare note below"
+        elif len({x[0] for x in fares}) == 1:
+            fare_fact = f"<strong>S${fares[0][0]}</strong> return, all-in ({esc(', '.join(x[2] for x in fares))})"
+        else:
+            low_value = min(x[0] for x in fares)
+            high_value = max(x[0] for x in fares)
+            low_names = ", ".join(x[2] for x in fares if x[0] == low_value)
+            high_names = ", ".join(x[2] for x in fares if x[0] == high_value)
+            high_exact = all(x[1] for x in fares if x[0] == high_value)
+            fare_fact = (
+                f"<strong>S${low_value}</strong> ({esc(low_names)}) to <strong>{'' if high_exact else 'about '}S${high_value}</strong> ({esc(high_names)}) return, all-in"
+            )
         def route_lines(f):
             lines = []
             for r in terminal_routes:
