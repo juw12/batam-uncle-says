@@ -78,7 +78,7 @@ def prices_page(data, partners):
         f"<td class=\"num\">S${charter['mpv_sgd'][0]} – {charter['mpv_sgd'][1]}</td></tr>"
     )
     body = f"""<h1>How much things cost in Batam (SGD and rupiah)</h1>
-<p class="lede">Typical price ranges for the things Singapore day-trippers pay for most, so you can tell if a quote is fair. Converted at the mid-market rate of S$1 = {idr(rate)} ({fmt_date(data['rules']['fx_date'])}).</p>
+<p class="lede">Typical price ranges for the things Singapore day-trippers pay for most, so you can tell if a quote is fair. Converted at the mid-market rate of S$1 = {idr(rate)} ({fmt_date(data['rules']['fx_date'])}, {source_link(data['rules']['fx_source'])}).</p>
 <div class="card"><table><tr><th>Item</th><th class="num">Usual range</th></tr>{''.join(rows)}</table>
 <p class="meta">{esc(data['rules'].get('fx_terminal_penalty', ''))}. Ranges from published guides, not yet checked in person. Sources: {' · '.join(source_link(s) for s in sorted(sources))}</p></div>
 <div class="card"><h2>Check a quote before you pay</h2><p>Type the price a shop or driver quoted you and the app tells you if it is low, fair or high, in both currencies.</p>
@@ -111,7 +111,7 @@ def money_page(data):
     tips = "".join(f"<li>{esc(t['en'])} <span class=\"meta\">({source_link(t['source'])})</span></li>" for t in data["rules"]["money_tips"])
     examples = "".join(f"<tr><td>S${s}</td><td class=\"num\">{idr(s * rate)}</td></tr>" for s in (10, 20, 50, 100, 200))
     body = f"""<h1>Money in Batam: exchange rate, cash and paying by QR</h1>
-<p class="lede">Mid-market rate on {fmt_date(data['rules']['fx_date'])}: S$1 = {idr(rate)}. {esc(data['rules'].get('fx_terminal_penalty', ''))}.</p>
+<p class="lede">Mid-market rate on {fmt_date(data['rules']['fx_date'])}: S$1 = {idr(rate)} ({source_link(data['rules']['fx_source'])}). {esc(data['rules'].get('fx_terminal_penalty', ''))}.</p>
 <div class="card"><table><tr><th>Singapore dollars</th><th class="num">Rupiah, mid-market</th></tr>{examples}</table></div>
 <div class="card"><h2>Tips</h2><ul class="list">{tips}</ul></div>
 <div class="card"><h2>Convert any amount</h2><p>The converter in the app works offline and lets you set the rate the money changer gives you.</p>
@@ -181,13 +181,26 @@ def places_index(areas):
     )
 
 
-TERMINAL_AREA = {"Nongsa Pura": "Nongsa"}
+TERMINAL_AREA = {"Nongsa Pura": "Nongsa", "Gold Coast Bengkong": "Bengkong"}
 
 
 def ferry_fare(ferry):
     if ferry.get("return_all_in_sgd"):
         return f"S${ferry['return_all_in_sgd']}"
+    if ferry.get("return_all_in_est_sgd"):
+        return f"about S${ferry['return_all_in_est_sgd']}"
     return "See note"
+
+
+def last_back(data, terminal):
+    """Last sailings from a Batam terminal to Singapore, latest first."""
+    rows = [r for r in data.get("return_ferries", {}).get("last", []) if r["from"] == terminal]
+    return sorted(rows, key=lambda r: r["time"], reverse=True)
+
+
+def last_back_text(row):
+    days = f", {row['days']}" if row.get("days") else ""
+    return f"{row['time']} {row['operator']} to {row['to']}{days}"
 
 
 def ferry_note(ferry):
@@ -210,7 +223,9 @@ def booking_url(partners):
 
 
 def as_of(data):
-    return fmt_date(data["rules"]["fx_date"])
+    """Date of the newest dataset shown on a page (timetables or exchange rate)."""
+    dates = [data["rules"]["fx_date"], data.get("routes", {}).get("as_of", ""), data.get("return_ferries", {}).get("as_of", "")]
+    return fmt_date(max(d for d in dates if d))
 
 
 def terminal_pages(data, photos, place_photos, partners):
@@ -219,19 +234,30 @@ def terminal_pages(data, photos, place_photos, partners):
     for terminal, ferries in terminals(data).items():
         area = TERMINAL_AREA.get(terminal, terminal)
         nearby = [p for p in data["places"] if p["area"] == area]
-        sg_sides = sorted({s for f in ferries for s in f["sg"]})
+        terminal_routes = [r for r in data.get("routes", {}).get("list", []) if r["batam"] == terminal]
+        sg_sides = sorted({r["sg"] for r in terminal_routes}) or sorted({s for f in ferries for s in f["sg"]})
         minutes = [int(n) for f in ferries for n in f["minutes"].split("-")]
-        firsts = sorted(f["first_last_from_sg"].split(" / ")[0] for f in ferries)
-        lasts = sorted(f["first_last_from_sg"].split(" / ")[1] for f in ferries)
+        firsts = sorted(r["first"] for r in terminal_routes) or sorted(f["first_last_from_sg"].split(" / ")[0] for f in ferries)
+        lasts = sorted(r["last_daily"] for r in terminal_routes if r.get("last_daily")) or firsts
         all_in = [f["return_all_in_sgd"] for f in ferries if f.get("return_all_in_sgd")]
         fare_fact = f"from <strong>S${min(all_in)}</strong> return, all-in" if all_in else "see each operator's fare note below"
+        def route_lines(f):
+            lines = []
+            for r in terminal_routes:
+                if r["operator"] != f["operator"]:
+                    continue
+                last = f"last {r['last_daily']}" if r.get("last_daily") else ""
+                days = f" ({r['days']})" if r.get("days") else ""
+                lines.append(f"from {esc(r['sg'])}: first {r['first']}{', ' + last if last else ''}, {r['sailings']} sailings{esc(days)}")
+            return "<br>".join(lines) or f"from {esc(' / '.join(f['sg']))}"
+
         rows = "".join(
-            f"<tr><td><a href=\"{esc(f['url'])}\" rel=\"nofollow noopener\">{esc(f['operator'])}</a><br>"
-            f"<span class=\"meta\">from {esc(' / '.join(f['sg']))} · {esc(f['minutes'])} min · first/last from SG {esc(f['first_last_from_sg'])}{ferry_note(f)}</span></td>"
+            f"<tr><td><a href=\"{esc(f['url'])}\" rel=\"nofollow noopener\">{esc(f['operator'])}</a> <span class=\"meta\">· {esc(f['minutes'])} min</span><br>"
+            f"<span class=\"meta\">{route_lines(f)}{ferry_note(f)}</span></td>"
             f"<td class=\"num\">{ferry_fare(f)}</td></tr>"
             for f in ferries
         )
-        sources = sorted({f["source"] for f in ferries})
+        sources = sorted({f["source"] for f in ferries} | ({data['routes']['source']} if terminal_routes else set()))
         extras = []
         for price in data["prices"]:
             if terminal.lower() in price["en"].lower() and price.get("low") is not None:
@@ -255,19 +281,38 @@ def terminal_pages(data, photos, place_photos, partners):
                 f'<a class="btn" href="../../area/{slug(area)}/">See all of {esc(area)}</a></div>'
             )
         operator_names = ", ".join(f["operator"] for f in ferries)
+        returns = last_back(data, terminal)
+        daily = [r for r in returns if not r.get("days")]
+        if daily:
+            last_fact = f"<strong>{daily[0]['time']}</strong> Batam time ({esc(daily[0]['operator'])} to {esc(daily[0]['to'])})"
+        elif returns:
+            last_fact = f"No daily sailing back; {esc(last_back_text(returns[0]))}"
+        else:
+            last_fact = "Check with the operator"
+        return_items = "".join(f"<li>{esc(last_back_text(r))}</li>" for r in returns)
+        returns_card = ""
+        if returns:
+            rf = data["return_ferries"]
+            returns_card = (
+                f'<div class="card"><h2>Last ferries back to Singapore</h2><ul class="list">{return_items}</ul>'
+                f'<p class="meta">Batam time (WIB). {esc(rf["note_en"].split(". ", 1)[1])} Source for both: {source_link(rf["source"])}, as of {fmt_date(rf["as_of"])}; check on the day.</p>'
+                f'<a class="btn" href="../../#plan">Plan my day around the return ferry</a></div>'
+            )
         body = f"""<h1>{esc(terminal)} ferry terminal, Batam: ferries from Singapore</h1>
 <div class="card"><table>
 <tr><td>Ferries from</td><td>{esc(' and '.join(sg_sides))}</td></tr>
 <tr><td>Operators</td><td>{esc(operator_names)}</td></tr>
 <tr><td>Crossing</td><td><strong>{min(minutes)} – {max(minutes)} min</strong></td></tr>
-<tr><td>From Singapore</td><td>first <strong>{firsts[0]}</strong>, last <strong>{lasts[-1]}</strong></td></tr>
+<tr><td>From Singapore</td><td>first <strong>{firsts[0]}</strong>, last <strong>{lasts[-1]}</strong> (Singapore time)</td></tr>
 <tr><td>Fare</td><td>{fare_fact}</td></tr>
+<tr><td>Last ferry back</td><td>{last_fact}</td></tr>
 </table>
 <p class="meta">{esc(data['rules']['timezone_note'])}. Published times and fares as of {as_of(data)}, not checked at the counter.</p>
 <a class="btn" href="{esc(booking_url(partners))}" rel="nofollow noopener sponsored">Compare and book tickets</a></div>
 <div class="card"><h2>Operators to {esc(terminal)}</h2><table><tr><th>Operator</th><th class="num">Return, all-in</th></tr>{rows}</table>
 <p class="meta">Confirm times on the operator's site (linked above). Sources: {' · '.join(source_link(s) for s in sources)}</p>
 <a class="btn ghost" href="../../ferry/">Compare all terminals</a></div>
+{returns_card}
 <div class="card"><h2>Good to know at {esc(terminal)}</h2><ul class="list">{''.join(extras)}</ul>
 <a class="btn" href="../../money/">Exchange rate and money tips</a></div>
 {nearby_html}
@@ -276,7 +321,7 @@ def terminal_pages(data, photos, place_photos, partners):
         path = f"terminal/{slug(terminal)}/"
         out[path] = page(
             f"{terminal} ferry terminal, Batam: ferries from Singapore, times, fares",
-            f"Ferries from Singapore to {terminal}, Batam: {operator_names}. {min(minutes)}-{max(minutes)} min crossing, first {firsts[0]}, last {lasts[-1]}, fares and what is nearby.",
+            f"Ferries from Singapore to {terminal}, Batam: {operator_names}. {min(minutes)}-{max(minutes)} min crossing, first {firsts[0]}, last {lasts[-1]}, last ferry back, fares and what is nearby.",
             path,
             body,
             root="../../",
@@ -293,6 +338,7 @@ def day_trip_page(data, partners, areas):
     lasts = sorted(f["first_last_from_sg"].split(" / ")[1] for f in ferries)
     all_in = [f for f in ferries if f.get("return_all_in_sgd")]
     cheapest = min(all_in, key=lambda f: f["return_all_in_sgd"])
+    fastest = min(ferries, key=lambda f: int(f["minutes"].split("-")[0]))
     prices = {p["id"]: p for p in data["prices"]}
 
     def sgd_range(price_id, times=1):
@@ -319,37 +365,64 @@ def day_trip_page(data, partners, areas):
         f"<td class=\"num\">S${low}{'' if low == high else f' – {high}'}</td></tr>"
         for label, low, high, source in budget_lines
     )
+    def near(t):
+        cats = sorted({CATEGORY.get(p["category"], p["category"]).lower() for p in areas.get(TERMINAL_AREA.get(t, t), [])})
+        return f"<br><span class=\"meta\">near: {', '.join(cats)}</span>" if cats else ""
+
     terminal_rows = "".join(
-        f"<tr><td><a href=\"../terminal/{slug(t)}/\">{esc(t)}</a></td><td>{esc(', '.join(f['operator'] for f in fs))}</td></tr>"
+        f"<tr><td><a href=\"../terminal/{slug(t)}/\">{esc(t)}</a>{near(t)}</td><td>{esc(', '.join(f['operator'] for f in fs))}</td></tr>"
         for t, fs in terminals(data).items()
     )
     entry = "".join(f"<li>{esc(e['en'])} <span class=\"meta\">({source_link(e['source'])})</span></li>" for e in data["rules"]["entry"])
     tips = "".join(f"<li>{esc(t['en'])} <span class=\"meta\">({source_link(t['source'])})</span></li>" for t in data["rules"]["money_tips"][:3])
+    terminal_areas = {TERMINAL_AREA.get(t, t): t for t in terminals(data)}
     area_items = "".join(
-        f"<li><a href=\"../area/{slug(a)}/\">{esc(a)}</a> <span class=\"meta\">({', '.join(sorted({CATEGORY.get(p['category'], p['category']).lower() for p in ps}))})</span></li>"
+        f"<li><a href=\"../area/{slug(a)}/\">{esc(a)}</a>"
+        + (f" <span class=\"meta\">· {esc(terminal_areas[a])} ferry terminal here</span>" if a in terminal_areas else "")
+        + f"<br><span class=\"meta\">{', '.join(sorted({CATEGORY.get(p['category'], p['category']).lower() for p in ps}))}</span></li>"
         for a, ps in sorted(areas.items())
     )
     queue = data["rules"].get("queue_warning", {})
     entry_rules = data["rules"]["entry"]
+    rf = data.get("return_ferries", {})
+    daily_last = [r for r in rf.get("last", []) if not r.get("days")]
+    latest_back = max(daily_last, key=lambda r: r["time"]) if daily_last else None
+    latest_text = (
+        f"; last ferry back <strong>{latest_back['time']}</strong> Batam time from {esc(latest_back['from'])}" if latest_back else ""
+    )
+    return_rows = []
+    for t in terminals(data):
+        rows = last_back(data, t)
+        daily = [r for r in rows if not r.get("days")]
+        if daily:
+            cell = f"<strong>{daily[0]['time']}</strong> {esc(daily[0]['operator'])} to {esc(daily[0]['to'])}"
+        elif rows:
+            cell = f"No daily sailing; {esc(last_back_text(rows[0]))}"
+        else:
+            cell = "Check with the operator"
+        return_rows.append(f"<tr><td><a href=\"../terminal/{slug(t)}/\">{esc(t)}</a></td><td>{cell}</td></tr>")
     body = f"""<h1>Batam day trip from Singapore: ferry, cost, rules and what to do</h1>
 <div class="card"><table>
 <tr><td>How</td><td>Ferry from HarbourFront or Tanah Merah to one of {len(terminals(data))} Batam terminals</td></tr>
-<tr><td>How long</td><td><strong>{min(minutes)} – {max(minutes)} min</strong> each way; from Singapore between <strong>{firsts[0]}</strong> and <strong>{lasts[-1]}</strong> (varies by terminal)</td></tr>
+<tr><td>How long</td><td><strong>{min(minutes)} – {max(minutes)} min</strong> each way ({esc(fastest['operator'])} to {esc(', '.join(fastest['batam']))} is quickest); from Singapore between <strong>{firsts[0]}</strong> and <strong>{lasts[-1]}</strong> (varies by terminal){latest_text}</td></tr>
 <tr><td>How much</td><td><strong>{total_text}</strong> per person for an example day, ferry from <strong>S${cheapest['return_all_in_sgd']}</strong></td></tr>
-<tr><td>Watch out</td><td>{esc(data['rules']['timezone_note'])}. {esc(queue.get('en', ''))} {esc(entry_rules[3]['en'])}.</td></tr>
+<tr><td>Watch out</td><td><ul class="list"><li>{esc(data['rules']['timezone_note'])}</li><li>{esc(entry_rules[2]['en'])}</li><li>{esc(entry_rules[3]['en'])}</li><li>{esc(queue.get('en', ''))}</li></ul></td></tr>
 </table>
-<p class="meta">All figures from published sources listed below, as of {as_of(data)}; not checked in person.</p>
+<p class="meta">Sources: ferry times {source_link(data['routes']['source'])}; fares {' · '.join(source_link(s) for s in sorted({f['source'] for f in ferries}))}; return times {source_link(rf['source'])}; rate {source_link(data['rules']['fx_source'])}; queue {source_link(queue['source'])}. As of {as_of(data)}, not checked in person.</p>
 <a class="btn" href="{esc(booking_url(partners))}" rel="nofollow noopener sponsored">Compare and book ferry tickets</a><a class="btn ghost" href="../#plan">Plan my day</a></div>
 <div class="card" id="before"><h2>1. Before you go</h2><ul class="list">{entry}</ul><a class="btn" href="../#check">Open the checklist</a></div>
 <div class="card"><h2>2. Pick a ferry and terminal</h2><table><tr><th>Batam terminal</th><th>Operators</th></tr>{terminal_rows}</table>
 <a class="btn" href="../ferry/">Compare fares and times</a></div>
-<div class="card"><h2>3. What a day costs</h2><p>Example day per person at S$1 = {idr(rate)} (mid-market, {as_of(data)}).</p>
+<div class="card"><h2>3. What a day costs</h2><p>Example day per person at S$1 = {idr(rate)} (mid-market, {fmt_date(data['rules']['fx_date'])}, {source_link(data['rules']['fx_source'])}).</p>
 <table><tr><th>Item</th><th class="num">SGD</th></tr>{budget_rows}<tr><td><strong>Total</strong></td><td class="num"><strong>{total_text}</strong></td></tr></table>
 <p class="meta">Ranges from published guides, not checked in person. A car with driver for the day is S${partners['charter']['mpv_sgd'][0]} – {partners['charter']['mpv_sgd'][1]} per car instead of Grab (drivers' own published prices, <a href=\"../driver-prices/\">checked weekly</a>).</p>
 <a class="btn" href="../#price">Check a quote in the app</a></div>
 <div class="card"><h2>4. Money</h2><ul class="list">{tips}</ul><a class="btn" href="../#money">Open the currency converter</a></div>
-<div class="card"><h2>5. Where to go</h2><ul class="list">{area_items}</ul><a class="btn" href="../driver-prices/">WhatsApp a driver for the day</a></div>
-<div class="card"><h2>6. Getting home</h2><ul class="list">
+<div class="card"><h2>5. Where to go</h2><ul class="list">{area_items}</ul><a class="btn" href="../places/">See places by area</a><a class="btn ghost" href="../driver-prices/">WhatsApp a driver for the day</a></div>
+<div class="card"><h2>6. Getting home</h2>
+<table><tr><th>From</th><th>Last daily ferry back (Batam time)</th></tr>{''.join(return_rows)}</table>
+<p class="meta">{esc(rf.get('note_en', ''))} Source for both: {source_link(rf['source'])}, as of {fmt_date(rf['as_of'])}; check on the day.</p>
+<ul class="list">
 <li>{esc(queue.get('en', ''))} <span class="meta">({source_link(queue['source'])})</span></li>
 <li>SG Arrival Card and duty-free limits: see <a href="#before">Before you go</a>.</li></ul>
 <p>The planner counts back from your return ferry and tells you when to leave, with a queue buffer.</p>

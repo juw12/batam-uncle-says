@@ -438,16 +438,16 @@ window.BUS_DATA = {
    ],
    "batam": [
     "Batam Centre",
-    "Sekupang",
-    "Harbour Bay",
-    "Nongsa Pura"
+    "Nongsa Pura",
+    "Sekupang"
    ],
    "minutes": "50-70",
    "first_last_from_sg": "07:40 / 21:40",
    "return_all_in_sgd": 76,
    "url": "https://www.batamfast.com/",
    "source": "https://themoneybees.co/blog/singapore-batam-bintan-ferry-price",
-   "verified": false
+   "verified": false,
+   "routes_source": "https://batam.co.id/transportasi/panduan-feri-batam-singapura-lima-pelabuhan/"
   },
   {
    "operator": "Majestic Fast Ferry",
@@ -464,7 +464,8 @@ window.BUS_DATA = {
    "return_all_in_sgd": 76,
    "url": "https://www.majesticfastferry.com.sg/",
    "source": "https://themoneybees.co/blog/singapore-batam-bintan-ferry-price",
-   "verified": false
+   "verified": false,
+   "routes_source": "https://batam.co.id/transportasi/panduan-feri-batam-singapura-lima-pelabuhan/"
   },
   {
    "operator": "Sindo Ferry",
@@ -474,16 +475,20 @@ window.BUS_DATA = {
    ],
    "batam": [
     "Batam Centre",
+    "Gold Coast Bengkong",
     "Sekupang",
     "Waterfront City"
    ],
    "minutes": "60-70",
    "first_last_from_sg": "08:00 / 21:50",
    "return_all_in_sgd": null,
-   "fare_note": "Base return SGD 56 + fees; one source says ~SGD 88 all-in. Check.",
+   "fare_note": "S$56 base plus fees, about S$88 all-in.",
    "url": "https://www.sindoferry.com.sg/ticket-fares",
    "source": "https://themoneybees.co/blog/singapore-batam-bintan-ferry-price",
-   "verified": false
+   "verified": false,
+   "return_all_in_est_sgd": 88,
+   "all_in_est_source": "https://themoneybees.co/blog/singapore-batam-bintan-ferry-price",
+   "routes_source": "https://batam.co.id/transportasi/panduan-feri-batam-singapura-lima-pelabuhan/"
   },
   {
    "operator": "Horizon Fast Ferry",
@@ -499,12 +504,13 @@ window.BUS_DATA = {
    "fare_note": "Fees on top of advertised fare. Check.",
    "url": "https://horizonfastferry.com.sg/",
    "source": "https://singatips.com/singapore-to-batam-ferry-guide-2025-tickets-schedules/",
-   "verified": false
+   "verified": false,
+   "routes_source": "https://batam.co.id/transportasi/panduan-feri-batam-singapura-lima-pelabuhan/"
   }
  ],
  "rules": {
-  "fx_mid_market_sgd_idr": 14037,
-  "fx_date": "2026-11-07",
+  "fx_mid_market_sgd_idr": 14120,
+  "fx_date": "2026-11-06",
   "fx_terminal_penalty": "Terminal and airport counters can be 8-12% worse than market (batam.com, Apr 2026)",
   "timezone_note": "Batam (WIB, UTC+7) is 1 hour behind Singapore (UTC+8)",
   "entry": [
@@ -570,6 +576,224 @@ window.BUS_DATA = {
    "en": "Long weekends: Batam Centre terminal queues have hit 2.5 h. Arrive early.",
    "zh": "长周末 Batam Centre 码头曾排队2.5小时,务必提早到",
    "source": "https://www.asiaone.com/singapore/singaporean-traveller-makes-u-turn-home-after-being-stuck-batam-ferry-terminal-25-hours"
-  }
+  },
+  "fx_source": "https://wise.com/us/currency-converter/sgd-to-idr-rate"
+ },
+ "return_ferries": {
+  "note_en": "Last daily sailing from Batam to Singapore, Batam time (WIB). Arrive at the terminal about 1 hour before.",
+  "source": "https://batam.co.id/transportasi/panduan-feri-batam-singapura-lima-pelabuhan/",
+  "as_of": "2026-11-07",
+  "verified": false,
+  "last": [
+   {
+    "from": "Batam Centre",
+    "to": "HarbourFront",
+    "operator": "BatamFast",
+    "time": "20:30"
+   },
+   {
+    "from": "Batam Centre",
+    "to": "HarbourFront",
+    "operator": "Majestic Fast Ferry",
+    "time": "20:35"
+   },
+   {
+    "from": "Batam Centre",
+    "to": "HarbourFront",
+    "operator": "Sindo Ferry",
+    "time": "20:20"
+   },
+   {
+    "from": "Batam Centre",
+    "to": "Tanah Merah",
+    "operator": "Majestic Fast Ferry",
+    "time": "18:00",
+    "days": "weekdays"
+   },
+   {
+    "from": "Batam Centre",
+    "to": "Tanah Merah",
+    "operator": "Majestic Fast Ferry",
+    "time": "19:50",
+    "days": "weekends and holidays"
+   },
+   {
+    "from": "Batam Centre",
+    "to": "Tanah Merah",
+    "operator": "BatamFast",
+    "time": "13:20"
+   },
+   {
+    "from": "Batam Centre",
+    "to": "Tanah Merah",
+    "operator": "Sindo Ferry",
+    "time": "13:20"
+   },
+   {
+    "from": "Harbour Bay",
+    "to": "HarbourFront",
+    "operator": "Horizon Fast Ferry",
+    "time": "20:30"
+   },
+   {
+    "from": "Nongsa Pura",
+    "to": "Tanah Merah",
+    "operator": "BatamFast",
+    "time": "20:00"
+   },
+   {
+    "from": "Sekupang",
+    "to": "HarbourFront",
+    "operator": "BatamFast",
+    "time": "17:40"
+   },
+   {
+    "from": "Sekupang",
+    "to": "HarbourFront",
+    "operator": "Majestic Fast Ferry",
+    "time": "18:00"
+   },
+   {
+    "from": "Sekupang",
+    "to": "HarbourFront",
+    "operator": "Sindo Ferry",
+    "time": "20:30"
+   },
+   {
+    "from": "Waterfront City",
+    "to": "HarbourFront",
+    "operator": "Sindo Ferry",
+    "time": "14:50",
+    "days": "Saturday and Sunday only"
+   },
+   {
+    "from": "Gold Coast Bengkong",
+    "to": "HarbourFront",
+    "operator": "Sindo Ferry",
+    "time": "19:00"
+   }
+  ]
+ },
+ "routes": {
+  "note_en": "Departures from Singapore to Batam, Singapore time (SGT), read from each operator's official timetable.",
+  "source": "https://batam.co.id/transportasi/panduan-feri-batam-singapura-lima-pelabuhan/",
+  "as_of": "2026-11-07",
+  "verified": false,
+  "list": [
+   {
+    "sg": "HarbourFront",
+    "batam": "Batam Centre",
+    "operator": "BatamFast",
+    "first": "07:40",
+    "sailings": 12,
+    "last_daily": "21:40"
+   },
+   {
+    "sg": "Tanah Merah",
+    "batam": "Batam Centre",
+    "operator": "BatamFast",
+    "first": "12:50",
+    "sailings": 4,
+    "last_daily": "17:20"
+   },
+   {
+    "sg": "HarbourFront",
+    "batam": "Batam Centre",
+    "operator": "Majestic Fast Ferry",
+    "first": "08:10",
+    "sailings": 14,
+    "last_daily": "21:20"
+   },
+   {
+    "sg": "Tanah Merah",
+    "batam": "Batam Centre",
+    "operator": "Majestic Fast Ferry",
+    "first": "08:15",
+    "sailings": 6,
+    "last_daily": "20:45",
+    "days": "weekdays"
+   },
+   {
+    "sg": "Tanah Merah",
+    "batam": "Batam Centre",
+    "operator": "Majestic Fast Ferry",
+    "first": "08:15",
+    "sailings": 9,
+    "last_daily": "20:45",
+    "days": "weekends and holidays"
+   },
+   {
+    "sg": "HarbourFront",
+    "batam": "Batam Centre",
+    "operator": "Sindo Ferry",
+    "first": "08:00",
+    "sailings": 12,
+    "last_daily": "21:50"
+   },
+   {
+    "sg": "Tanah Merah",
+    "batam": "Batam Centre",
+    "operator": "Sindo Ferry",
+    "first": "10:20",
+    "sailings": 5,
+    "last_daily": "16:30"
+   },
+   {
+    "sg": "HarbourFront",
+    "batam": "Gold Coast Bengkong",
+    "operator": "Sindo Ferry",
+    "first": "09:35",
+    "sailings": 2,
+    "last_daily": "10:30"
+   },
+   {
+    "sg": "HarbourFront",
+    "batam": "Harbour Bay",
+    "operator": "Horizon Fast Ferry",
+    "first": "08:15",
+    "sailings": 13,
+    "last_daily": "21:35"
+   },
+   {
+    "sg": "Tanah Merah",
+    "batam": "Nongsa Pura",
+    "operator": "BatamFast",
+    "first": "08:00",
+    "sailings": 8,
+    "last_daily": "20:20"
+   },
+   {
+    "sg": "HarbourFront",
+    "batam": "Sekupang",
+    "operator": "BatamFast",
+    "first": "08:20",
+    "sailings": 5,
+    "last_daily": "19:30"
+   },
+   {
+    "sg": "HarbourFront",
+    "batam": "Sekupang",
+    "operator": "Majestic Fast Ferry",
+    "first": "08:45",
+    "sailings": 5,
+    "last_daily": "20:40"
+   },
+   {
+    "sg": "HarbourFront",
+    "batam": "Sekupang",
+    "operator": "Sindo Ferry",
+    "first": "08:30",
+    "sailings": 9,
+    "last_daily": "20:30"
+   },
+   {
+    "sg": "HarbourFront",
+    "batam": "Waterfront City",
+    "operator": "Sindo Ferry",
+    "first": "10:00",
+    "sailings": 2,
+    "days": "Saturday and Sunday only"
+   }
+  ]
  }
 };
