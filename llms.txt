@@ -25,3 +25,12 @@
 - [Gold Coast Bengkong ferry terminal](https://juw12.github.io/batam-uncle-says/terminal/gold-coast-bengkong/)
 - [Waterfront City ferry terminal](https://juw12.github.io/batam-uncle-says/terminal/waterfront-city/)
 - [Harbour Bay ferry terminal](https://juw12.github.io/batam-uncle-says/terminal/harbour-bay/)
+
+## 中文 (Chinese)
+- [新加坡去巴淡一日游](https://juw12.github.io/batam-uncle-says/zh/day-trip/): 渡轮、示例一日花费、入境规定、去哪里
+- [巴淡 Batam Centre 码头](https://juw12.github.io/batam-uncle-says/zh/terminal/batam-centre/)
+- [巴淡 Nongsa Pura 码头](https://juw12.github.io/batam-uncle-says/zh/terminal/nongsa-pura/)
+- [巴淡 Sekupang 码头](https://juw12.github.io/batam-uncle-says/zh/terminal/sekupang/)
+- [巴淡 Gold Coast Bengkong 码头](https://juw12.github.io/batam-uncle-says/zh/terminal/gold-coast-bengkong/)
+- [巴淡 Waterfront City 码头](https://juw12.github.io/batam-uncle-says/zh/terminal/waterfront-city/)
+- [巴淡 Harbour Bay 码头](https://juw12.github.io/batam-uncle-says/zh/terminal/harbour-bay/)

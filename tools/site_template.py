@@ -33,24 +33,75 @@ NAV = [
     ("money/", "Money"),
     ("places/", "Places"),
 ]
+NAV_ZH = [
+    ("zh/day-trip/", "一日游"),
+    ("driver-prices/", "司机"),
+    ("ferry/", "渡轮"),
+    ("prices/", "价格"),
+    ("entry-rules/", "入境规定"),
+    ("money/", "换钱"),
+    ("places/", "去哪里"),
+]
+UI = {
+    "en": {
+        "html_lang": "en",
+        "og_locale": "en_SG",
+        "share": "Share on WhatsApp",
+        "planner": "Open the trip planner",
+        "planner_query": "",
+        "support_one": "Support Batam Uncle Says",
+        "support_via": "Support via ",
+        "switch": "English",
+        "footer": "Independent guide for day trips from Singapore. Not affiliated with any operator or venue listed. Prices and rules change; confirm with the operator before you travel.",
+    },
+    "zh": {
+        "html_lang": "zh-Hans",
+        "og_locale": "zh_SG",
+        "share": "分享到 WhatsApp",
+        "planner": "打开行程规划",
+        "planner_query": "?lang=zh",
+        "support_one": "支持 Batam Uncle Says",
+        "support_via": "支持:",
+        "switch": "中文",
+        "footer": "面向新加坡一日游旅客的独立指南,与任何渡轮公司、场所无关联。价格和规定会变,出行前请向运营方核实。",
+    },
+}
+HREFLANG = {"en": "en", "zh": "zh-Hans"}
 
 
 def esc(value):
     return html.escape(str(value), quote=True)
 
 
-def page(title, description, path, body, root="../", crumbs=None):
-    """Render a static page. path is relative to SITE (e.g. 'prices/'); root is the relative way back to SITE."""
+def page(title, description, path, body, root="../", crumbs=None, lang="en", alternates=None):
+    """Render a static page. path is relative to SITE (e.g. 'prices/'); root is the relative way back to SITE.
+
+    lang is "en" or "zh". alternates maps each language to its path for the same page (hreflang links and the
+    language switch); pass it on every language version of a page.
+    """
+    ui = UI[lang]
     canonical = SITE + path
     links = tip_links()
     support = "".join(
-        f'<a class="btn" href="{esc(url)}" rel="noopener">{esc("Support Batam Uncle Says" if len(links) == 1 else "Support via " + label)}</a>'
+        f'<a class="btn" href="{esc(url)}" rel="noopener">{esc(ui["support_one"] if len(links) == 1 else ui["support_via"] + label)}</a>'
         for label, url in links
     )
     share_text = quote(f"{title}\n{canonical}")
     nav = "".join(
-        f'<a href="{root}{href}"{" aria-current=\"page\"" if href == path else ""}>{label}</a>' for href, label in NAV
+        f'<a href="{root}{href}"{" aria-current=\"page\"" if href == path else ""}>{label}</a>'
+        for href, label in (NAV_ZH if lang == "zh" else NAV)
     )
+    hreflang = ""
+    switch = ""
+    if alternates:
+        hreflang = "".join(
+            f'\n<link rel="alternate" hreflang="{HREFLANG[code]}" href="{SITE}{alt_path}">' for code, alt_path in alternates.items()
+        ) + f'\n<link rel="alternate" hreflang="x-default" href="{SITE}{alternates["en"]}">'
+        switch = "".join(
+            f'<a class="lang" href="{root}{alt_path}" hreflang="{HREFLANG[code]}" lang="{HREFLANG[code]}">{UI[code]["switch"]}</a>'
+            for code, alt_path in alternates.items()
+            if code != lang
+        )
     crumb_items = [("Batam Uncle Says", SITE)] + (crumbs or [(title, canonical)])
     breadcrumb = {
         "@context": "https://schema.org",
@@ -60,14 +111,15 @@ def page(title, description, path, body, root="../", crumbs=None):
         ],
     }
     return f"""<!doctype html>
-<html lang="en">
+<html lang="{ui['html_lang']}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(description)}">
-<link rel="canonical" href="{canonical}">
+<link rel="canonical" href="{canonical}">{hreflang}
 <meta property="og:type" content="article">
+<meta property="og:locale" content="{ui['og_locale']}">
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(description)}">
 <meta property="og:url" content="{canonical}">
@@ -81,6 +133,9 @@ def page(title, description, path, body, root="../", crumbs=None):
   :root {{ --ink: #14212b; --ink-2: #3d4b56; --ink-3: #66737d; --line: #e3e7ea; --bg: #f5f6f7; --accent: #0b5d7a; --deep: #0b2a40; }}
   * {{ box-sizing: border-box; }}
   body {{ margin: 0; font-family: Inter, system-ui, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.55; }}
+  html[lang^=zh] body {{ font-family: Inter, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; line-height: 1.7; }}
+  header .top {{ display: flex; justify-content: space-between; align-items: center; gap: 12px; }}
+  header .lang {{ color: #fff; text-decoration: none; font-size: 14px; border: 1px solid #44617a; border-radius: 8px; padding: 3px 10px; }}
   header {{ background: var(--deep); color: #fff; padding: 12px 18px 0; }}
   header .brand {{ color: #fff; text-decoration: none; font-weight: 600; font-size: 16px; }}
   header nav {{ display: flex; gap: 16px; overflow-x: auto; padding: 10px 0 12px; scrollbar-width: none; }}
@@ -96,6 +151,7 @@ def page(title, description, path, body, root="../", crumbs=None):
   td, th {{ text-align: left; padding: 9px 0; border-bottom: 1px solid var(--line); vertical-align: top; }}
   td.num, th.num {{ text-align: right; white-space: nowrap; font-weight: 600; padding-left: 10px; }}
   tr:last-child td {{ border-bottom: 0; }}
+  table.facts td:first-child {{ white-space: nowrap; padding-right: 14px; }}
   ul.list {{ margin: 0; padding-left: 20px; }}
   ul.list li {{ margin: 8px 0; }}
   .meta {{ font-size: 13px; color: var(--ink-3); }}
@@ -106,12 +162,12 @@ def page(title, description, path, body, root="../", crumbs=None):
 </style>
 </head>
 <body>
-<header><a class="brand" href="{root}">Batam Uncle Says</a><nav aria-label="Guides">{nav}</nav></header>
+<header><div class="top"><a class="brand" href="{root}{ui['planner_query']}">Batam Uncle Says</a>{switch}</div><nav aria-label="Guides">{nav}</nav></header>
 <main>
 {body}
-<p><a class="btn ghost" href="https://wa.me/?text={share_text}" rel="nofollow noopener">Share on WhatsApp</a><a class="btn ghost" href="{root}">Open the trip planner</a>{support}</p>
+<p><a class="btn ghost" href="https://wa.me/?text={share_text}" rel="nofollow noopener">{ui['share']}</a><a class="btn ghost" href="{root}{ui['planner_query']}">{ui['planner']}</a>{support}</p>
 </main>
-<footer>Independent guide for day trips from Singapore. Not affiliated with any operator or venue listed. Prices and rules change; confirm with the operator before you travel.</footer>
+<footer>{ui['footer']}</footer>
 </body>
 </html>
 """

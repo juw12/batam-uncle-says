@@ -488,7 +488,8 @@ window.BUS_DATA = {
    "verified": false,
    "return_all_in_est_sgd": 88,
    "all_in_est_source": "https://themoneybees.co/blog/singapore-batam-bintan-ferry-price",
-   "routes_source": "https://batam.co.id/transportasi/panduan-feri-batam-singapura-lima-pelabuhan/"
+   "routes_source": "https://batam.co.id/transportasi/panduan-feri-batam-singapura-lima-pelabuhan/",
+   "fare_note_zh": "基本票价 S$56 另加费用,含税费约 S$88。"
   },
   {
    "operator": "Horizon Fast Ferry",
@@ -505,7 +506,8 @@ window.BUS_DATA = {
    "url": "https://horizonfastferry.com.sg/",
    "source": "https://singatips.com/singapore-to-batam-ferry-guide-2025-tickets-schedules/",
    "verified": false,
-   "routes_source": "https://batam.co.id/transportasi/panduan-feri-batam-singapura-lima-pelabuhan/"
+   "routes_source": "https://batam.co.id/transportasi/panduan-feri-batam-singapura-lima-pelabuhan/",
+   "fare_note_zh": "广告票价之外另收费用,请核实。"
   }
  ],
  "rules": {
@@ -577,7 +579,9 @@ window.BUS_DATA = {
    "zh": "长周末 Batam Centre 码头曾排队2.5小时,务必提早到",
    "source": "https://www.asiaone.com/singapore/singaporean-traveller-makes-u-turn-home-after-being-stuck-batam-ferry-terminal-25-hours"
   },
-  "fx_source": "https://wise.com/us/currency-converter/sgd-to-idr-rate"
+  "fx_source": "https://wise.com/us/currency-converter/sgd-to-idr-rate",
+  "timezone_note_zh": "巴淡(WIB,UTC+7)比新加坡(UTC+8)慢1小时",
+  "fx_terminal_penalty_zh": "码头和机场柜台的汇率可能比市场差 8-12%(batam.com,2026年4月)"
  },
  "return_ferries": {
   "note_en": "Last daily sailing from Batam to Singapore, Batam time (WIB). Arrive at the terminal about 1 hour before.",
@@ -672,7 +676,8 @@ window.BUS_DATA = {
     "time": "14:50",
     "days": "Saturday and Sunday only"
    }
-  ]
+  ],
+  "note_zh": "巴淡往新加坡每日最后一班,巴淡时间(WIB)。请提前约1小时到码头。"
  },
  "routes": {
   "note_en": "Departures from Singapore to Batam, Singapore time (SGT), read from each operator's official timetable.",
