@@ -52,7 +52,7 @@ window.BUS_PARTNERS = {
    "status": "active",
    "checked": "2026-11-07",
    "fails": 0,
-   "unreachable": 1
+   "unreachable": 0
   },
   {
    "id": "batam-trip",
@@ -81,7 +81,8 @@ window.BUS_PARTNERS = {
    "price_note": "Weekday prices (Monday to Friday) as listed on their website, including fuel and driver",
    "status": "active",
    "checked": "2026-11-07",
-   "fails": 0
+   "fails": 0,
+   "unreachable": 0
   },
   {
    "id": "batam-holiday",
@@ -94,7 +95,8 @@ window.BUS_PARTNERS = {
    "price_note": "See their website for prices",
    "status": "active",
    "checked": "2026-11-07",
-   "fails": 0
+   "fails": 0,
+   "unreachable": 0
   }
  ],
  "candidates": [
