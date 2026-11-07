@@ -124,6 +124,20 @@
       "lynk.id",
       "teer.id"
     ],
-    "note": "Paste ONE payment link you own into tip_url. Recommended for Indonesia without PayPal: SociaBuzz Tribe (https://sociabuzz.com/<username>/tribe, payout to GoPay or any bank, no KTP). Also accepted: Saweria, Trakteer, Lynk.id, Ko-fi, Buy Me a Coffee, GitHub Sponsors. Empty = hidden."
+    "note": "Fill any of links[].url with your own page (e.g. https://sociabuzz.com/<you>/tribe, https://saweria.co/<you>, https://trakteer.id/<you>). Every valid link shows as a Support button in the app and on all search pages. Empty = hidden.",
+    "links": [
+      {
+        "label": "SociaBuzz (card)",
+        "url": ""
+      },
+      {
+        "label": "Saweria (QRIS, GoPay, OVO, DANA)",
+        "url": ""
+      },
+      {
+        "label": "Trakteer",
+        "url": ""
+      }
+    ]
   }
 }

@@ -1166,15 +1166,23 @@ const DATA = window.BUS_DATA;
 const PARTNERS = window.BUS_PARTNERS || {};
 const OPERATORS = (PARTNERS.operators || []).filter((op) => op.status === "active");
 const GUIDES_ON = OPERATORS.length > 0;
-const TIP_URL = (() => {
+const TIP_LINKS = (() => {
   const money = PARTNERS.money || {};
-  try {
-    const url = new URL(money.tip_url || "");
-    return url.protocol === "https:" && (money.allowed_hosts || []).includes(url.hostname) ? url.href : "";
-  } catch (error) {
-    return "";
-  }
+  const hosts = money.allowed_hosts || [];
+  const candidates = [...(money.links || []), { label: "", url: money.tip_url || "" }];
+  const seen = new Set();
+  return candidates.filter((link) => {
+    try {
+      const url = new URL(link.url || "");
+      const ok = url.protocol === "https:" && hosts.includes(url.hostname) && !seen.has(url.href);
+      if (ok) seen.add(url.href);
+      return ok;
+    } catch (error) {
+      return false;
+    }
+  }).map((link) => ({ label: link.label || new URL(link.url).hostname.replace("www.", ""), url: new URL(link.url).href }));
 })();
+const TIP_URL = TIP_LINKS.length ? TIP_LINKS[0].url : "";
 
 const SECTIONS = [
   { id: "home", icon: "i-home" },
@@ -2171,7 +2179,7 @@ function renderAbout() {
   }).join("");
   document.getElementById("footNote").textContent = tf("footNote", fmtDate(DATA.generated || DATA.rules.fx_date));
   document.getElementById("aboutTip").innerHTML = TIP_URL
-    ? `<div class="card"><h2 style="margin-top:0">${t("tip_title")}</h2><p class="small" style="margin:0 0 12px">${t("tip_body")}</p><a class="btn block" style="margin-top:0" href="${TIP_URL}" target="_blank" rel="noopener">${t("tip_btn")}</a></div>`
+    ? `<div class="card"><h2 style="margin-top:0">${t("tip_title")}</h2><p class="small" style="margin:0 0 12px">${t("tip_body")}</p>${TIP_LINKS.map((link, i) => `<a class="btn ${i ? "ghost " : ""}block" style="margin-top:${i ? 8 : 0}px" href="${link.url}" target="_blank" rel="noopener">${TIP_LINKS.length > 1 ? link.label : t("tip_btn")}</a>`).join("")}</div>`
     : "";
 }
 

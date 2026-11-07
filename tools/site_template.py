@@ -7,17 +7,22 @@ SITE = "https://juw12.github.io/batam-uncle-says/"
 OG_IMAGE = SITE + "img/hero-barelang.jpg"
 
 
-def tip_url():
-    """The owner's payment link from partners.json, only if it is https and on an allowed host."""
+def tip_links():
+    """The owner's payment links from partners.json: https only, allowed hosts only, max 3."""
     from pathlib import Path
     from urllib.parse import urlparse
     try:
         money = json.loads((Path(__file__).resolve().parents[1] / "partners.json").read_text(encoding="utf-8")).get("money", {})
-        url = money.get("tip_url", "")
-        parsed = urlparse(url)
-        return url if parsed.scheme == "https" and parsed.hostname in money.get("allowed_hosts", []) else ""
     except Exception:
-        return ""
+        return []
+    hosts = money.get("allowed_hosts", [])
+    found = []
+    for link in money.get("links", []) + [{"label": "", "url": money.get("tip_url", "")}]:
+        url = link.get("url", "")
+        parsed = urlparse(url)
+        if parsed.scheme == "https" and parsed.hostname in hosts and url not in [u for _, u in found]:
+            found.append((link.get("label") or parsed.hostname.replace("www.", ""), url))
+    return found[:3]
 
 NAV = [
     ("driver-prices/", "Drivers"),
@@ -36,8 +41,11 @@ def esc(value):
 def page(title, description, path, body, root="../", crumbs=None):
     """Render a static page. path is relative to SITE (e.g. 'prices/'); root is the relative way back to SITE."""
     canonical = SITE + path
-    tip = tip_url()
-    support = f'<a class="btn" href="{esc(tip)}" rel="noopener">Support Batam Uncle Says</a>' if tip else ""
+    links = tip_links()
+    support = "".join(
+        f'<a class="btn" href="{esc(url)}" rel="noopener">{esc("Support Batam Uncle Says" if len(links) == 1 else "Support via " + label)}</a>'
+        for label, url in links
+    )
     share_text = quote(f"{title}\n{canonical}")
     nav = "".join(
         f'<a href="{root}{href}"{" aria-current=\"page\"" if href == path else ""}>{label}</a>' for href, label in NAV
