@@ -1,27 +1,100 @@
-/* Batam Uncle Says - local guide booking settings.
-   After editing, bump VERSION in sw.js so phones pick up the change. */
+/* Generated from partners.json by tools/partners_build.py. Edit the JSON, not this file. */
 window.BUS_PARTNERS = {
-  // WhatsApp number that receives tourist requests and guide sign-ups.
-  // Digits only, with country code, for example "6281234567890".
-  // Empty = the Local guide section stays hidden on the live site (preview with ?guides=1).
-  whatsapp: "",
-
-  // Referral fee the guide pays after a completed trip, in percent of their price.
-  referral_fee_pct: 10,
-
-  // Published day-charter prices from Batam operators (car, English-speaking driver, fuel, parking).
-  charter: {
-    checked: "2026-11-07",
-    hours: 10,
-    mpv_sgd: [55, 80],
-    van_sgd: [110, 180],
-    sources: [
-      "https://batamholiday.com/",
-      "https://www.batamprivatetours.com/",
-      "https://www.klook.com/en-GB/activity/109324-private-car-charter-batam/"
-    ]
+ "updated": "2026-11-07",
+ "licence_source": "https://mediacenter.batam.go.id/2019/04/30/hpi-sambut-baik-perwako-pramuwisata/",
+ "affiliates": {
+  "easybook_query": "",
+  "note": "Paste the tracking query string from the Easybook affiliate dashboard, e.g. ?aff=XXXX. Empty = plain links, no commission."
+ },
+ "charter": {
+  "checked": "2026-11-07",
+  "hours": 10,
+  "mpv_sgd": [
+   55,
+   80
+  ],
+  "van_sgd": [
+   110,
+   180
+  ],
+  "sources": [
+   "https://batamholiday.com/",
+   "https://www.batamprivatetours.com/",
+   "https://www.klook.com/en-GB/activity/109324-private-car-charter-batam/"
+  ]
+ },
+ "ferry_booking": {
+  "easybook": "https://www.easybook.com/en-sg/ferry/booking/singapore-to-batam"
+ },
+ "operators": [
+  {
+   "id": "batam-private-tours",
+   "name": "Batam Private Tours",
+   "website": "https://www.batamprivatetours.com/",
+   "whatsapp": "628153517717",
+   "kind": "car",
+   "languages": [],
+   "prices": [
+    {
+     "label": "6-seater (Suzuki Ertiga, Toyota Avanza or similar)",
+     "sgd": 55
+    },
+    {
+     "label": "14-seater Toyota HiAce",
+     "sgd": 110
+    },
+    {
+     "label": "20-seater Coaster",
+     "sgd": 130
+    }
+   ],
+   "price_note": "Private car charter, as listed on their website",
+   "status": "active",
+   "checked": "2026-11-07",
+   "fails": 0
   },
-
-  // Batam guide licence rule (Kartu Tanda Pengenal Pramuwisata, Perwako Batam No. 56/2018).
-  licence_source: "https://mediacenter.batam.go.id/2019/04/30/hpi-sambut-baik-perwako-pramuwisata/"
+  {
+   "id": "batam-trip",
+   "name": "Batam Trip (Leo Ciang)",
+   "website": "https://batamtrip.com/",
+   "whatsapp": "6281277979343",
+   "kind": "driver-guide",
+   "languages": [
+    "English",
+    "Chinese"
+   ],
+   "prices": [
+    {
+     "label": "7-seater MPV, full day (10 to 12 h)",
+     "sgd": 70
+    },
+    {
+     "label": "10-seater minivan, full day",
+     "sgd": 80
+    },
+    {
+     "label": "14-seater minivan, full day",
+     "sgd": 100
+    }
+   ],
+   "price_note": "Weekday prices (Monday to Friday) as listed on their website, including fuel and driver",
+   "status": "active",
+   "checked": "2026-11-07",
+   "fails": 0
+  }
+ ],
+ "candidates": [
+  {
+   "name": "Batam Holiday",
+   "website": "https://batamholiday.com/"
+  },
+  {
+   "name": "Batam Tour Driver",
+   "website": "https://batamtourdriver.com/"
+  },
+  {
+   "name": "Batam Driver Tour Guide",
+   "website": "https://www.batamdrivertourguide.com/"
+  }
+ ]
 };

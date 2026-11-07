@@ -1,5 +1,5 @@
 /* Batam Uncle Says - offline cache. Bump VERSION when files change. */
-const VERSION = "bus-2026-11-07-r5";
+const VERSION = "bus-2026-11-07-p1417";
 const FILES = [
   "./",
   "index.html",

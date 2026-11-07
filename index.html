@@ -581,6 +581,9 @@
   .glist { margin: 0; padding-left: 20px; }
   .glist li { margin: 8px 0; font-size: 14.5px; line-height: 1.5; color: var(--ink-2); }
   .glist li::marker { color: var(--ink-3); font-weight: 600; }
+  .op .xlinks { grid-template-columns: 1fr; gap: 8px; }
+  .op .xlinks .btn { width: 100%; }
+  @media (min-width: 560px) { .op .xlinks { grid-template-columns: 1.4fr 1fr; } }
   .gpartner { border-color: var(--line-strong); background: var(--sand); }
   .gpartner h2 { margin-top: 0; }
   .gpartner .en { font-size: 13px; color: var(--ink-3); margin: 10px 0 0; }
@@ -1054,6 +1057,7 @@
     </div>
     <div id="queueWarn"></div>
     <div class="two-col" id="ferryList"></div>
+    <div id="ferryBook"></div>
     <a class="btn ghost block" href="#plan" style="margin-top:4px"><span data-i18n="ferryToPlan"></span><svg class="ico sm"><use href="#i-arrow"/></svg></a>
     <h2 data-i18n="terminalsTitle"></h2>
     <div class="strip four" id="terminalStrip"></div>
@@ -1152,8 +1156,8 @@
 const DATA = window.BUS_DATA;
 
 const PARTNERS = window.BUS_PARTNERS || {};
-const GUIDE_WA = String(PARTNERS.whatsapp || "").replace(/\D/g, "");
-const GUIDES_ON = Boolean(GUIDE_WA) || new URLSearchParams(location.search).has("guides");
+const OPERATORS = (PARTNERS.operators || []).filter((op) => op.status === "active");
+const GUIDES_ON = OPERATORS.length > 0;
 
 const SECTIONS = [
   { id: "home", icon: "i-home" },
@@ -1256,34 +1260,36 @@ const T = {
     sh_placeUnverified: "Not yet visited in person. Check opening hours before you go.",
     sh_guide: "Planning a Batam day trip? Ferry fares, fair prices, a day planner and entry rules in one place:",
     tab_talk: "Phrases", more_talk: "Big-text cards to show a driver or shop", tool_talk: "Show-the-driver cards in Indonesian",
-    tab_guide: "Local guide", more_guide: "Book a licensed driver or guide",
-    guideEyebrow: "Local guides", guideTitle: "Book a licensed local guide",
-    guideSub: "Tell us about your day. We match you with a Batam driver or guide we have checked, and you get their price before you commit.",
+    tab_guide: "Drivers", more_guide: "Message a Batam driver or guide directly",
+    guideEyebrow: "Drivers and guides", guideTitle: "Book a local driver",
+    guideSub: "Message Batam drivers directly on WhatsApp with your trip filled in. You pay the driver. No booking fee, no middleman.",
     g_date: "Date", g_pax: "People", g_lang: "Language",
     g_lang_en: "English", g_lang_zh: "Mandarin", g_lang_any: "Either",
     g_need: "What you need",
     g_need_car: "Car with English-speaking driver", g_need_guide: "Licensed guide, no car", g_need_both: "Car and licensed guide",
     g_fromPlan: "From your plan", g_editPlan: "Change in Plan",
     g_notes: "Anything else (optional)", g_notesPh: "Kids, elderly, wheelchair, places you want to see",
-    g_send: "Send request on WhatsApp",
-    g_sendNote: "Opens WhatsApp with your request filled in. No booking fee.",
-    g_soon: "Booking opens soon. This is a preview.",
-    g_ref: (code) => `Your reference is <b>${code}</b>. Keep it and quote it to your guide.`,
+    g_fill: "Fill this in once. Every WhatsApp button below sends it to that driver.",
+    g_listTitle: "Drivers with published prices",
+    g_msg: "Message on WhatsApp", g_site: "Their website",
+    g_langs: "Languages", g_checked: (d) => `Prices from their own website. Listing re-checked ${d}.`,
+    g_seeSite: "See their website for current prices",
     g_costTitle: "What a day usually costs",
     g_mpv: "MPV, such as a Toyota Avanza", g_van: "Van (Toyota Hiace), up to 12 to 14 people",
-    g_costNote: (h, d) => `Car, English-speaking driver, fuel and parking for about ${h} hours. Published prices from Batam operators, checked ${d}. Your guide confirms the exact price before you book.`,
+    g_costNote: (h, d) => `Car, English-speaking driver, fuel and parking for about ${h} hours. Published prices from Batam operators, checked ${d}.`,
     g_howTitle: "How it works",
-    g_how1: "Send your request. We reply on WhatsApp with a matched driver or guide and their price.",
-    g_how2: "Confirm with them directly. Agree the price and pickup point in writing.",
-    g_how3: "Pay them on the day, in cash or by transfer, and quote your reference.",
-    g_checkTitle: "What we check before we match you",
-    g_check1: "Guides hold a Batam guide licence (KTPP) issued by the city tourism office.",
-    g_check2: "Drivers show a valid driving licence and car registration.",
-    g_check3: "The price is agreed in writing before the day.",
-    g_disclose: (p) => `Guides pay Batam Uncle Says a ${p}% referral fee out of their price. You never pay us.`,
+    g_how1: "Fill in your trip above, then tap a driver. WhatsApp opens with your request written out.",
+    g_how2: "The driver replies with a price. Agree the price and pickup point in writing.",
+    g_how3: "Pay the driver on the day. There is no booking fee.",
+    g_checkTitle: "How drivers are listed",
+    g_check1: "Only Batam drivers and guides who publish their prices and WhatsApp number on their own website.",
+    g_check2: "A script re-checks every listing each week and hides any whose website or number disappears.",
+    g_check3: "Not yet ridden with in person. If you book a licensed guide, ask to see their KTPP guide card.",
     g_licenceSrc: "Licence rule", g_priceSrc: "Price sources",
-    g_partnerEn: (p) => `For Batam guides and drivers: join for free. ${p}% referral fee only on completed trips.`,
-    g_cta: "Need a driver for the day?", g_ctaBtn: "Book a local guide",
+    g_partnerEn: "For Batam drivers and guides: listing is free and automatic. Publish your prices and WhatsApp number on your own website.",
+    g_bookFerry: "Compare and book ferry tickets online",
+    g_affiliate: "Some booking links pay Batam Uncle Says a small commission at no extra cost to you.",
+    g_cta: "Need a driver for the day?", g_ctaBtn: "Message a local driver",
     talkEyebrow: "Bahasa Indonesia", talkTitle: "Phrases to show",
     talkSub: "Tap a card to show it full screen to a driver, waiter or shop assistant. Standard Indonesian, with English and Chinese meaning.",
     g_move: "Getting around", g_pay: "Paying and prices", g_eat: "Eating out", g_nums: "Reading price tags",
@@ -1383,34 +1389,36 @@ const T = {
     sh_placeUnverified: "尚未实地到访,出发前请确认营业时间。",
     sh_guide: "要去巴淡一日游?船票、合理价格、行程规划和出入境规定,一站看清:",
     tab_talk: "常用语", more_talk: "大字卡片,直接给司机或店员看", tool_talk: "印尼语大字卡,给司机看",
-    tab_guide: "本地导游", more_guide: "预订持证司机或导游",
-    guideEyebrow: "本地导游", guideTitle: "预订持证本地导游",
-    guideSub: "告诉我们你的行程,我们为你配对经过核实的巴淡司机或导游,确认前先拿到报价。",
+    tab_guide: "司机", more_guide: "直接联系巴淡司机或导游",
+    guideEyebrow: "司机与导游", guideTitle: "预订本地司机",
+    guideSub: "通过 WhatsApp 直接联系巴淡司机,行程资料自动填好。直接付款给司机,无预订费,无中间人。",
     g_date: "日期", g_pax: "人数", g_lang: "语言",
     g_lang_en: "英语", g_lang_zh: "华语", g_lang_any: "都可以",
     g_need: "需要什么服务",
     g_need_car: "包车(英语司机)", g_need_guide: "持证导游(不含车)", g_need_both: "包车 + 持证导游",
     g_fromPlan: "来自你的行程", g_editPlan: "在行程中修改",
     g_notes: "其他需求(可选)", g_notesPh: "小孩、长者、轮椅、想去的地方",
-    g_send: "通过 WhatsApp 发送请求",
-    g_sendNote: "将打开 WhatsApp 并自动填好请求。不收预订费。",
-    g_soon: "即将开放预订,目前为预览。",
-    g_ref: (code) => `你的参考编号是 <b>${code}</b>,请保存并告诉导游。`,
+    g_fill: "填写一次即可,下方每个 WhatsApp 按钮都会把资料发给该司机。",
+    g_listTitle: "公开报价的司机",
+    g_msg: "WhatsApp 联系", g_site: "官网",
+    g_langs: "语言", g_checked: (d) => `价格来自对方官网,资料核对于 ${d}。`,
+    g_seeSite: "最新价格请见对方官网",
     g_costTitle: "一天大概多少钱",
     g_mpv: "MPV(如 Toyota Avanza)", g_van: "面包车(Toyota Hiace),12 至 14 人",
-    g_costNote: (h, d) => `含车、英语司机、油费和停车费,约 ${h} 小时。巴淡包车商家公开价格,核对于 ${d}。确认前导游会给出准确报价。`,
+    g_costNote: (h, d) => `含车、英语司机、油费和停车费,约 ${h} 小时。巴淡包车商家公开价格,核对于 ${d}。`,
     g_howTitle: "流程",
-    g_how1: "发送请求。我们通过 WhatsApp 回复配对的司机或导游及报价。",
-    g_how2: "直接与对方确认,以文字约定价格和接送地点。",
-    g_how3: "当天以现金或转账付款给对方,并提供参考编号。",
-    g_checkTitle: "配对前我们会核实",
-    g_check1: "导游持有巴淡市旅游局颁发的导游证(KTPP)。",
-    g_check2: "司机出示有效驾照和车辆登记。",
-    g_check3: "出发前以文字约定价格。",
-    g_disclose: (p) => `导游从其收费中向 Batam Uncle Says 支付 ${p}% 介绍费。你无需向我们付款。`,
+    g_how1: "先填写上方行程,再点选司机,WhatsApp 会自动写好你的请求。",
+    g_how2: "司机回复报价,以文字约定价格和接送地点。",
+    g_how3: "当天直接付款给司机,无预订费。",
+    g_checkTitle: "司机如何上榜",
+    g_check1: "只列出在自己官网公开价格和 WhatsApp 号码的巴淡司机和导游。",
+    g_check2: "程序每周自动复查,网站或号码消失的会自动隐藏。",
+    g_check3: "我们尚未亲自乘坐。如预订持证导游,可请对方出示 KTPP 导游证。",
     g_licenceSrc: "导游证规定", g_priceSrc: "价格来源",
-    g_partnerEn: (p) => `巴淡导游和司机:免费加入,仅在成行后收取 ${p}% 介绍费。`,
-    g_cta: "需要当天包车司机?", g_ctaBtn: "预订本地导游",
+    g_partnerEn: "巴淡司机和导游:免费自动上榜,只需在自己官网公开价格和 WhatsApp 号码。",
+    g_bookFerry: "在线比较并预订船票",
+    g_affiliate: "部分预订链接会给 Batam Uncle Says 少量佣金,你无需多付。",
+    g_cta: "需要当天包车司机?", g_ctaBtn: "联系本地司机",
     talkEyebrow: "印尼语", talkTitle: "出示常用语",
     talkSub: "点开卡片即可全屏显示,直接给司机、服务员或店员看。标准印尼语,附英文与中文意思。",
     g_move: "出行交通", g_pay: "付款与价格", g_eat: "吃饭点餐", g_nums: "看懂价格标签",
@@ -2224,36 +2232,25 @@ function showPhrase(n) {
   card.showModal();
 }
 
-/* ---------- local guides ---------- */
-const REF_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
-
-function newRefCode() {
-  const bytes = new Uint8Array(4);
-  crypto.getRandomValues(bytes);
-  return "BUS-" + [...bytes].map((b) => REF_ALPHABET[b % REF_ALPHABET.length]).join("");
-}
-
-function waLink(text) {
-  return `https://wa.me/${GUIDE_WA}?text=${encodeURIComponent(text)}`;
-}
-
+/* ---------- local drivers and guides ---------- */
 function guidePlanSummary() {
   if (!lastPlan) return "";
   const interests = [...selectedInterests].map((key) => t("i_" + key)).join(", ");
   return `${lastPlan.terminal} · ${hhmm(lastPlan.arrive)}–${hhmm(lastPlan.ferryBack)}${interests ? " · " + interests : ""}`;
 }
 
-function guideRequestText(ref) {
-  const value = (id) => document.getElementById(id).value.trim();
+function guideRequestText() {
+  const field = (id) => document.getElementById(id);
+  const value = (id) => (field(id) ? field(id).value.trim() : "");
   const option = (id) => {
-    const select = document.getElementById(id);
-    return select.options[select.selectedIndex].dataset.en;
+    const select = field(id);
+    return select ? select.options[select.selectedIndex].dataset.en : "";
   };
   const date = value("gDate");
   const lines = [
-    `Hi, I would like to book a Batam driver or guide. Ref ${ref}`,
+    "Hi, I found you on Batam Uncle Says. I would like a quote for a Batam day trip.",
     "",
-    `Date: ${date ? new Date(date + "T00:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" }).replace(",", "") : "not set"}`,
+    `Date: ${date ? new Date(date + "T00:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" }).replace(",", "") : "not decided yet"}`,
     `People: ${value("gPax") || "not set"}`,
     `Need: ${option("gNeed")}`,
     `Language: ${option("gLang")}`,
@@ -2266,34 +2263,39 @@ function guideRequestText(ref) {
   if (value("gNotes")) lines.push(`Notes: ${value("gNotes")}`);
   const link = lastPlan ? planLink() : "";
   if (link) lines.push("", `My plan: ${link}`);
+  lines.push("", "What is your price?");
   return lines.join("\n");
 }
 
-const PARTNER_SIGNUP_TEXT = [
-  "Halo, saya mau daftar jadi mitra Batam Uncle Says.",
-  "",
-  "Nama:",
-  "Layanan (pemandu / sopir / keduanya):",
-  "No. KTPP (untuk pemandu):",
-  "Mobil dan kapasitas:",
-  "Bahasa:",
-  "Area di Batam:",
-].join("\n");
+function operatorCard(op) {
+  const rows = op.prices.length
+    ? op.prices.map((p) => `<div><dt>${p.label}</dt><dd class="num">S$${p.sgd}</dd></div>`).join("")
+    : `<div><dt>${t("g_seeSite")}</dt><dd></dd></div>`;
+  const langs = op.languages && op.languages.length ? ` · ${t("g_langs")}: ${op.languages.join(", ")}` : "";
+  return `<div class="card op">
+    <h2 style="margin-top:0">${op.name}</h2>
+    <dl class="gcost">${rows}</dl>
+    <p class="meta" style="margin:8px 0 0">${op.price_note}${langs}. ${tf("g_checked", fmtDate(op.checked))}</p>
+    <div class="xlinks">
+      <button type="button" class="btn" data-op="${op.id}">${icon("i-chat", "sm")}${t("g_msg")}</button>
+      <a class="btn ghost" href="${op.website}" target="_blank" rel="noopener nofollow">${icon("i-ext", "sm")}${t("g_site")}</a>
+    </div>
+  </div>`;
+}
 
 function renderGuide() {
   const body = document.getElementById("guideBody");
   if (!body || !GUIDES_ON) return;
-  const fee = PARTNERS.referral_fee_pct || 10;
   const charter = PARTNERS.charter || {};
   const today = new Date(Date.now() + 7 * 3600 * 1000).toISOString().slice(0, 10);
   const opt = (value, key) => `<option value="${value}" data-en="${T.en[key]}">${t(key)}</option>`;
   const sourceLinks = (charter.sources || [])
-    .map((url, i) => `<a href="${url}" target="_blank" rel="noopener">${new URL(url).hostname.replace("www.", "")}</a>`)
+    .map((url) => `<a href="${url}" target="_blank" rel="noopener nofollow">${new URL(url).hostname.replace("www.", "")}</a>`)
     .join(" · ");
-  const disabled = GUIDE_WA ? "" : " disabled";
 
   body.innerHTML = `
     <div class="card form">
+      <p class="small" style="margin:0 0 14px">${t("g_fill")}</p>
       <div class="grid-2 field">
         <div>
           <label for="gDate">${t("g_date")}</label>
@@ -2301,7 +2303,7 @@ function renderGuide() {
         </div>
         <div>
           <label for="gPax">${t("g_pax")}</label>
-          <input type="number" id="gPax" min="1" max="14" value="2" inputmode="numeric">
+          <input type="number" id="gPax" min="1" max="20" value="2" inputmode="numeric">
         </div>
       </div>
       <div class="field">
@@ -2320,9 +2322,14 @@ function renderGuide() {
         <label for="gNotes">${t("g_notes")}</label>
         <textarea id="gNotes" rows="3" maxlength="400" placeholder="${t("g_notesPh")}"></textarea>
       </div>
-      <button type="button" class="btn block" id="gSend"${disabled}>${icon("i-chat", "sm")}${t("g_send")}</button>
-      <p class="meta" style="margin:10px 2px 0">${GUIDE_WA ? t("g_sendNote") : t("g_soon")}</p>
-      <div id="gRef"></div>
+    </div>
+
+    <h2>${t("g_listTitle")}</h2>
+    ${OPERATORS.map(operatorCard).join("")}
+
+    <div class="card">
+      <h2 style="margin-top:0">${t("g_howTitle")}</h2>
+      <ol class="glist"><li>${t("g_how1")}</li><li>${t("g_how2")}</li><li>${t("g_how3")}</li></ol>
     </div>
 
     <div class="card">
@@ -2336,34 +2343,36 @@ function renderGuide() {
     </div>
 
     <div class="card">
-      <h2 style="margin-top:0">${t("g_howTitle")}</h2>
-      <ol class="glist"><li>${t("g_how1")}</li><li>${t("g_how2")}</li><li>${t("g_how3")}</li></ol>
-    </div>
-
-    <div class="card">
       <h2 style="margin-top:0">${t("g_checkTitle")}</h2>
-      <ul class="glist"><li>${t("g_check1")} <a href="${PARTNERS.licence_source}" target="_blank" rel="noopener">${t("g_licenceSrc")}</a></li><li>${t("g_check2")}</li><li>${t("g_check3")}</li></ul>
-      <div class="callout" style="background:var(--bg)">${tf("g_disclose", fee)}</div>
+      <ul class="glist"><li>${t("g_check1")}</li><li>${t("g_check2")}</li><li>${t("g_check3")} <a href="${PARTNERS.licence_source}" target="_blank" rel="noopener nofollow">${t("g_licenceSrc")}</a></li></ul>
     </div>
 
     <div class="card gpartner" id="partners">
-      <h2 lang="id">Untuk pemandu dan sopir wisata Batam</h2>
+      <h2 lang="id">Untuk sopir dan pemandu wisata Batam</h2>
       <ul class="glist" lang="id">
-        <li>Dapat tamu dari Singapura yang sudah tahu jadwal kapalnya.</li>
-        <li>Gratis daftar. Komisi ${fee}% hanya untuk trip yang jadi, dibayar setelah trip selesai.</li>
-        <li>Syarat: KTPP dari Disbudpar Batam untuk pemandu, SIM A dan STNK untuk sopir, dan bisa berbahasa Inggris.</li>
-        <li>Mau dipromosikan? Ada posisi Unggulan di aplikasi untuk mitra.</li>
+        <li>Gratis, tanpa komisi, tanpa daftar.</li>
+        <li>Cantumkan harga dan nomor WhatsApp di website Anda sendiri. Sistem kami mengecek setiap minggu dan menampilkan Anda secara otomatis.</li>
+        <li>Turis Singapura akan menghubungi Anda langsung, lengkap dengan tanggal, jumlah orang dan jadwal kapal.</li>
       </ul>
-      <a class="btn ghost block${GUIDE_WA ? "" : " off"}" id="gJoin" lang="id" ${GUIDE_WA ? `href="${waLink(PARTNER_SIGNUP_TEXT)}" target="_blank" rel="noopener"` : 'aria-disabled="true"'}>${icon("i-chat", "sm")}Daftar lewat WhatsApp</a>
-      <p class="en">${tf("g_partnerEn", fee)}</p>
+      <p class="en">${t("g_partnerEn")}</p>
     </div>`;
 
-  document.getElementById("gSend").onclick = () => {
-    if (!GUIDE_WA) return;
-    const ref = newRefCode();
-    document.getElementById("gRef").innerHTML = `<div class="callout" style="background:var(--ok-soft)">${tf("g_ref", ref)}</div>`;
-    window.open(waLink(guideRequestText(ref)), "_blank", "noopener");
-  };
+  body.querySelectorAll("[data-op]").forEach((button) => {
+    button.onclick = () => {
+      const op = OPERATORS.find((o) => o.id === button.dataset.op);
+      if (!op) return;
+      window.open(`https://wa.me/${op.whatsapp}?text=${encodeURIComponent(guideRequestText())}`, "_blank", "noopener");
+    };
+  });
+}
+
+function renderFerryBooking() {
+  const box = document.getElementById("ferryBook");
+  const booking = PARTNERS.ferry_booking && PARTNERS.ferry_booking.easybook;
+  if (!box || !booking) return;
+  const query = (PARTNERS.affiliates && PARTNERS.affiliates.easybook_query) || "";
+  box.innerHTML = `<a class="btn block" href="${booking + query}" target="_blank" rel="noopener nofollow sponsored" style="margin-top:4px">${icon("i-ferry", "sm")}${t("g_bookFerry")}</a>
+    ${query ? `<p class="meta" style="margin:8px 2px 0">${t("g_affiliate")}</p>` : ""}`;
 }
 
 /* ---------- day-of clock ---------- */
@@ -2580,6 +2589,7 @@ function renderAll() {
   renderPlaces();
   renderTalk();
   renderGuide();
+  renderFerryBooking();
   renderAbout();
 }
 

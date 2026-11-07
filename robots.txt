@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://juw12.github.io/batam-uncle-says/sitemap.xml
