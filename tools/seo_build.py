@@ -58,8 +58,27 @@ def source_link(url):
     return f'<a href="{esc(url)}" rel="nofollow noopener">{esc(url.split("/")[2].replace("www.", ""))}</a>'
 
 
-def prices_page(data, partners):
+def guide(root, path, lang):
+    """Link to another guide page in the same language."""
+    return f"{root}{'zh/' if lang == 'zh' else ''}{path}"
+
+
+def app(root, hash_part, lang, query=""):
+    """Link into the app, opened in the page's language."""
+    params = (["lang=zh"] if lang == "zh" else []) + ([query] if query else [])
+    return f"{root}{'?' + '&'.join(params) if params else ''}{hash_part}"
+
+
+def both(path):
+    """hreflang alternates for a page that exists in English and Chinese."""
+    return {"en": path, "zh": "zh/" + path}
+
+
+def prices_page(data, partners, lang="en"):
+    zh = lang == "zh"
+    root = "../../" if zh else "../"
     rate = data["rules"]["fx_mid_market_sgd_idr"]
+    about = "约 " if zh else "about "
     rows = []
     sources = set()
     for p in data["prices"]:
@@ -67,119 +86,235 @@ def prices_page(data, partners):
             continue
         if p["currency"] == "IDR":
             main = f"{idr(p['low'])} – {idr(p['high']).replace('Rp ', '')}"
-            other = f"about S${p['low'] / rate:,.0f} – {p['high'] / rate:,.0f}"
+            other = f"{about}S${p['low'] / rate:,.0f} – {p['high'] / rate:,.0f}"
         else:
             main = f"S${p['low']} – {p['high']}"
-            other = f"about {idr(p['low'] * rate)} – {idr(p['high'] * rate).replace('Rp ', '')}"
-        rows.append(f"<tr><td>{esc(p['en'])}<br><span class=\"meta\">{other}</span></td><td class=\"num\">{main}</td></tr>")
+            other = f"{about}{idr(p['low'] * rate)} – {idr(p['high'] * rate).replace('Rp ', '')}"
+        rows.append(f"<tr><td>{esc(localized(p, 'en', lang))}<br><span class=\"meta\">{other}</span></td><td class=\"num\">{main}</td></tr>")
         if p.get("source"):
             sources.add(p["source"])
     charter = partners["charter"]
-    rows.append(
-        f"<tr><td>Car with English-speaking driver, full day (MPV)<br><span class=\"meta\">see <a href=\"../driver-prices/\">driver prices</a></span></td>"
-        f"<td class=\"num\">S${charter['mpv_sgd'][0]} – {charter['mpv_sgd'][1]}</td></tr>"
-    )
-    body = f"""<h1>How much things cost in Batam (SGD and rupiah)</h1>
+    source_list = ' · '.join(source_link(s) for s in sorted(sources))
+    if not zh:
+        rows.append(
+            f"<tr><td>Car with English-speaking driver, full day (MPV)<br><span class=\"meta\">see <a href=\"../driver-prices/\">driver prices</a></span></td>"
+            f"<td class=\"num\">S${charter['mpv_sgd'][0]} – {charter['mpv_sgd'][1]}</td></tr>"
+        )
+        body = f"""<h1>How much things cost in Batam (SGD and rupiah)</h1>
 <p class="lede">Typical price ranges for the things Singapore day-trippers pay for most, so you can tell if a quote is fair. Converted at the mid-market rate of S$1 = {idr(rate)} ({fmt_date(data['rules']['fx_date'])}, {source_link(data['rules']['fx_source'])}).</p>
 <div class="card"><table><tr><th>Item</th><th class="num">Usual range</th></tr>{''.join(rows)}</table>
-<p class="meta">{esc(data['rules'].get('fx_terminal_penalty', ''))}. Ranges from published guides, not yet checked in person. Sources: {' · '.join(source_link(s) for s in sorted(sources))}</p></div>
+<p class="meta">{esc(data['rules'].get('fx_terminal_penalty', ''))}. Ranges from published guides, not yet checked in person. Sources: {source_list}</p></div>
 <div class="card"><h2>Check a quote before you pay</h2><p>Type the price a shop or driver quoted you and the app tells you if it is low, fair or high, in both currencies.</p>
 <a class="btn" href="../#price">Check a price</a><a class="btn ghost" href="../#money">Currency converter</a></div>"""
+        return page(
+            "Batam prices in SGD and rupiah: massage, seafood, Grab, hotels",
+            f"What things cost in Batam for Singapore visitors: massage, seafood dinner, Grab, meals, hotels and a driver for the day, in rupiah and SGD at S$1 = {idr(rate)}.",
+            "prices/",
+            body,
+            alternates=both("prices/"),
+        )
+    rows.append(
+        f"<tr><td>包车连英语司机,全天(MPV)<br><span class=\"meta\">见<a href=\"{guide(root, 'driver-prices/', lang)}\">司机价格</a></span></td>"
+        f"<td class=\"num\">S${charter['mpv_sgd'][0]} – {charter['mpv_sgd'][1]}</td></tr>"
+    )
+    body = f"""<h1>巴淡物价一览(新币和印尼盾)</h1>
+<p class="lede">新加坡一日游旅客最常花钱项目的常见价格区间,帮你判断报价是否合理。按市场中间价 S$1 = {idr(rate)} 换算({fmt_date(data['rules']['fx_date'], 'zh')},{source_link(data['rules']['fx_source'])})。</p>
+<div class="card"><table><tr><th>项目</th><th class="num">常见区间</th></tr>{''.join(rows)}</table>
+<p class="meta">{esc(data['rules'].get('fx_terminal_penalty_zh', ''))}。价格区间来自公开指南,尚未实地核实。来源:{source_list}</p></div>
+<div class="card"><h2>付钱前先核对报价</h2><p>输入店家或司机给你的报价,应用会用两种货币告诉你偏低、合理还是偏高。</p>
+<a class="btn" href="{app(root, '#price', lang)}">核对价格</a><a class="btn ghost" href="{app(root, '#money', lang)}">汇率换算</a></div>"""
     return page(
-        "Batam prices in SGD and rupiah: massage, seafood, Grab, hotels",
-        f"What things cost in Batam for Singapore visitors: massage, seafood dinner, Grab, meals, hotels and a driver for the day, in rupiah and SGD at S$1 = {idr(rate)}.",
-        "prices/",
+        "巴淡物价(新币和印尼盾):按摩、海鲜、Grab、酒店",
+        f"新加坡游客在巴淡的花费:按摩、海鲜晚餐、Grab、餐食、酒店和包车,印尼盾和新币对照,按 S$1 = {idr(rate)} 换算。",
+        "zh/prices/",
         body,
+        root=root,
+        crumbs=[("价格", SITE + "zh/prices/")],
+        lang="zh",
+        alternates=both("prices/"),
     )
 
 
-def entry_page(data):
-    items = "".join(f"<li>{esc(e['en'])} <span class=\"meta\">({source_link(e['source'])})</span></li>" for e in data["rules"]["entry"])
-    body = f"""<h1>Singapore to Batam entry rules: passport, arrival cards, duty-free</h1>
+def entry_page(data, lang="en"):
+    zh = lang == "zh"
+    root = "../../" if zh else "../"
+    if not zh:
+        items = "".join(f"<li>{esc(e['en'])} <span class=\"meta\">({source_link(e['source'])})</span></li>" for e in data["rules"]["entry"])
+        body = f"""<h1>Singapore to Batam entry rules: passport, arrival cards, duty-free</h1>
 <p class="lede">What Singapore residents need for a Batam day trip, in both directions. {esc(data['rules']['timezone_note'])}.</p>
 <div class="card"><ul class="list">{items}</ul></div>
 <div class="card"><h2>Tick it off before you leave</h2><p>The app has a checklist for both terminals that remembers what you have done.</p>
 <a class="btn" href="../#check">Open the checklist</a><a class="btn ghost" href="../ferry/">Ferry operators and fares</a></div>"""
+        return page(
+            "Singapore to Batam entry rules: passport, arrival card, duty-free (day trip)",
+            "Batam day trip from Singapore: visa-free stay, passport validity, All Indonesia arrival card, SG Arrival Card on the way back, and duty-free limits for short trips.",
+            "entry-rules/",
+            body,
+            alternates=both("entry-rules/"),
+        )
+    items = "".join(f"<li>{esc(localized(e, 'en', lang))}<span class=\"meta\">({source_link(e['source'])})</span></li>" for e in data["rules"]["entry"])
+    body = f"""<h1>新加坡往返巴淡入境规定:护照、入境卡、免税额</h1>
+<p class="lede">新加坡居民去巴淡一日游,去程和回程各需要准备什么。{esc(data['rules']['timezone_note_zh'])}。</p>
+<div class="card"><ul class="list">{items}</ul></div>
+<div class="card"><h2>出发前逐项打勾</h2><p>应用里有两边码头的出行清单,会记住你已完成的项目。</p>
+<a class="btn" href="{app(root, '#check', lang)}">打开出行清单</a><a class="btn ghost" href="{guide(root, 'ferry/', lang)}">渡轮公司和票价</a></div>"""
     return page(
-        "Singapore to Batam entry rules: passport, arrival card, duty-free (day trip)",
-        "Batam day trip from Singapore: visa-free stay, passport validity, All Indonesia arrival card, SG Arrival Card on the way back, and duty-free limits for short trips.",
-        "entry-rules/",
+        "新加坡往返巴淡入境规定:护照、入境卡、免税额(一日游)",
+        "新加坡去巴淡一日游:免签停留、护照有效期、All Indonesia 入境卡、回程 SG Arrival Card,以及短途旅行的免税额。",
+        "zh/entry-rules/",
         body,
+        root=root,
+        crumbs=[("入境规定", SITE + "zh/entry-rules/")],
+        lang="zh",
+        alternates=both("entry-rules/"),
     )
 
 
-def money_page(data):
+def money_page(data, lang="en"):
+    zh = lang == "zh"
+    root = "../../" if zh else "../"
     rate = data["rules"]["fx_mid_market_sgd_idr"]
-    tips = "".join(f"<li>{esc(t['en'])} <span class=\"meta\">({source_link(t['source'])})</span></li>" for t in data["rules"]["money_tips"])
     examples = "".join(f"<tr><td>S${s}</td><td class=\"num\">{idr(s * rate)}</td></tr>" for s in (10, 20, 50, 100, 200))
-    body = f"""<h1>Money in Batam: exchange rate, cash and paying by QR</h1>
+    if not zh:
+        tips = "".join(f"<li>{esc(t['en'])} <span class=\"meta\">({source_link(t['source'])})</span></li>" for t in data["rules"]["money_tips"])
+        body = f"""<h1>Money in Batam: exchange rate, cash and paying by QR</h1>
 <p class="lede">Mid-market rate on {fmt_date(data['rules']['fx_date'])}: S$1 = {idr(rate)} ({source_link(data['rules']['fx_source'])}). {esc(data['rules'].get('fx_terminal_penalty', ''))}.</p>
 <div class="card"><table><tr><th>Singapore dollars</th><th class="num">Rupiah, mid-market</th></tr>{examples}</table></div>
 <div class="card"><h2>Tips</h2><ul class="list">{tips}</ul></div>
 <div class="card"><h2>Convert any amount</h2><p>The converter in the app works offline and lets you set the rate the money changer gives you.</p>
 <a class="btn" href="../#money">Open the converter</a><a class="btn ghost" href="../prices/">Typical prices</a></div>"""
+        return page(
+            f"Batam exchange rate and money tips: S$1 = {idr(rate)}",
+            "Money for a Batam day trip: today's SGD to rupiah rate, how much worse terminal counters are, licensed money changers, cash vs QRIS, Grab and Gojek.",
+            "money/",
+            body,
+            alternates=both("money/"),
+        )
+    tips = "".join(f"<li>{esc(localized(t, 'en', lang))}<span class=\"meta\">({source_link(t['source'])})</span></li>" for t in data["rules"]["money_tips"])
+    body = f"""<h1>巴淡换钱:汇率、现金和扫码付款</h1>
+<p class="lede">{fmt_date(data['rules']['fx_date'], 'zh')}市场中间价:S$1 = {idr(rate)}({source_link(data['rules']['fx_source'])})。{esc(data['rules'].get('fx_terminal_penalty_zh', ''))}。</p>
+<div class="card"><table><tr><th>新币</th><th class="num">印尼盾(市场中间价)</th></tr>{examples}</table></div>
+<div class="card"><h2>提示</h2><ul class="list">{tips}</ul></div>
+<div class="card"><h2>换算任意金额</h2><p>应用里的换算器可离线使用,还能填入换汇点实际给你的汇率。</p>
+<a class="btn" href="{app(root, '#money', lang)}">打开换算器</a><a class="btn ghost" href="{guide(root, 'prices/', lang)}">常见价格</a></div>"""
     return page(
-        f"Batam exchange rate and money tips: S$1 = {idr(rate)}",
-        "Money for a Batam day trip: today's SGD to rupiah rate, how much worse terminal counters are, licensed money changers, cash vs QRIS, Grab and Gojek.",
-        "money/",
+        f"巴淡汇率和换钱提示:S$1 = {idr(rate)}",
+        "巴淡一日游换钱:今日新币兑印尼盾汇率、码头柜台差多少、持牌换汇点、现金与 QRIS 扫码付款。",
+        "zh/money/",
         body,
+        root=root,
+        crumbs=[("换钱", SITE + "zh/money/")],
+        lang="zh",
+        alternates=both("money/"),
     )
 
 
-def place_card(place, photos, place_photos, root):
+def place_card(place, photos, place_photos, root, lang="en"):
+    zh = lang == "zh"
     key = place_photos.get(place["id"])
     img = ""
     if key and key in photos:
         p = photos[key]
-        img = (f'<img src="{root}{esc(p["src"])}" width="{p["w"]}" height="{p["h"]}" alt="{esc(p["en"])}" loading="lazy">'
-               f'<p class="meta">Photo: {esc(p["author"])}, <a href="{esc(p["page"])}" rel="nofollow noopener">{esc(p["license"])}</a></p>')
-    source = f" · Source: {source_link(place['source'])}" if place.get("source") else ""
-    return f"""<div class="card">{img}
+        alt = p.get("zh") or p["en"] if zh else p["en"]
+        credit = "图片" if zh else "Photo"
+        img = (f'<img src="{root}{esc(p["src"])}" width="{p["w"]}" height="{p["h"]}" alt="{esc(alt)}" loading="lazy">'
+               f'<p class="meta">{credit}: {esc(p["author"])}, <a href="{esc(p["page"])}" rel="nofollow noopener">{esc(p["license"])}</a></p>')
+    if not zh:
+        source = f" · Source: {source_link(place['source'])}" if place.get("source") else ""
+        return f"""<div class="card">{img}
   <h2>{esc(place['name'])}</h2>
   <p>{esc(place['note_en'])}</p>
   <p class="meta">{CATEGORY.get(place['category'], place['category'])} · {esc(place['area'])}{source} · Not yet visited in person; check opening hours.</p>
   <a class="btn ghost" href="{root}?place={esc(place['id'])}#places">Open in the app</a>
 </div>"""
+    source = f" · 来源:{source_link(place['source'])}" if place.get("source") else ""
+    note = f"<p>{esc(place['note_zh'])}</p>" if place.get("note_zh") else f'<p lang="en">{esc(place["note_en"])}</p>'
+    return f"""<div class="card">{img}
+  <h2>{esc(place['name'])}</h2>
+  {note}
+  <p class="meta">{category(place['category'], 'zh')} · {esc(place['area'])}{source} · 尚未实地走访,请先核实营业时间。</p>
+  <a class="btn ghost" href="{app(root, '#places', lang, 'place=' + esc(place['id']))}">在应用中打开</a>
+</div>"""
 
 
-def area_pages(data, photos, place_photos):
+def area_pages(data, photos, place_photos, lang="en"):
+    zh = lang == "zh"
     areas = {}
     for place in data["places"]:
         areas.setdefault(place["area"], []).append(place)
     out = {}
     for area, places in sorted(areas.items()):
-        cats = sorted({CATEGORY.get(p["category"], p["category"]).lower() for p in places})
-        body = f"""<h1>{esc(area)}, Batam: {', '.join(cats)}</h1>
+        en_path = f"area/{slug(area)}/"
+        if not zh:
+            cats = sorted({CATEGORY.get(p["category"], p["category"]).lower() for p in places})
+            body = f"""<h1>{esc(area)}, Batam: {', '.join(cats)}</h1>
 <p class="lede">{len(places)} places in {esc(area)} that Singapore day-trippers look for, from published guides. Plan them around your ferry times in the app.</p>
 {''.join(place_card(p, photos, place_photos, '../../') for p in places)}
 <div class="card"><h2>Getting there</h2><p>Book a car with an English-speaking driver, or plan a Grab route around your ferry.</p>
 <a class="btn" href="../../driver-prices/">Driver prices</a><a class="btn ghost" href="../../#plan">Plan my day</a></div>"""
-        path = f"area/{slug(area)}/"
-        out[path] = page(
-            f"{area}, Batam: {', '.join(cats)} for a day trip from Singapore",
-            f"{len(places)} places in {area}, Batam for Singapore visitors: " + ", ".join(p["name"] for p in places[:5]) + ".",
-            path,
+            out[en_path] = page(
+                f"{area}, Batam: {', '.join(cats)} for a day trip from Singapore",
+                f"{len(places)} places in {area}, Batam for Singapore visitors: " + ", ".join(p["name"] for p in places[:5]) + ".",
+                en_path,
+                body,
+                root="../../",
+                crumbs=[("Places", SITE + "places/"), (area, SITE + en_path)],
+                alternates=both(en_path),
+            )
+            continue
+        root = "../../../"
+        cats = sorted({category(p["category"], "zh") for p in places})
+        body = f"""<h1>巴淡 {esc(area)}:{'、'.join(cats)}</h1>
+<p class="lede">{esc(area)} 有 {len(places)} 个新加坡一日游旅客常找的去处,资料来自公开指南。可以在应用里按船班时间安排。</p>
+{''.join(place_card(p, photos, place_photos, root, lang) for p in places)}
+<div class="card"><h2>怎么去</h2><p>预订英语司机包车,或按船班时间规划 Grab 路线。</p>
+<a class="btn" href="{guide(root, 'driver-prices/', lang)}">司机价格</a><a class="btn ghost" href="{app(root, '#plan', lang)}">规划我的一天</a></div>"""
+        out["zh/" + en_path] = page(
+            f"巴淡 {area}:{'、'.join(cats)}(新加坡一日游)",
+            f"巴淡 {area} 的 {len(places)} 个去处:" + "、".join(p["name"] for p in places[:5]) + "。",
+            "zh/" + en_path,
             body,
-            root="../../",
-            crumbs=[("Places", SITE + "places/"), (area, SITE + path)],
+            root=root,
+            crumbs=[("去哪里", SITE + "zh/places/"), (area, SITE + "zh/" + en_path)],
+            lang="zh",
+            alternates=both(en_path),
         )
     return areas, out
 
 
-def places_index(areas):
+def places_index(areas, lang="en"):
+    zh = lang == "zh"
     blocks = []
     for area, places in sorted(areas.items()):
-        items = "".join(f"<li>{esc(p['name'])} <span class=\"meta\">({CATEGORY.get(p['category'], p['category'])})</span></li>" for p in places)
+        if zh:
+            items = "".join(f"<li>{esc(p['name'])}<span class=\"meta\">({category(p['category'], 'zh')})</span></li>" for p in places)
+        else:
+            items = "".join(f"<li>{esc(p['name'])} <span class=\"meta\">({CATEGORY.get(p['category'], p['category'])})</span></li>" for p in places)
         blocks.append(f'<div class="card"><h2><a href="../area/{slug(area)}/">{esc(area)}</a></h2><ul class="list">{items}</ul></div>')
     total = sum(len(v) for v in areas.values())
-    body = f"""<h1>Things to do in Batam, by area</h1>
+    if not zh:
+        body = f"""<h1>Things to do in Batam, by area</h1>
 <p class="lede">{total} restaurants, spas, malls, sights and hotels across {len(areas)} areas of Batam, from published guides.</p>
 {''.join(blocks)}"""
+        return page(
+            "Things to do in Batam by area: food, spas, malls, sights, hotels",
+            f"{total} places in Batam for Singapore day-trippers, grouped by area: Nagoya, Harbour Bay, Batam Centre, Nongsa, Barelang and more.",
+            "places/",
+            body,
+            alternates=both("places/"),
+        )
+    body = f"""<h1>巴淡去哪里(按地区)</h1>
+<p class="lede">巴淡 {len(areas)} 个地区共 {total} 家餐厅、Spa、商场、景点和酒店,资料来自公开指南。</p>
+{''.join(blocks)}"""
     return page(
-        "Things to do in Batam by area: food, spas, malls, sights, hotels",
-        f"{total} places in Batam for Singapore day-trippers, grouped by area: Nagoya, Harbour Bay, Batam Centre, Nongsa, Barelang and more.",
-        "places/",
+        "巴淡去哪里(按地区):美食、Spa、商场、景点、酒店",
+        f"巴淡 {total} 个新加坡一日游旅客常去的地方,按地区分:Nagoya、Harbour Bay、Batam Centre、Nongsa、Barelang 等。",
+        "zh/places/",
         body,
+        root="../../",
+        crumbs=[("去哪里", SITE + "zh/places/")],
+        lang="zh",
+        alternates=both("places/"),
     )
 
 
@@ -437,7 +572,7 @@ def terminal_page(data, partners, terminal, ferries, lang, alternates):
         nearby_html = (
             f'<div class="card"><h2>码头附近:{esc(area)}</h2><ul class="list">{items}</ul>'
             f'<p class="meta">资料来自公开指南,未实地走访。</p>'
-            f'<a class="btn" href="{root}area/{slug(area)}/">查看 {esc(area)} 全部地点(英文页)</a></div>'
+            f'<a class="btn" href="{guide(root, "area/" + slug(area) + "/", "zh")}">查看 {esc(area)} 全部地点</a></div>'
         )
     returns_card = ""
     if f["returns"]:
@@ -460,13 +595,13 @@ def terminal_page(data, partners, terminal, ferries, lang, alternates):
 <a class="btn" href="{esc(booking_url(partners))}" rel="nofollow noopener sponsored">比较并预订船票</a></div>
 <div class="card"><h2>往 {esc(terminal)} 的船公司</h2><table><tr><th>船公司</th><th class="num">来回含税费</th></tr>{f['operator_rows']}</table>
 <p class="meta">请在船公司官网(上方链接)核实班次。来源:{' · '.join(source_link(s) for s in f['sources'])}</p>
-<a class="btn ghost" href="{root}ferry/">比较所有码头(英文页)</a></div>
+<a class="btn ghost" href="{guide(root, 'ferry/', 'zh')}">比较所有码头</a></div>
 {returns_card}
 <div class="card"><h2>{esc(terminal)} 实用信息</h2><ul class="list">{f['extras']}</ul>
-<a class="btn" href="{root}money/">汇率和换钱提示(英文页)</a></div>
+<a class="btn" href="{guide(root, 'money/', 'zh')}">汇率和换钱提示</a></div>
 {nearby_html}
 <div class="card"><h2>从 {esc(terminal)} 出发怎么走</h2><p>直接用 WhatsApp 联系司机,告诉他你的船班时间;或按回程船班规划一天。</p>
-<a class="btn" href="{root}driver-prices/">WhatsApp 联系司机</a><a class="btn ghost" href="{root}?lang=zh#plan">规划我的一天</a></div>"""
+<a class="btn" href="{guide(root, 'driver-prices/', 'zh')}">WhatsApp 联系司机</a><a class="btn ghost" href="{root}?lang=zh#plan">规划我的一天</a></div>"""
     return page(
         f"巴淡 {terminal} 码头:新加坡渡轮班次、票价、回程末班",
         f"新加坡往巴淡 {terminal} 码头的渡轮:{f['operator_names'].replace(', ', '、')}。船程 {min(minutes)}-{max(minutes)} 分钟,首班 {f['firsts'][0]},末班 {f['lasts'][-1]};回程末班、票价和附近去处。",
@@ -552,7 +687,7 @@ def day_trip_page(data, partners, areas, lang="en", alternates=None):
     terminal_areas = {TERMINAL_AREA.get(t, t): t for t in terminals(data)}
     here = (lambda t: f" 码头在此区") if zh else (lambda t: " ferry terminal here")
     area_items = "".join(
-        f"<li><a href=\"{root}area/{slug(a)}/\">{esc(a)}</a>"
+        f"<li><a href=\"{guide(root, 'area/' + slug(a) + '/', lang)}\">{esc(a)}</a>"
         + (f" <span class=\"meta\">· {esc(terminal_areas[a])}{here(a)}</span>" if a in terminal_areas else "")
         + f"<br><span class=\"meta\">{list_sep.join(sorted({category_word(p['category'], lang) for p in ps}))}</span></li>"
         for a, ps in sorted(areas.items())
@@ -630,13 +765,13 @@ def day_trip_page(data, partners, areas, lang="en", alternates=None):
 <a class="btn" href="{esc(booking_url(partners))}" rel="nofollow noopener sponsored">比较并预订船票</a><a class="btn ghost" href="{app}#plan">规划我的一天</a></div>
 <div class="card" id="before"><h2>1. 出发前</h2><ul class="list">{entry}</ul><a class="btn" href="{app}#check">打开出行清单</a></div>
 <div class="card"><h2>2. 选渡轮和码头</h2><table><tr><th>巴淡码头</th><th>船公司</th></tr>{terminal_rows}</table>
-<a class="btn" href="{root}ferry/">比较票价和班次(英文页)</a></div>
+<a class="btn" href="{guide(root, 'ferry/', lang)}">比较票价和班次</a></div>
 <div class="card"><h2>3. 一天花多少钱</h2><p>示例一日每人花费,按 S$1 = {idr(rate)} 换算(市场中间价,{fmt_date(rules['fx_date'], 'zh')},{source_link(rules['fx_source'])})。</p>
 <table><tr><th>项目</th><th class="num">新币</th></tr>{budget_rows}<tr><td><strong>合计</strong></td><td class="num"><strong>{total_text}</strong></td></tr></table>
-<p class="meta">价格区间来自公开指南,未实地核实。不坐 Grab 的话,包车连司机一天每车 S${charter[0]} – {charter[1]}(司机自己公布的价格,<a href=\"{root}driver-prices/\">每周核查</a>)。</p>
+<p class="meta">价格区间来自公开指南,未实地核实。不坐 Grab 的话,包车连司机一天每车 S${charter[0]} – {charter[1]}(司机自己公布的价格,<a href=\"{guide(root, 'driver-prices/', lang)}\">每周核查</a>)。</p>
 <a class="btn" href="{app}#price">在应用里核对报价</a></div>
 <div class="card"><h2>4. 换钱</h2><ul class="list">{tips}</ul><a class="btn" href="{app}#money">打开汇率换算</a></div>
-<div class="card"><h2>5. 去哪里</h2><ul class="list">{area_items}</ul><a class="btn" href="{root}places/">按地区看地点(英文页)</a><a class="btn ghost" href="{root}driver-prices/">WhatsApp 包车司机</a></div>
+<div class="card"><h2>5. 去哪里</h2><ul class="list">{area_items}</ul><a class="btn" href="{guide(root, 'places/', lang)}">按地区看地点</a><a class="btn ghost" href="{guide(root, 'driver-prices/', lang)}">WhatsApp 包车司机</a></div>
 <div class="card"><h2>6. 回程</h2>
 <table><tr><th>出发码头</th><th>每日回程末班(巴淡时间)</th></tr>{''.join(return_rows)}</table>
 <p class="meta">{esc(rf.get('note_zh', ''))}两项来源:{source_link(rf['source'])},截至 {fmt_date(rf['as_of'], 'zh')};出发当天请再核实。</p>
@@ -667,16 +802,21 @@ def main():
         "prices/": prices_page(data, partners),
         "entry-rules/": entry_page(data),
         "money/": money_page(data),
+        "zh/prices/": prices_page(data, partners, "zh"),
+        "zh/entry-rules/": entry_page(data, "zh"),
+        "zh/money/": money_page(data, "zh"),
     }
     areas, area_html = area_pages(data, photos, place_photos)
     pages["places/"] = places_index(areas)
+    pages["zh/places/"] = places_index(areas, "zh")
     pages.update(area_html)
+    pages.update(area_pages(data, photos, place_photos, "zh")[1])
     pages.update(day_trip_pages(data, partners, areas))
     pages.update(terminal_pages(data, photos, place_photos, partners))
     for path, content in pages.items():
         write_if_changed(ROOT / path / "index.html", content)
 
-    all_paths = ["", "driver-prices/", "ferry/"] + list(pages)
+    all_paths = ["", "driver-prices/", "ferry/", "zh/driver-prices/", "zh/ferry/"] + list(pages)
     today = partners.get("updated", datetime.date.today().isoformat())
     sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(
         f"  <url><loc>{SITE}{p}</loc><lastmod>{today}</lastmod></url>\n" for p in all_paths
@@ -703,6 +843,12 @@ def main():
         "",
         "## 中文 (Chinese)",
         f"- [新加坡去巴淡一日游]({SITE}zh/day-trip/): 渡轮、示例一日花费、入境规定、去哪里",
+        f"- [巴淡包车司机价格]({SITE}zh/driver-prices/)",
+        f"- [新加坡往巴淡渡轮]({SITE}zh/ferry/)",
+        f"- [巴淡物价]({SITE}zh/prices/)",
+        f"- [入境规定]({SITE}zh/entry-rules/)",
+        f"- [巴淡换钱]({SITE}zh/money/)",
+        f"- [巴淡去哪里]({SITE}zh/places/)",
     ] + [
         f"- [巴淡 {t} 码头]({SITE}zh/terminal/{slug(t)}/)" for t in terminals(data)
     ]

@@ -28,6 +28,12 @@
 
 ## 中文 (Chinese)
 - [新加坡去巴淡一日游](https://juw12.github.io/batam-uncle-says/zh/day-trip/): 渡轮、示例一日花费、入境规定、去哪里
+- [巴淡包车司机价格](https://juw12.github.io/batam-uncle-says/zh/driver-prices/)
+- [新加坡往巴淡渡轮](https://juw12.github.io/batam-uncle-says/zh/ferry/)
+- [巴淡物价](https://juw12.github.io/batam-uncle-says/zh/prices/)
+- [入境规定](https://juw12.github.io/batam-uncle-says/zh/entry-rules/)
+- [巴淡换钱](https://juw12.github.io/batam-uncle-says/zh/money/)
+- [巴淡去哪里](https://juw12.github.io/batam-uncle-says/zh/places/)
 - [巴淡 Batam Centre 码头](https://juw12.github.io/batam-uncle-says/zh/terminal/batam-centre/)
 - [巴淡 Nongsa Pura 码头](https://juw12.github.io/batam-uncle-says/zh/terminal/nongsa-pura/)
 - [巴淡 Sekupang 码头](https://juw12.github.io/batam-uncle-says/zh/terminal/sekupang/)

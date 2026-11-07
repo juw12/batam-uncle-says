@@ -35,12 +35,12 @@ NAV = [
 ]
 NAV_ZH = [
     ("zh/day-trip/", "一日游"),
-    ("driver-prices/", "司机"),
-    ("ferry/", "渡轮"),
-    ("prices/", "价格"),
-    ("entry-rules/", "入境规定"),
-    ("money/", "换钱"),
-    ("places/", "去哪里"),
+    ("zh/driver-prices/", "司机"),
+    ("zh/ferry/", "渡轮"),
+    ("zh/prices/", "价格"),
+    ("zh/entry-rules/", "入境规定"),
+    ("zh/money/", "换钱"),
+    ("zh/places/", "去哪里"),
 ]
 UI = {
     "en": {
