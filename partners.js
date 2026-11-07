@@ -97,6 +97,71 @@ window.BUS_PARTNERS = {
    "checked": "2026-11-07",
    "fails": 0,
    "unreachable": 0
+  },
+  {
+   "id": "batam-private-driver",
+   "name": "Batam Private Driver",
+   "website": "https://www.batam-privatedriver.com/",
+   "whatsapp": "62811777381",
+   "kind": "car",
+   "languages": [],
+   "prices": [],
+   "price_note": "See their website for prices",
+   "status": "active",
+   "checked": "2026-11-07",
+   "fails": 0
+  },
+  {
+   "id": "go-batam",
+   "name": "Go Batam",
+   "website": "https://go-batam.com/",
+   "whatsapp": "628127524945",
+   "kind": "car",
+   "languages": [],
+   "prices": [],
+   "price_note": "See their website for prices",
+   "status": "active",
+   "checked": "2026-11-07",
+   "fails": 0
+  },
+  {
+   "id": "batam-transport-service",
+   "name": "Batam Transport Service",
+   "website": "https://www.batamdriver-batamtransport.com/",
+   "whatsapp": "62811777197",
+   "kind": "car",
+   "languages": [],
+   "prices": [],
+   "price_note": "See their website for prices",
+   "status": "active",
+   "checked": "2026-11-07",
+   "fails": 0
+  },
+  {
+   "id": "iqbal-transport-batam",
+   "name": "Iqbal Transport Batam",
+   "website": "https://iqbaltransportbatam.com/",
+   "whatsapp": "6281372015178",
+   "kind": "car",
+   "languages": [],
+   "prices": [],
+   "price_note": "See their website for prices",
+   "status": "active",
+   "checked": "2026-11-07",
+   "fails": 0
+  },
+  {
+   "id": "batam-trip-car",
+   "name": "Batam Trip Car",
+   "website": "https://batamtripcar.com/",
+   "whatsapp": "6281277847278",
+   "kind": "car",
+   "languages": [],
+   "prices": [],
+   "price_note": "See their website for prices",
+   "status": "active",
+   "checked": "2026-11-07",
+   "fails": 0
   }
  ],
  "candidates": [
@@ -113,32 +178,12 @@ window.BUS_PARTNERS = {
    "website": "https://www.indradriverbatam.com/"
   },
   {
-   "name": "Batam Private Driver",
-   "website": "https://www.batam-privatedriver.com/"
-  },
-  {
    "name": "Andrew Batam Transportation",
    "website": "https://transportationbata.wixsite.com/batamtransportation"
   },
   {
-   "name": "Go Batam",
-   "website": "https://go-batam.com/"
-  },
-  {
-   "name": "Batam Transport Service",
-   "website": "https://www.batamdriver-batamtransport.com/"
-  },
-  {
-   "name": "Iqbal Transport Batam",
-   "website": "https://iqbaltransportbatam.com/"
-  },
-  {
    "name": "Rizal Batam Driver",
    "website": "https://rizalbatamdriver.com/"
-  },
-  {
-   "name": "Batam Trip Car",
-   "website": "https://batamtripcar.com/"
   }
  ],
  "money": {
