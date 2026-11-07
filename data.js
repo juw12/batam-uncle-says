@@ -1,4 +1,4 @@
-// Generated from content/database.json. Edit the JSON, then regenerate.
+// Source of truth for all app and page data. Edit this file directly; the weekly bot (tools/timetable_refresh.py) updates routes and return ferries here.
 window.BUS_DATA = {
  "version": "0.1-seed",
  "generated": "2026-11-07",
