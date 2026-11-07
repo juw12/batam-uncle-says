@@ -114,7 +114,8 @@ window.BUS_PARTNERS = {
    "price_note": "See their website for prices",
    "status": "active",
    "checked": "2026-11-07",
-   "fails": 0
+   "fails": 0,
+   "unreachable": 0
   },
   {
    "id": "go-batam",
@@ -127,7 +128,8 @@ window.BUS_PARTNERS = {
    "price_note": "See their website for prices",
    "status": "active",
    "checked": "2026-11-07",
-   "fails": 0
+   "fails": 0,
+   "unreachable": 0
   },
   {
    "id": "batam-transport-service",
@@ -140,7 +142,8 @@ window.BUS_PARTNERS = {
    "price_note": "See their website for prices",
    "status": "active",
    "checked": "2026-11-07",
-   "fails": 0
+   "fails": 0,
+   "unreachable": 0
   },
   {
    "id": "iqbal-transport-batam",
@@ -153,7 +156,8 @@ window.BUS_PARTNERS = {
    "price_note": "See their website for prices",
    "status": "active",
    "checked": "2026-11-07",
-   "fails": 0
+   "fails": 0,
+   "unreachable": 0
   },
   {
    "id": "batam-trip-car",
@@ -166,7 +170,8 @@ window.BUS_PARTNERS = {
    "price_note": "See their website for prices",
    "status": "active",
    "checked": "2026-11-07",
-   "fails": 0
+   "fails": 0,
+   "unreachable": 0
   }
  ],
  "candidates": [

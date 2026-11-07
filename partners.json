@@ -113,7 +113,8 @@
       "price_note": "See their website for prices",
       "status": "active",
       "checked": "2026-11-07",
-      "fails": 0
+      "fails": 0,
+      "unreachable": 0
     },
     {
       "id": "go-batam",
@@ -126,7 +127,8 @@
       "price_note": "See their website for prices",
       "status": "active",
       "checked": "2026-11-07",
-      "fails": 0
+      "fails": 0,
+      "unreachable": 0
     },
     {
       "id": "batam-transport-service",
@@ -139,7 +141,8 @@
       "price_note": "See their website for prices",
       "status": "active",
       "checked": "2026-11-07",
-      "fails": 0
+      "fails": 0,
+      "unreachable": 0
     },
     {
       "id": "iqbal-transport-batam",
@@ -152,7 +155,8 @@
       "price_note": "See their website for prices",
       "status": "active",
       "checked": "2026-11-07",
-      "fails": 0
+      "fails": 0,
+      "unreachable": 0
     },
     {
       "id": "batam-trip-car",
@@ -165,7 +169,8 @@
       "price_note": "See their website for prices",
       "status": "active",
       "checked": "2026-11-07",
-      "fails": 0
+      "fails": 0,
+      "unreachable": 0
     }
   ],
   "candidates": [
