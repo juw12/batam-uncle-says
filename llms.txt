@@ -11,6 +11,9 @@
 - [Entry rules](https://juw12.github.io/batam-uncle-says/entry-rules/): passport, arrival cards, duty-free
 - [Money](https://juw12.github.io/batam-uncle-says/money/): exchange rate, money changers, QRIS
 - [Places by area](https://juw12.github.io/batam-uncle-says/places/)
+- [Hotels by area](https://juw12.github.io/batam-uncle-says/hotels/): hotels grouped by nearest ferry terminal, price search on Agoda, Booking.com, Trip.com
+- [Oleh-oleh](https://juw12.github.io/batam-uncle-says/oleh-oleh/): what to buy, where, and Singapore customs and food rules
+- [For businesses](https://juw12.github.io/batam-uncle-says/partners/): partner programme for Batam hotels, restaurants, spas and shops
 - [Barelang](https://juw12.github.io/batam-uncle-says/area/barelang/)
 - [Batam Centre](https://juw12.github.io/batam-uncle-says/area/batam-centre/)
 - [Bengkong](https://juw12.github.io/batam-uncle-says/area/bengkong/)
@@ -34,6 +37,8 @@
 - [入境规定](https://juw12.github.io/batam-uncle-says/zh/entry-rules/)
 - [巴淡换钱](https://juw12.github.io/batam-uncle-says/zh/money/)
 - [巴淡去哪里](https://juw12.github.io/batam-uncle-says/zh/places/)
+- [巴淡酒店](https://juw12.github.io/batam-uncle-says/zh/hotels/)
+- [巴淡伴手礼](https://juw12.github.io/batam-uncle-says/zh/oleh-oleh/)
 - [巴淡 Batam Centre 码头](https://juw12.github.io/batam-uncle-says/zh/terminal/batam-centre/)
 - [巴淡 Nongsa Pura 码头](https://juw12.github.io/batam-uncle-says/zh/terminal/nongsa-pura/)
 - [巴淡 Sekupang 码头](https://juw12.github.io/batam-uncle-says/zh/terminal/sekupang/)

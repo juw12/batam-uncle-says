@@ -3,7 +3,12 @@
   "licence_source": "https://mediacenter.batam.go.id/2019/04/30/hpi-sambut-baik-perwako-pramuwisata/",
   "affiliates": {
     "easybook_query": "",
-    "note": "Paste the tracking query string from the Easybook affiliate dashboard, e.g. ?aff=XXXX. Empty = plain links, no commission."
+    "note": "Paste the tracking query string from the Easybook affiliate dashboard, e.g. ?aff=XXXX. Empty = plain links, no commission.",
+    "agoda_cid": "",
+    "booking_aid": "",
+    "trip_allianceid": "",
+    "trip_sid": "",
+    "hotel_note": "Hotel search buttons always work. Paste your IDs after joining: Agoda Partners (cid), Booking.com Affiliate Partner Programme (aid), Trip.com Affiliate (Allianceid + SID). Empty = plain links, no commission."
   },
   "charter": {
     "checked": "2026-11-07",
@@ -216,5 +221,12 @@
         "url": ""
       }
     ]
-  }
+  },
+  "partner_program": {
+    "contact_email": "juwpegatron@gmail.com",
+    "contact_whatsapp": "",
+    "note": "Shown on /partners/ so businesses can reach you. Leave contact_whatsapp empty to keep your number private."
+  },
+  "venues": [],
+  "venues_note": "Businesses that agreed to a referral deal. Each entry: {\"place_id\": id from data.js, \"whatsapp\": \"62...\", \"code\": \"BUS\", \"offer_en\": \"10% off food\", \"offer_zh\": \"...\", \"since\": \"YYYY-MM-DD\"}. The app then shows a Partner badge, the offer and a WhatsApp button whose first line names Batam Uncle Says and the code. Listings and prices never depend on this list."
 }

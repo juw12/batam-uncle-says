@@ -8,12 +8,13 @@ import json
 import re
 import sys
 from pathlib import Path
+from urllib.parse import quote_plus
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from site_template import SITE, esc, page  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
-CATEGORY = {"eat": "Food", "spa": "Massage and spa", "shop": "Shopping", "play": "Things to do", "stay": "Hotels and resorts"}
+CATEGORY = {"eat": "Food", "spa": "Massage and spa", "shop": "Shopping", "play": "Things to do", "stay": "Hotels and resorts", "oleh": "Oleh-oleh (food gifts)"}
 
 
 def load_js_object(path, name):
@@ -322,7 +323,7 @@ TERMINAL_AREA = {"Nongsa Pura": "Nongsa", "Gold Coast Bengkong": "Bengkong"}
 
 
 DAYS_ZH = {"weekends and holidays": "周末及公休日", "Saturday and Sunday only": "仅周六、周日", "weekdays": "平日"}
-CATEGORY_ZH = {"eat": "美食", "spa": "按摩与 Spa", "shop": "购物", "play": "景点与活动", "stay": "酒店与度假村"}
+CATEGORY_ZH = {"eat": "美食", "spa": "按摩与 Spa", "shop": "购物", "play": "景点与活动", "stay": "酒店与度假村", "oleh": "伴手礼"}
 
 
 def category(cat, lang="en"):
@@ -792,6 +793,166 @@ def day_trip_page(data, partners, areas, lang="en", alternates=None):
     )
 
 
+def hotel_search_urls(hotel, partners, data):
+    """Undated search links for one hotel; affiliate IDs from partners.json are appended when set."""
+    aff = partners.get("affiliates", {})
+    city = data.get("hotels", {}).get("agoda_city", 19392)
+    agoda = f"https://www.agoda.com/search?city={city}"
+    if hotel.get("agoda_id"):
+        agoda += f"&hotel={hotel['agoda_id']}&selectedproperty={hotel['agoda_id']}"
+    if aff.get("agoda_cid"):
+        agoda += f"&cid={quote_plus(aff['agoda_cid'])}"
+    booking = "https://www.booking.com/searchresults.html?ss=" + quote_plus(hotel["name"] + ", Batam")
+    if aff.get("booking_aid"):
+        booking += f"&aid={quote_plus(aff['booking_aid'])}"
+    trip = "https://www.trip.com/hotels/list?searchWord=" + quote_plus(hotel["name"] + ", Batam")
+    if aff.get("trip_allianceid"):
+        trip += f"&Allianceid={quote_plus(aff['trip_allianceid'])}&SID={quote_plus(aff.get('trip_sid', ''))}"
+    return [("Agoda", agoda), ("Booking.com", booking), ("Trip.com", trip)]
+
+
+def hotels_page(data, partners, lang="en"):
+    zh = lang == "zh"
+    root = "../../" if zh else "../"
+    guide_data = data.get("hotels", {"areas": []})
+    aff = partners.get("affiliates", {})
+    affiliate_on = any(aff.get(k) for k in ("agoda_cid", "booking_aid", "trip_allianceid"))
+    blocks = []
+    count = 0
+    for area in guide_data["areas"]:
+        hotels = [p for p in data["places"] if p["category"] == "stay" and p["area"] == area["area"]]
+        if not hotels:
+            continue
+        count += len(hotels)
+        rows = "".join(
+            f"<li><b>{esc(h['name'])}</b><br>" + " · ".join(
+                f'<a href="{esc(url)}" rel="nofollow noopener sponsored">{label}</a>' for label, url in hotel_search_urls(h, partners, data)
+            ) + "</li>"
+            for h in hotels
+        )
+        near = f"最近码头:{esc(area['terminal'])}" if zh else f"Nearest ferry terminal: {esc(area['terminal'])}"
+        note = esc(area["zh"] if zh else area["en"])
+        blocks.append(f'<div class="card"><h2>{esc(area["area"])}</h2><p class="meta">{near} · {note}</p><ul class="list">{rows}</ul></div>')
+    disclosure_en = "Some links pay Batam Uncle Says a small commission. You pay the same price, and it never changes which hotels are listed." if affiliate_on else ""
+    disclosure_zh = "部分链接会给 Batam Uncle Says 少量佣金,你付的价格不变,也不影响收录哪些酒店。" if affiliate_on else ""
+    if not zh:
+        body = f"""<h1>Batam hotels by area and ferry terminal</h1>
+<p class="lede">{count} hotels and resorts from published guides, grouped by the ferry terminal they are closest to. Prices and rooms come live from the booking sites. {disclosure_en}</p>
+{''.join(blocks)}
+<div class="card"><h2>Search with your dates</h2><p>The app fills in your check-in date, nights, guests and area, then opens Agoda, Booking.com or Trip.com.</p>
+<a class="btn" href="../#stay">Search hotels in the app</a><a class="btn ghost" href="../day-trip/">Day trip guide</a></div>"""
+        return page(
+            "Batam hotels by area: Nongsa, Harbour Bay, Nagoya, Waterfront City",
+            f"{count} Batam hotels and resorts grouped by nearest ferry terminal, with one-tap price search on Agoda, Booking.com and Trip.com.",
+            "hotels/",
+            body,
+            alternates=both("hotels/"),
+        )
+    body = f"""<h1>巴淡酒店(按地区和码头)</h1>
+<p class="lede">{count} 家酒店和度假村,资料来自公开指南,按最近的码头分组。房型和价格来自订房网站的实时数据。{disclosure_zh}</p>
+{''.join(blocks)}
+<div class="card"><h2>按日期搜索</h2><p>应用会自动填好入住日期、晚数、人数和区域,再打开 Agoda、Booking.com 或 Trip.com。</p>
+<a class="btn" href="{app(root, '#stay', lang)}">在应用里搜索酒店</a><a class="btn ghost" href="{guide(root, 'day-trip/', lang)}">一日游攻略</a></div>"""
+    return page(
+        "巴淡酒店(按地区):Nongsa、Harbour Bay、Nagoya、Waterfront City",
+        f"巴淡 {count} 家酒店和度假村,按最近码头分组,可一键在 Agoda、Booking.com、Trip.com 查价格。",
+        "zh/hotels/",
+        body,
+        root=root,
+        crumbs=[("酒店", SITE + "zh/hotels/")],
+        lang="zh",
+        alternates=both("hotels/"),
+    )
+
+
+KEEP = {"dry": ("Keeps well", "耐放"), "cake": ("Eat within days", "几天内吃完"), "eat": ("Eat soon", "尽快吃")}
+
+
+def oleh_page(data, lang="en"):
+    zh = lang == "zh"
+    root = "../../" if zh else "../"
+    guide_data = data.get("oleh", {"items": [], "bring_back": []})
+    items = "".join(
+        f"<li><b>{esc(i['zh'] if zh else i['en'])}</b>: {esc(i['note_zh'] if zh else i['note_en'])} "
+        f"<span class=\"meta\">({KEEP[i['keep']][1 if zh else 0]}; {source_link(i['source'])})</span></li>"
+        for i in guide_data["items"]
+    )
+    shops = [p for p in data["places"] if p["category"] == "oleh"]
+    shop_rows = "".join(
+        f"<li><b>{esc(p['name'])}</b> <span class=\"meta\">({esc(p['area'])})</span><br>{esc(localized(p, 'note_en', lang) if zh else p['note_en'])} "
+        f"<span class=\"meta\">({source_link(p['source'])})</span></li>"
+        for p in shops
+    )
+    rules = "".join(
+        f"<li>{esc(r['zh'] if zh else r['en'])} <span class=\"meta\">({source_link(r['source'])})</span></li>" for r in guide_data["bring_back"]
+    )
+    if not zh:
+        body = f"""<h1>Batam oleh-oleh: what to buy, where, and what Singapore allows</h1>
+<p class="lede">The food gifts people ask for, shops that sell them, and the Singapore Customs and SFA rules for bringing them back. Shops are listed from their own sites and published guides, not yet visited in person.</p>
+<div class="card"><h2>What to buy</h2><ul class="list">{items}</ul></div>
+<div class="card"><h2>Where to buy</h2><ul class="list">{shop_rows}</ul></div>
+<div class="card"><h2>Bringing it into Singapore</h2><ul class="list">{rules}</ul><p class="meta">Rules can change. Check the official pages before you buy.</p></div>
+<div class="card"><h2>Plan the stop</h2><p>Add a shopping stop before your ferry back; the app shows when you need to leave.</p>
+<a class="btn" href="../#oleh">Open oleh-oleh in the app</a><a class="btn ghost" href="../entry-rules/">Entry rules</a></div>"""
+        return page(
+            "Batam oleh-oleh: kek pisang, lapis and what you can bring back to Singapore",
+            "What to buy in Batam (banana cake, lapis legit, gonggong crackers), where to buy it, and Singapore's duty-free, GST and food rules for day-trippers.",
+            "oleh-oleh/",
+            body,
+            alternates=both("oleh-oleh/"),
+        )
+    body = f"""<h1>巴淡伴手礼:买什么、去哪买、能带多少回新加坡</h1>
+<p class="lede">大家最想要的巴淡伴手礼、卖这些的店,以及带回新加坡的海关和食品局规定。店铺信息来自商家网站和公开指南,尚未实地到访。</p>
+<div class="card"><h2>买什么</h2><ul class="list">{items}</ul></div>
+<div class="card"><h2>在哪买</h2><ul class="list">{shop_rows}</ul></div>
+<div class="card"><h2>带回新加坡</h2><ul class="list">{rules}</ul><p class="meta">规定可能变动,购买前请查看官方页面。</p></div>
+<div class="card"><h2>安排时间</h2><p>回程船班前留出购物时间;应用会提醒你几点该出发。</p>
+<a class="btn" href="{app(root, '#oleh', lang)}">在应用里查看伴手礼</a><a class="btn ghost" href="{guide(root, 'entry-rules/', lang)}">入境规定</a></div>"""
+    return page(
+        "巴淡伴手礼:香蕉蛋糕、千层蛋糕,以及能带多少回新加坡",
+        "巴淡买什么(香蕉蛋糕、千层蛋糕、海螺饼干)、去哪买,以及一日游旅客带回新加坡的免税、消费税和食品规定。",
+        "zh/oleh-oleh/",
+        body,
+        root=root,
+        crumbs=[("伴手礼", SITE + "zh/oleh-oleh/")],
+        lang="zh",
+        alternates=both("oleh-oleh/"),
+    )
+
+
+def partners_page(partners):
+    """For businesses: how the partner programme works, in English and Bahasa Indonesia."""
+    program = partners.get("partner_program", {})
+    contacts = []
+    if program.get("contact_email"):
+        contacts.append(f'<a class="btn" href="mailto:{esc(program["contact_email"])}?subject=Batam%20Uncle%20Says%20partner">Email</a>')
+    if program.get("contact_whatsapp"):
+        contacts.append(f'<a class="btn ghost" href="https://wa.me/{esc(program["contact_whatsapp"])}">WhatsApp</a>')
+    contact_html = "".join(contacts)
+    body = f"""<h1>Partner with Batam Uncle Says</h1>
+<p class="lede">A free guide for Singaporeans on a Batam trip: ferry-timed day plans, fair-price checks, hotels, food, spas and oleh-oleh, in English and Chinese.</p>
+<div class="card"><h2>How it works</h2><ul class="list">
+<li>Your listing stays free. We list places from published guides and our own checks, whether or not they are partners.</li>
+<li>Partners get a <b>Partner</b> badge, your offer for our users, and a WhatsApp button that opens a chat to your own number. The first line says the guest found you on Batam Uncle Says and gives the code <b>BUS</b>.</li>
+<li>For guests who arrive with that code, you pay Batam Uncle Says a referral fee you agree to (for example 10% of the bill), settled once a month.</li>
+<li>No exclusivity, no sign-up fee, stop any time. Order, prices and the fair-price check never depend on payments.</li>
+</ul></div>
+<div class="card" lang="id"><h2>Kerja sama (Bahasa Indonesia)</h2><ul class="list">
+<li>Listing tetap gratis. Kami mencantumkan tempat dari panduan publik dan pengecekan sendiri, partner atau bukan.</li>
+<li>Partner mendapat lencana <b>Partner</b>, penawaran khusus untuk pengguna kami, dan tombol WhatsApp ke nomor Anda sendiri. Baris pertama pesan menyebut tamu menemukan Anda di Batam Uncle Says dengan kode <b>BUS</b>.</li>
+<li>Untuk tamu yang datang dengan kode itu, Anda membayar komisi referensi yang disepakati (misalnya 10% dari tagihan), dihitung sebulan sekali.</li>
+<li>Tanpa eksklusivitas, tanpa biaya daftar, bisa berhenti kapan saja. Urutan, harga, dan cek harga wajar tidak dipengaruhi pembayaran.</li>
+</ul></div>
+<div class="card"><h2>Contact / Hubungi</h2><p>Hotels, restaurants, spas, tour operators and oleh-oleh shops in Batam are welcome. / Hotel, restoran, spa, operator tur, dan toko oleh-oleh di Batam dipersilakan.</p>{contact_html}
+<a class="btn ghost" href="../">See the app</a></div>"""
+    return page(
+        "Partner with Batam Uncle Says: hotels, restaurants, spas and shops in Batam",
+        "Free listing plus a referral deal for Batam businesses: Partner badge, your offer, direct WhatsApp bookings from Singapore visitors. English and Bahasa Indonesia.",
+        "partners/",
+        body,
+    )
+
+
 def main():
     data = load_js_object(ROOT / "data.js", "window.BUS_DATA")
     photos = load_js_object(ROOT / "photos.js", "window.BUS_PHOTOS")
@@ -813,6 +974,11 @@ def main():
     pages.update(area_pages(data, photos, place_photos, "zh")[1])
     pages.update(day_trip_pages(data, partners, areas))
     pages.update(terminal_pages(data, photos, place_photos, partners))
+    pages["hotels/"] = hotels_page(data, partners)
+    pages["zh/hotels/"] = hotels_page(data, partners, "zh")
+    pages["oleh-oleh/"] = oleh_page(data)
+    pages["zh/oleh-oleh/"] = oleh_page(data, "zh")
+    pages["partners/"] = partners_page(partners)
     for path, content in pages.items():
         write_if_changed(ROOT / path / "index.html", content)
 
@@ -837,6 +1003,9 @@ def main():
         f"- [Entry rules]({SITE}entry-rules/): passport, arrival cards, duty-free",
         f"- [Money]({SITE}money/): exchange rate, money changers, QRIS",
         f"- [Places by area]({SITE}places/)",
+        f"- [Hotels by area]({SITE}hotels/): hotels grouped by nearest ferry terminal, price search on Agoda, Booking.com, Trip.com",
+        f"- [Oleh-oleh]({SITE}oleh-oleh/): what to buy, where, and Singapore customs and food rules",
+        f"- [For businesses]({SITE}partners/): partner programme for Batam hotels, restaurants, spas and shops",
     ] + [f"- [{area}]({SITE}area/{slug(area)}/)" for area in sorted(areas)] + [
         f"- [{t} ferry terminal]({SITE}terminal/{slug(t)}/)" for t in terminals(data)
     ] + [
@@ -849,6 +1018,8 @@ def main():
         f"- [入境规定]({SITE}zh/entry-rules/)",
         f"- [巴淡换钱]({SITE}zh/money/)",
         f"- [巴淡去哪里]({SITE}zh/places/)",
+        f"- [巴淡酒店]({SITE}zh/hotels/)",
+        f"- [巴淡伴手礼]({SITE}zh/oleh-oleh/)",
     ] + [
         f"- [巴淡 {t} 码头]({SITE}zh/terminal/{slug(t)}/)" for t in terminals(data)
     ]

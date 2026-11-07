@@ -457,6 +457,25 @@
   .tile-eat { --tile-a: #9a4d1c; --tile-b: #6e3310; }
   .tile-spa { --tile-a: #2a7458; --tile-b: #17503b; }
   .tile-shop { --tile-a: #335591; --tile-b: #1f3a6b; }
+  .tile-oleh { --tile-a: #8a3d5c; --tile-b: #5e2440; }
+  .stay-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .stay-form .wide { grid-column: 1 / -1; }
+  .stay-form input, .stay-form select { width: 100%; }
+  .stay-btns { display: grid; gap: 8px; margin-top: 14px; }
+  .hotel-area { margin: 18px 0 6px; }
+  .hotel-area h3 { margin: 0; font-size: 17px; }
+  .hotel-area p { margin: 2px 0 0; }
+  .hotel { display: grid; gap: 8px; padding: 12px 14px; border: 1px solid var(--line, #e3e0d8); border-radius: 14px; margin-top: 8px; background: var(--card, #fff); }
+  .hotel .name { font-weight: 600; text-align: left; background: none; border: 0; padding: 0; color: inherit; font: inherit; cursor: pointer; }
+  .hotel .links { display: flex; flex-wrap: wrap; gap: 6px; }
+  .hotel .links a { font-size: 13px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line, #e3e0d8); text-decoration: none; color: inherit; }
+  .oleh-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+  .oleh-item { padding: 12px 14px; border: 1px solid var(--line, #e3e0d8); border-radius: 14px; background: var(--card, #fff); }
+  .oleh-item b { display: block; }
+  .oleh-item p { margin: 4px 0 6px; font-size: 14px; }
+  .keep { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: rgba(0,0,0,.06); }
+  .partner-badge { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: #1f6f4a; color: #fff; margin-left: 6px; vertical-align: middle; }
+
   .tile-play { --tile-a: #7a6418; --tile-b: #54430c; }
   .tile-stay { --tile-a: #5b4b94; --tile-b: #3b2f6c; }
   .sheet .tile .tile-area { font-size: 28px; }
@@ -901,6 +920,7 @@
   <symbol id="i-spa" viewBox="0 0 24 24"><path d="M12 20c-4.5 0-8-3-8-7 3 0 6 1.5 8 4 2-2.5 5-4 8-4 0 4-3.5 7-8 7z"/><path d="M12 17c-1.8-2-2.5-4.5-2-7.5.6-2.2 1.5-3.7 2-4.5.5.8 1.4 2.3 2 4.5.5 3-.2 5.5-2 7.5z"/></symbol>
   <symbol id="i-shop" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6.5a3 3 0 0 1 6 0V8"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></symbol>
+  <symbol id="i-oleh" viewBox="0 0 24 24"><path d="M4 10h16v10H4zM3 7h18v3H3zM12 7v13M12 7c-1.5-3-5-3.5-5-1.2C7 7 9.5 7 12 7zm0 0c1.5-3 5-3.5 5-1.2C17 7 14.5 7 12 7z"/></symbol>
   <symbol id="i-stay" viewBox="0 0 24 24"><path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5"/><circle cx="7" cy="11" r="1.6"/></symbol>
   <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 15c2 0 2-1.5 4.5-1.5S10 15 12 15s2.5-1.5 4.5-1.5S19 15 21 15M3 19c2 0 2-1.5 4.5-1.5S10 19 12 19s2.5-1.5 4.5-1.5S19 19 21 19M12 11V4l5 4z"/></symbol>
 </svg>
@@ -1121,6 +1141,43 @@
       <div class="more-places" id="placeMore"></div>
   </section>
 
+  <!-- Hotels -->
+  <section id="s-stay">
+    <div class="narrow">
+      <div class="eyebrow" data-i18n="stayEyebrow"></div>
+      <h1 data-i18n="stayTitle"></h1>
+      <p class="lede" data-i18n="staySub"></p>
+      <div class="card">
+        <div class="stay-form">
+          <div class="field"><label for="stayIn" data-i18n="checkIn"></label><input type="date" id="stayIn"></div>
+          <div class="field"><label for="stayNights" data-i18n="nights"></label><select id="stayNights"></select></div>
+          <div class="field"><label for="stayAdults" data-i18n="adults"></label><select id="stayAdults"></select></div>
+          <div class="field"><label for="stayRooms" data-i18n="rooms"></label><select id="stayRooms"></select></div>
+          <div class="field wide"><label for="stayArea" data-i18n="stayArea"></label><select id="stayArea"></select></div>
+        </div>
+        <div class="stay-btns" id="stayBtns"></div>
+        <p class="meta" id="stayNote" style="margin:10px 2px 0"></p>
+      </div>
+      <h2 data-i18n="hotelsTitle"></h2>
+      <div id="stayList"></div>
+    </div>
+  </section>
+
+  <!-- Oleh-oleh -->
+  <section id="s-oleh">
+    <div class="narrow">
+      <div class="eyebrow" data-i18n="olehEyebrow"></div>
+      <h1 data-i18n="olehTitle"></h1>
+      <p class="lede" data-i18n="olehSub"></p>
+      <h2 data-i18n="olehWhat"></h2>
+      <div class="oleh-items" id="olehItems"></div>
+      <h2 data-i18n="olehWhere"></h2>
+      <div id="olehWhere"></div>
+      <h2 data-i18n="olehRules"></h2>
+      <div class="card"><ul class="tips" id="olehRules"></ul><p class="meta" data-i18n="olehRulesNote" style="margin:8px 0 0"></p></div>
+    </div>
+  </section>
+
   <!-- About -->
   <section id="s-about">
     <div class="narrow">
@@ -1128,6 +1185,7 @@
       <h1 data-i18n="aboutTitle"></h1>
       <p class="lede" data-i18n="aboutSub"></p>
       <div id="aboutTip"></div>
+      <div id="aboutBiz"></div>
       <div class="card"><div class="trust" id="aboutTrust" style="grid-template-columns:1fr"></div></div>
       <h2 data-i18n="statusTitle"></h2>
       <div class="card" id="aboutStatus"></div>
@@ -1199,13 +1257,15 @@ const SECTIONS = [
   { id: "ferry", icon: "i-ferry" },
   { id: "check", icon: "i-check" },
   { id: "places", icon: "i-pin" },
+  { id: "stay", icon: "i-stay" },
+  { id: "oleh", icon: "i-oleh" },
   { id: "talk", icon: "i-chat" },
   { id: "guide", icon: "i-shield" },
   { id: "about", icon: "i-info" },
 ].filter((s) => s.id !== "guide" || GUIDES_ON);
 const TABBAR = ["home", "plan", "places", "price"];
-const MORE = ["guide", "money", "ferry", "check", "talk", "about"].filter((id) => id !== "guide" || GUIDES_ON);
-const CATS = ["eat", "spa", "shop", "play", "stay"];
+const MORE = ["stay", "oleh", "guide", "money", "ferry", "check", "talk", "about"].filter((id) => id !== "guide" || GUIDES_ON);
+const CATS = ["eat", "spa", "shop", "oleh", "play", "stay"];
 
 const T = {
   en: {
@@ -1264,6 +1324,21 @@ const T = {
     before: "Before you go", returning: "Returning to Singapore", progress: (d, n) => `${d} of ${n} done`, progressAll: "All set. Have a good trip.", progressSub: "Rules from official sources, linked on each item.", reset: "Reset",
     placesEyebrow: "Eat, relax, explore", placesTitle: "Places", placesSub: "Collected from published guides. Tap a place for its map and source. Each will be revisited and dated.",
     all: "All", eat: "Eat", spa: "Spa", shop: "Shop", play: "See & do", stay: "Stay", allAreas: "All areas",
+    oleh: "Oleh-oleh", tab_stay: "Hotels", tab_oleh: "Oleh-oleh",
+    more_stay: "Search hotels by area and ferry terminal", more_oleh: "What to buy, where, and what Singapore allows",
+    stayEyebrow: "Staying the night", stayTitle: "Find a hotel in Batam", staySub: "Pick your dates and an area, then compare live prices on the big booking sites. You book and pay on their site.",
+    checkIn: "Check-in", nights: "Nights", adults: "Adults", rooms: "Rooms", stayArea: "Area", anyArea: "Anywhere in Batam",
+    searchOn: (site) => `Search on ${site}`, nearTerminal: (x) => `Nearest ferry terminal: ${x}`,
+    hotelsTitle: "Hotels and resorts we list", hotelPrices: "Prices",
+    hotelAffiliate: "Some hotel links pay Batam Uncle Says a small commission. You pay the same price, and it never changes which hotels we list.",
+    hotelHow: "Rooms and prices come live from the booking site, not from us.",
+    olehEyebrow: "Bring something home", olehTitle: "Oleh-oleh", olehSub: "The Batam gifts people ask for, where to buy them, and what you may bring back into Singapore.",
+    olehWhat: "What to buy", olehWhere: "Where to buy", olehRules: "Bringing it into Singapore",
+    keep_dry: "Keeps well", keep_cake: "Eat within days", keep_eat: "Eat soon",
+    olehRulesNote: "Rules can change. Check the official pages before you buy.",
+    partnerBadge: "Partner", partnerReserve: "Message them on WhatsApp",
+    partnerNote: "Partners pay Batam Uncle Says a small referral fee. Listings, order and prices never depend on it.",
+    bizTitle: "Run a hotel, restaurant, spa or shop in Batam?", bizText: "Partner with Batam Uncle Says: free listing, plus a referral deal for guests we send.", bizLink: "For businesses",
     showing: (n) => `${n} places`,
     openMap: "Open in Maps", readSource: "Read source", close: "Close",
     notVisited: "Not yet visited by Uncle. Listed from a published guide; details may have changed.",
@@ -1394,6 +1469,21 @@ const T = {
     before: "出发前", returning: "返回新加坡", progress: (d, n) => `已完成 ${d} / ${n}`, progressAll: "全部准备就绪,旅途愉快。", progressSub: "规定来自官方来源,每项均附链接。", reset: "重置",
     placesEyebrow: "吃喝玩乐", placesTitle: "地点", placesSub: "整理自公开指南。点开地点可查看地图和来源,之后将逐一实地核实并标注日期。",
     all: "全部", eat: "餐饮", spa: "Spa", shop: "购物", play: "景点", stay: "住宿", allAreas: "全部区域",
+    oleh: "伴手礼", tab_stay: "酒店", tab_oleh: "伴手礼",
+    more_stay: "按区域和码头搜索酒店", more_oleh: "买什么、去哪买、新加坡入境规定",
+    stayEyebrow: "住一晚", stayTitle: "找巴淡酒店", staySub: "选好日期和区域,再到大型订房网站比较实时价格。在对方网站预订和付款。",
+    checkIn: "入住日期", nights: "晚数", adults: "成人", rooms: "房间", stayArea: "区域", anyArea: "巴淡全岛",
+    searchOn: (site) => `在 ${site} 搜索`, nearTerminal: (x) => `最近码头:${x}`,
+    hotelsTitle: "收录的酒店和度假村", hotelPrices: "查价格",
+    hotelAffiliate: "部分酒店链接会给 Batam Uncle Says 少量佣金,你付的价格不变,也不会影响收录哪些酒店。",
+    hotelHow: "房型和价格来自订房网站的实时数据,不是我们定的。",
+    olehEyebrow: "带点东西回家", olehTitle: "伴手礼", olehSub: "大家最想要的巴淡伴手礼、在哪里买,以及能带回新加坡多少。",
+    olehWhat: "买什么", olehWhere: "在哪买", olehRules: "带回新加坡",
+    keep_dry: "耐放", keep_cake: "几天内吃完", keep_eat: "尽快吃",
+    olehRulesNote: "规定可能变动,购买前请查看官方页面。",
+    partnerBadge: "合作商家", partnerReserve: "用 WhatsApp 联系",
+    partnerNote: "合作商家会付给 Batam Uncle Says 少量介绍费,但不会影响收录、排序和价格。",
+    bizTitle: "在巴淡经营酒店、餐厅、Spa 或商店?", bizText: "与 Batam Uncle Says 合作:免费收录,介绍客人另有分成。", bizLink: "商家合作",
     showing: (n) => `共 ${n} 个地点`,
     openMap: "在地图中打开", readSource: "查看来源", close: "关闭",
     notVisited: "Uncle 尚未实地到访。信息来自公开指南,可能已有变化。",
@@ -1769,7 +1859,7 @@ function openPlace(id) {
       ${placeMedia(p)}
       <div class="content">
         <div class="pcard" style="all:unset"><span class="meta" style="font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:12px">${t(p.category)} · ${p.area}</span></div>
-        <h3 id="placeSheetTitle">${p.name}</h3>
+        <h3 id="placeSheetTitle">${p.name}${venueFor(p.id) ? `<span class="partner-badge">${t("partnerBadge")}</span>` : ""}</h3>
         ${note ? `<p class="small" style="margin:0;font-size:15px">${note}</p>` : ""}
         <div class="status">${icon("i-info", "sm")}<div>${pill()}<div style="margin-top:6px">${t("notVisited")}</div><div class="meta" style="margin-top:4px">${t("source")}: ${host}</div></div></div>
         <div class="actions">
@@ -1777,6 +1867,7 @@ function openPlace(id) {
           <a class="btn ghost" href="${p.source}" target="_blank" rel="noopener">${t("readSource")}</a>
           <button type="button" class="btn ghost" style="grid-column:1/-1" data-share-place="${p.id}">${icon("i-share", "sm")}${t("sharePlace")}</button>
         </div>
+        ${placeExtras(p)}
         ${photoKey ? `<div class="credit-line">${photoCaption(photoKey)} · ${photoCredit(photoKey)}</div>` : ""}
       </div>
     </div>`;
@@ -2413,6 +2504,176 @@ function renderFerryBooking() {
     ${query ? `<p class="meta" style="margin:8px 2px 0">${t("g_affiliate")}</p>` : ""}`;
 }
 
+/* ---------- hotels ---------- */
+const HOTELS = DATA.hotels || { areas: [] };
+const AFF = PARTNERS.affiliates || {};
+const VENUES = (PARTNERS.venues || []).filter((v) => v.place_id && /^\d{8,15}$/.test(String(v.whatsapp || "")));
+
+function isoDay(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function addDays(iso, n) {
+  const d = new Date(iso + "T00:00:00Z");
+  d.setUTCDate(d.getUTCDate() + n);
+  return isoDay(d);
+}
+
+function nextSaturday() {
+  const now = new Date(Date.now() + 7 * 3600 * 1000);
+  const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  d.setUTCDate(d.getUTCDate() + (((6 - d.getUTCDay()) + 7) % 7 || 7));
+  return isoDay(d);
+}
+
+function stayParams() {
+  const today = isoDay(new Date(Date.now() + 7 * 3600 * 1000));
+  const input = document.getElementById("stayIn");
+  let checkIn = input && input.value ? input.value : nextSaturday();
+  if (checkIn < today) checkIn = today;
+  const nights = Number(document.getElementById("stayNights")?.value) || 1;
+  return {
+    checkIn,
+    checkOut: addDays(checkIn, nights),
+    nights,
+    adults: Number(document.getElementById("stayAdults")?.value) || 2,
+    rooms: Number(document.getElementById("stayRooms")?.value) || 1,
+    area: document.getElementById("stayArea")?.value || "all",
+  };
+}
+
+function qs(params) {
+  return Object.entries(params)
+    .filter(([, v]) => v !== "" && v !== undefined && v !== null)
+    .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
+    .join("&");
+}
+
+function agodaUrl(p, place) {
+  const params = { city: HOTELS.agoda_city || 19392, checkIn: p.checkIn, checkOut: p.checkOut, los: p.nights, rooms: p.rooms, adults: p.adults, children: 0 };
+  if (place && place.agoda_id) {
+    params.hotel = place.agoda_id;
+    params.selectedproperty = place.agoda_id;
+  }
+  if (AFF.agoda_cid) params.cid = AFF.agoda_cid;
+  return "https://www.agoda.com/search?" + qs(params);
+}
+
+function bookingUrl(p, text) {
+  const params = { ss: text, checkin: p.checkIn, checkout: p.checkOut, group_adults: p.adults, no_rooms: p.rooms, group_children: 0 };
+  if (AFF.booking_aid) params.aid = AFF.booking_aid;
+  return "https://www.booking.com/searchresults.html?" + qs(params);
+}
+
+function tripUrl(p, text) {
+  const params = { searchWord: text, checkin: p.checkIn, checkout: p.checkOut, adult: p.adults, children: 0, crn: p.rooms };
+  if (AFF.trip_allianceid) params.Allianceid = AFF.trip_allianceid;
+  if (AFF.trip_sid) params.SID = AFF.trip_sid;
+  return "https://www.trip.com/hotels/list?" + qs(params);
+}
+
+const hotelAffiliateOn = () => Boolean(AFF.agoda_cid || AFF.booking_aid || AFF.trip_allianceid);
+const sponsoredLink = (url, label, cls) => `<a class="${cls || ""}" href="${url}" target="_blank" rel="noopener nofollow sponsored">${label}</a>`;
+
+function hotelLinks(place) {
+  const p = stayParams();
+  const text = place.name + ", Batam";
+  return `${sponsoredLink(agodaUrl(p, place), "Agoda")}${sponsoredLink(bookingUrl(p, text), "Booking.com")}${sponsoredLink(tripUrl(p, text), "Trip.com")}`;
+}
+
+function renderStayResults() {
+  const p = stayParams();
+  localStorage.setItem("bus_stay", JSON.stringify({ nights: p.nights, adults: p.adults, rooms: p.rooms, area: p.area }));
+  const text = p.area === "all" ? "Batam" : `${p.area}, Batam`;
+  document.getElementById("stayBtns").innerHTML = [
+    sponsoredLink(agodaUrl(p, null), `${icon("i-stay", "sm")}${tf("searchOn", "Agoda")}`, "btn block"),
+    sponsoredLink(bookingUrl(p, text), tf("searchOn", "Booking.com"), "btn ghost block"),
+    sponsoredLink(tripUrl(p, text), tf("searchOn", "Trip.com"), "btn ghost block"),
+  ].join("");
+  document.getElementById("stayNote").textContent = t("hotelHow") + (hotelAffiliateOn() ? " " + t("hotelAffiliate") : "");
+  const areas = HOTELS.areas.filter((a) => p.area === "all" || a.area === p.area);
+  document.getElementById("stayList").innerHTML = areas.map((a) => {
+    const hotels = DATA.places.filter((x) => x.category === "stay" && x.area === a.area);
+    if (!hotels.length) return "";
+    return `<div class="hotel-area"><h3>${a.area}</h3><p class="meta">${tf("nearTerminal", a.terminal)} · ${lang === "zh" ? a.zh : a.en}</p></div>` +
+      hotels.map((h) => `<div class="hotel"><button type="button" class="name" data-place="${h.id}">${h.name}</button><div class="links">${hotelLinks(h)}</div></div>`).join("");
+  }).join("");
+}
+
+function renderStay() {
+  const saved = JSON.parse(localStorage.getItem("bus_stay") || "{}");
+  const fill = (id, values, current, label) => {
+    const select = document.getElementById(id);
+    select.innerHTML = values.map((v) => `<option value="${v}">${label ? label(v) : v}</option>`).join("");
+    if (current !== undefined && values.map(String).includes(String(current))) select.value = String(current);
+  };
+  fill("stayNights", [1, 2, 3, 4, 5, 6, 7], saved.nights || 1);
+  fill("stayAdults", [1, 2, 3, 4, 5, 6, 7, 8], saved.adults || 2);
+  fill("stayRooms", [1, 2, 3, 4], saved.rooms || 1);
+  fill("stayArea", ["all", ...HOTELS.areas.map((a) => a.area)], saved.area || "all", (v) => (v === "all" ? t("anyArea") : v));
+  const input = document.getElementById("stayIn");
+  const today = isoDay(new Date(Date.now() + 7 * 3600 * 1000));
+  input.min = today;
+  if (!input.value) input.value = nextSaturday();
+  ["stayIn", "stayNights", "stayAdults", "stayRooms", "stayArea"].forEach((id) => {
+    document.getElementById(id).onchange = renderStayResults;
+  });
+  renderStayResults();
+}
+
+/* ---------- oleh-oleh ---------- */
+function renderOleh() {
+  const guide = DATA.oleh || { items: [], bring_back: [] };
+  document.getElementById("olehItems").innerHTML = guide.items.map((item) => `
+    <div class="oleh-item"><b>${lang === "zh" ? item.zh : item.en}</b>
+      <p>${lang === "zh" ? item.note_zh : item.note_en}</p>
+      <span class="keep">${t("keep_" + item.keep)}</span>
+      <span class="links" style="display:inline-flex;margin-left:6px">${ext(item.source, t("source"))}</span></div>`).join("");
+  const shops = DATA.places.filter((p) => p.category === "oleh");
+  const areas = [...new Set(shops.map((p) => p.area))];
+  document.getElementById("olehWhere").innerHTML = areas.map((area) => `
+    <div class="hotel-area"><h3>${area}</h3></div>
+    <div class="rows">${shops.filter((p) => p.area === area).map((p) => `
+      <button type="button" class="row-btn" data-place="${p.id}">
+        <span class="row-ic tile-oleh">${icon("i-oleh", "sm")}</span>
+        <span class="tx"><b>${p.name}</b><span>${lang === "zh" ? (p.note_zh || p.note_en) : p.note_en}</span></span>
+        <span class="chev">${icon("i-arrow", "sm")}</span>
+      </button>`).join("")}</div>`).join("");
+  document.getElementById("olehRules").innerHTML = guide.bring_back.map((rule) =>
+    `<li>${lang === "zh" ? rule.zh : rule.en} <span class="links" style="display:inline-flex">${ext(rule.source, t("source"))}</span></li>`).join("");
+}
+
+/* ---------- partners (venues that agreed to a referral deal) ---------- */
+function venueFor(placeId) {
+  return VENUES.find((v) => v.place_id === placeId);
+}
+
+function venueMessage(place, venue) {
+  const code = venue.code || "BUS";
+  return `Halo ${place.name}, saya dapat info dari Batam Uncle Says (kode ${code}). / Hi, I found you on Batam Uncle Says (code ${code}). `;
+}
+
+function placeExtras(place) {
+  let out = "";
+  if (place.category === "stay") {
+    out += `<div class="hotel" style="margin-top:12px"><b>${t("hotelPrices")}</b><div class="links">${hotelLinks(place)}</div>${hotelAffiliateOn() ? `<p class="meta" style="margin:0">${t("hotelAffiliate")}</p>` : ""}</div>`;
+  }
+  const venue = venueFor(place.id);
+  if (venue) {
+    const offer = lang === "zh" ? (venue.offer_zh || venue.offer_en) : venue.offer_en;
+    out += `<div class="hotel" style="margin-top:12px"><b>${t("partnerBadge")}${offer ? ": " + offer : ""}</b>
+      <a class="btn block" href="https://wa.me/${venue.whatsapp}?text=${encodeURIComponent(venueMessage(place, venue))}" target="_blank" rel="noopener">${icon("i-chat", "sm")}${t("partnerReserve")}</a>
+      <p class="meta" style="margin:0">${t("partnerNote")}</p></div>`;
+  }
+  return out;
+}
+
+function renderBiz() {
+  const box = document.getElementById("aboutBiz");
+  if (!box) return;
+  box.innerHTML = `<div class="card"><b>${t("bizTitle")}</b><p class="small" style="margin:6px 0 10px">${t("bizText")}</p><a class="btn ghost" href="partners/">${t("bizLink")}</a></div>`;
+}
+
 /* ---------- day-of clock ---------- */
 function batamNowMinutes() {
   const override = new URLSearchParams(location.search).get("now");
@@ -2628,7 +2889,10 @@ function renderAll() {
   renderTalk();
   renderGuide();
   renderFerryBooking();
+  renderStay();
+  renderOleh();
   renderAbout();
+  renderBiz();
 }
 
 document.querySelectorAll(".lang button").forEach((button) => {

@@ -254,7 +254,8 @@ window.BUS_DATA = {
    "note_zh": "别墅度假村",
    "source": "https://thesmartlocal.com/read/batam-resorts/",
    "verified": false,
-   "last_checked": null
+   "last_checked": null,
+   "agoda_id": 305779
   },
   {
    "id": "turi-beach",
@@ -265,7 +266,8 @@ window.BUS_DATA = {
    "note_zh": "",
    "source": "https://thesmartlocal.com/read/batam-resorts/",
    "verified": false,
-   "last_checked": null
+   "last_checked": null,
+   "agoda_id": 178535
   },
   {
    "id": "nongsa-point",
@@ -276,7 +278,8 @@ window.BUS_DATA = {
    "note_zh": "",
    "source": "https://thesmartlocal.com/read/batam-resorts/",
    "verified": false,
-   "last_checked": null
+   "last_checked": null,
+   "agoda_id": 178539
   },
   {
    "id": "batam-view",
@@ -287,7 +290,8 @@ window.BUS_DATA = {
    "note_zh": "",
    "source": "https://thesmartlocal.com/read/batam-resorts/",
    "verified": false,
-   "last_checked": null
+   "last_checked": null,
+   "agoda_id": 149052
   },
   {
    "id": "marriott-hb",
@@ -298,7 +302,8 @@ window.BUS_DATA = {
    "note_zh": "",
    "source": "https://thesmartlocal.com/read/batam-resorts/",
    "verified": false,
-   "last_checked": null
+   "last_checked": null,
+   "agoda_id": 17215246
   },
   {
    "id": "swiss-belhotel-hb",
@@ -320,7 +325,8 @@ window.BUS_DATA = {
    "note_zh": "",
    "source": "https://thesmartlocal.com/read/batam-resorts/",
    "verified": false,
-   "last_checked": null
+   "last_checked": null,
+   "agoda_id": 69560
   },
   {
    "id": "holiday-inn-resort",
@@ -331,7 +337,8 @@ window.BUS_DATA = {
    "note_zh": "",
    "source": "https://thesmartlocal.com/read/batam-resorts/",
    "verified": false,
-   "last_checked": null
+   "last_checked": null,
+   "agoda_id": 7416
   },
   {
    "id": "ktm-resort",
@@ -342,7 +349,8 @@ window.BUS_DATA = {
    "note_zh": "",
    "source": "https://thesmartlocal.com/read/batam-resorts/",
    "verified": false,
-   "last_checked": null
+   "last_checked": null,
+   "agoda_id": 237716
   },
   {
    "id": "planet-holiday",
@@ -352,6 +360,62 @@ window.BUS_DATA = {
    "note_en": "",
    "note_zh": "",
    "source": "https://berjayawaterfront.com/news-pages/batam-travel-guide-2025-where-to-stay-eat-explore",
+   "verified": false,
+   "last_checked": null,
+   "agoda_id": 255172
+  },
+  {
+   "id": "kek-pisang-villa",
+   "name": "Kek Pisang Villa (Imam Bonjol)",
+   "category": "oleh",
+   "area": "Nagoya",
+   "note_en": "Batam's best-known banana cake. Other outlets in Batam Centre and at Hang Nadim airport; listed 07:00-22:00",
+   "note_zh": "巴淡最有名的香蕉蛋糕。巴淡中心和机场也有分店;营业 07:00-22:00",
+   "source": "https://kekpisangvilla.com/8-outlet-villa-kek-pisang-batam/",
+   "verified": false,
+   "last_checked": null
+  },
+  {
+   "id": "rumah-kue-wiweka",
+   "name": "Rumah Kue Wiweka",
+   "category": "oleh",
+   "area": "Nagoya",
+   "note_en": "Lapis berendam (soaked layer cake), kue lapis and snacks. Komplek Bumi Indah, below Sari Jaya Hotel; listed 08:00-22:00",
+   "note_zh": "千层蛋糕(lapis berendam)和小吃。Komplek Bumi Indah,Sari Jaya 酒店楼下;营业 08:00-22:00",
+   "source": "https://lapisberendam.com/alamat-toko-rumah-kue-wiweka/",
+   "verified": false,
+   "last_checked": null
+  },
+  {
+   "id": "lapis-berendam-batam-centre",
+   "name": "Lapis Berendam (Batam Centre)",
+   "category": "oleh",
+   "area": "Batam Centre",
+   "note_en": "Same lapis maker as Rumah Kue Wiweka. Ruko Central Aladin, opposite RS Elisabeth, and Botania (opposite GOR Bandara); listed 07:00-22:00",
+   "note_zh": "和 Rumah Kue Wiweka 同一家。Ruko Central Aladin(Elisabeth 医院对面)和 Botania 分店;营业 07:00-22:00",
+   "source": "https://lapisberendam.com/alamat-toko-rumah-kue-wiweka/",
+   "verified": false,
+   "last_checked": null
+  },
+  {
+   "id": "luti-gendang-batam",
+   "name": "Luti Gendang Batam",
+   "category": "oleh",
+   "area": "Batam Centre",
+   "note_en": "Luti gendang: fried bread roll with spiced fish, a Riau Islands snack. Outlet in Botania; also sells online",
+   "note_zh": "Luti gendang:包鱼馅的炸面包卷,廖内群岛特产。Botania 有店,也可网购",
+   "source": "https://lutigendang.id/",
+   "verified": false,
+   "last_checked": null
+  },
+  {
+   "id": "tok-ngah-durian",
+   "name": "Tok Ngah Durian",
+   "category": "oleh",
+   "area": "Batam Centre",
+   "note_en": "Durian pancakes and brownies. Ruko KBC Batam Centre; also a counter in Nagoya Hill Mall",
+   "note_zh": "榴莲班戟和布朗尼。Ruko KBC 巴淡中心;Nagoya Hill 商场也有柜台",
+   "source": "https://www.idntimes.com/travel/destination/5-tempat-belanja-oleh-oleh-di-batam-mampir-yuk-01-534cy-5s7lrh",
    "verified": false,
    "last_checked": null
   }
@@ -800,5 +864,128 @@ window.BUS_DATA = {
     "batam": "Waterfront City"
    }
   ]
+ },
+ "oleh": {
+  "as_of": "2026-11-07",
+  "items": [
+   {
+    "en": "Kek pisang (banana cake)",
+    "zh": "香蕉蛋糕 (kek pisang)",
+    "keep": "cake",
+    "note_en": "The classic Batam gift, in many flavours",
+    "note_zh": "巴淡经典伴手礼,口味多",
+    "source": "https://www.traveloka.com/id-id/explore/destination/oleh-oleh-khas-batam-acc/479423"
+   },
+   {
+    "en": "Lapis legit / lapis berendam",
+    "zh": "千层蛋糕 (lapis)",
+    "keep": "cake",
+    "note_en": "Rich layer cake; berendam is the soaked, extra-moist kind",
+    "note_zh": "浓郁千层蛋糕;berendam 是浸泡款,更湿润",
+    "source": "https://lapisberendam.com/product/aneka-cake-lapis-dan-kue-bingke/"
+   },
+   {
+    "en": "Kerupuk / keripik gonggong",
+    "zh": "海螺饼干 (gonggong)",
+    "keep": "dry",
+    "note_en": "Crackers flavoured with gonggong sea snail; light and keeps well",
+    "note_zh": "海螺味饼干,轻便耐放",
+    "source": "https://www.traveloka.com/id-id/explore/destination/oleh-oleh-khas-batam-acc/479423"
+   },
+   {
+    "en": "Amplang",
+    "zh": "鱼酥 (amplang)",
+    "keep": "dry",
+    "note_en": "Crispy fish crackers",
+    "note_zh": "香脆鱼饼干",
+    "source": "https://acc.co.id/info-terkini/12-oleh-oleh-khas-batam-yang-wajib-dibawa-pulang"
+   },
+   {
+    "en": "Luti gendang",
+    "zh": "鱼馅面包卷 (luti gendang)",
+    "keep": "eat",
+    "note_en": "Fried roll with spiced fish; best eaten soon",
+    "note_zh": "鱼馅炸面包卷;尽早吃",
+    "source": "https://www.traveloka.com/id-id/explore/destination/oleh-oleh-khas-batam-acc/479423"
+   },
+   {
+    "en": "Bolu kemojo",
+    "zh": "香兰蛋糕 (bolu kemojo)",
+    "keep": "cake",
+    "note_en": "Soft pandan sponge cake from Riau",
+    "note_zh": "廖内香兰海绵蛋糕",
+    "source": "https://acc.co.id/info-terkini/12-oleh-oleh-khas-batam-yang-wajib-dibawa-pulang"
+   }
+  ],
+  "bring_back": [
+   {
+    "en": "Day trip (under 2 days away): no duty-free liquor. Duty-free liquor needs at least 2 days outside Singapore.",
+    "zh": "一日游(离境不足 2 天):不享免税酒。免税酒须离开新加坡至少 2 天。",
+    "source": "https://www.customs.gov.sg/at-customs/arriving-in-singapore/duty-free-concession-gst-relief/"
+   },
+   {
+    "en": "Cigarettes and tobacco: no duty-free and no GST relief at all. Declare them.",
+    "zh": "香烟和烟草:没有任何免税或消费税减免,必须申报。",
+    "source": "https://www.customs.gov.sg/at-customs/arriving-in-singapore/duty-free-concession-gst-relief/"
+   },
+   {
+    "en": "GST relief on new goods: up to S$100 if away less than 2 days (S$500 if 2 days or more).",
+    "zh": "新购物品消费税减免:离境不足 2 天最多 S$100(2 天或以上 S$500)。",
+    "source": "https://www.customs.gov.sg/at-customs/arriving-in-singapore/duty-free-concession-gst-relief/"
+   },
+   {
+    "en": "Cakes, crackers and other processed food: up to 5 kg in total, for your own use.",
+    "zh": "蛋糕、饼干等加工食品:合计最多 5 公斤,限自用。",
+    "source": "https://www.sfa.gov.sg/bringing-food-for-private-consumption-from-overseas/list-of-food---food-products-allowed"
+   },
+   {
+    "en": "Meat products (anything containing meat, e.g. beef floss or rendang): Indonesia is not an approved source, so leave them.",
+    "zh": "肉制品(含肉的食品,如肉松、仁当):印尼不是认可来源,不要带。",
+    "source": "https://www.sfa.gov.sg/bringing-food-for-private-consumption-from-overseas/list-of-food---food-products-allowed"
+   }
+  ]
+ },
+ "hotels": {
+  "agoda_city": 19392,
+  "search_text": "Batam",
+  "areas": [
+   {
+    "area": "Nongsa",
+    "terminal": "Nongsa Pura",
+    "en": "Beach resorts on the north-east coast, next to Nongsa Pura terminal",
+    "zh": "东北海岸的海滨度假村,靠近 Nongsa Pura 码头"
+   },
+   {
+    "area": "Harbour Bay",
+    "terminal": "Harbour Bay",
+    "en": "City hotels at Harbour Bay terminal, a short ride to Nagoya",
+    "zh": "Harbour Bay 码头旁的城市酒店,离 Nagoya 不远"
+   },
+   {
+    "area": "Nagoya",
+    "terminal": "Harbour Bay",
+    "en": "Shopping, food and spas on your doorstep",
+    "zh": "购物、美食和按摩都在附近"
+   },
+   {
+    "area": "Waterfront City",
+    "terminal": "Waterfront City",
+    "en": "Resorts by Waterfront City terminal on the west coast",
+    "zh": "西海岸 Waterfront City 码头旁的度假村"
+   },
+   {
+    "area": "Sekupang",
+    "terminal": "Sekupang",
+    "en": "Near Sekupang terminal on the west coast",
+    "zh": "西海岸 Sekupang 码头附近"
+   },
+   {
+    "area": "Batam Centre",
+    "terminal": "Batam Centre",
+    "en": "Next to Batam Centre terminal and Mega Mall",
+    "zh": "巴淡中心码头和 Mega Mall 旁"
+   }
+  ],
+  "source": "https://www.agoda.com/"
  }
 };
