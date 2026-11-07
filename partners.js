@@ -51,7 +51,7 @@ window.BUS_PARTNERS = {
    "price_note": "Private car charter, as listed on their website",
    "status": "active",
    "checked": "2026-11-07",
-   "fails": 0
+   "fails": 1
   },
   {
    "id": "batam-trip",
@@ -81,13 +81,22 @@ window.BUS_PARTNERS = {
    "status": "active",
    "checked": "2026-11-07",
    "fails": 0
+  },
+  {
+   "id": "batam-holiday",
+   "name": "Batam Holiday",
+   "website": "https://batamholiday.com/",
+   "whatsapp": "628988687888",
+   "kind": "car",
+   "languages": [],
+   "prices": [],
+   "price_note": "See their website for prices",
+   "status": "active",
+   "checked": "2026-11-07",
+   "fails": 0
   }
  ],
  "candidates": [
-  {
-   "name": "Batam Holiday",
-   "website": "https://batamholiday.com/"
-  },
   {
    "name": "Batam Tour Driver",
    "website": "https://batamtourdriver.com/"
