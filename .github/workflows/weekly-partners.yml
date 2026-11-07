@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: "0 1 * * 1"   # Mondays 01:00 UTC (09:00 Singapore / 08:00 Batam)
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - partners.json
+      - tools/**
+      - .github/workflows/weekly-partners.yml
 
 permissions:
   contents: write
