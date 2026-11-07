@@ -6,6 +6,19 @@ from urllib.parse import quote
 SITE = "https://juw12.github.io/batam-uncle-says/"
 OG_IMAGE = SITE + "img/hero-barelang.jpg"
 
+
+def tip_url():
+    """The owner's payment link from partners.json, only if it is https and on an allowed host."""
+    from pathlib import Path
+    from urllib.parse import urlparse
+    try:
+        money = json.loads((Path(__file__).resolve().parents[1] / "partners.json").read_text(encoding="utf-8")).get("money", {})
+        url = money.get("tip_url", "")
+        parsed = urlparse(url)
+        return url if parsed.scheme == "https" and parsed.hostname in money.get("allowed_hosts", []) else ""
+    except Exception:
+        return ""
+
 NAV = [
     ("driver-prices/", "Drivers"),
     ("ferry/", "Ferry"),
@@ -23,6 +36,8 @@ def esc(value):
 def page(title, description, path, body, root="../", crumbs=None):
     """Render a static page. path is relative to SITE (e.g. 'prices/'); root is the relative way back to SITE."""
     canonical = SITE + path
+    tip = tip_url()
+    support = f'<a class="btn" href="{esc(tip)}" rel="noopener">Support Batam Uncle Says</a>' if tip else ""
     share_text = quote(f"{title}\n{canonical}")
     nav = "".join(
         f'<a href="{root}{href}"{" aria-current=\"page\"" if href == path else ""}>{label}</a>' for href, label in NAV
@@ -85,7 +100,7 @@ def page(title, description, path, body, root="../", crumbs=None):
 <header><a class="brand" href="{root}">Batam Uncle Says</a><nav aria-label="Guides">{nav}</nav></header>
 <main>
 {body}
-<p><a class="btn ghost" href="https://wa.me/?text={share_text}" rel="nofollow noopener">Share on WhatsApp</a><a class="btn ghost" href="{root}">Open the trip planner</a></p>
+<p><a class="btn ghost" href="https://wa.me/?text={share_text}" rel="nofollow noopener">Share on WhatsApp</a><a class="btn ghost" href="{root}">Open the trip planner</a>{support}</p>
 </main>
 <footer>Independent guide for day trips from Singapore. Not affiliated with any operator or venue listed. Prices and rules change; confirm with the operator before you travel.</footer>
 </body>

@@ -107,5 +107,19 @@
       "name": "Batam Driver Tour Guide",
       "website": "https://www.batamdrivertourguide.com/"
     }
-  ]
+  ],
+  "money": {
+    "tip_url": "",
+    "allowed_hosts": [
+      "paypal.me",
+      "www.paypal.me",
+      "ko-fi.com",
+      "saweria.co",
+      "trakteer.id",
+      "buymeacoffee.com",
+      "www.buymeacoffee.com",
+      "github.com"
+    ],
+    "note": "Paste ONE payment link you own into tip_url (PayPal.me, Ko-fi, Saweria, Trakteer, Buy Me a Coffee or GitHub Sponsors). A 'Support' button then appears in the app and on every search page. Empty = hidden."
+  }
 }

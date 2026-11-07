@@ -1120,6 +1120,7 @@
       <div class="eyebrow" data-i18n="aboutEyebrow"></div>
       <h1 data-i18n="aboutTitle"></h1>
       <p class="lede" data-i18n="aboutSub"></p>
+      <div id="aboutTip"></div>
       <div class="card"><div class="trust" id="aboutTrust" style="grid-template-columns:1fr"></div></div>
       <h2 data-i18n="statusTitle"></h2>
       <div class="card" id="aboutStatus"></div>
@@ -1165,6 +1166,15 @@ const DATA = window.BUS_DATA;
 const PARTNERS = window.BUS_PARTNERS || {};
 const OPERATORS = (PARTNERS.operators || []).filter((op) => op.status === "active");
 const GUIDES_ON = OPERATORS.length > 0;
+const TIP_URL = (() => {
+  const money = PARTNERS.money || {};
+  try {
+    const url = new URL(money.tip_url || "");
+    return url.protocol === "https:" && (money.allowed_hosts || []).includes(url.hostname) ? url.href : "";
+  } catch (error) {
+    return "";
+  }
+})();
 
 const SECTIONS = [
   { id: "home", icon: "i-home" },
@@ -1297,6 +1307,7 @@ const T = {
     g_bookFerry: "Compare and book ferry tickets online",
     g_affiliate: "Some booking links pay Batam Uncle Says a small commission at no extra cost to you.",
     g_cta: "Need a driver for the day?", g_ctaBtn: "Message a local driver",
+    tip_title: "Keep this guide free", tip_body: "Batam Uncle Says has no ads and no booking fees. If it saved you time or money, you can buy the uncle a kopi.", tip_btn: "Support Batam Uncle Says", tip_line: "Saved you time? Support the uncle",
     talkEyebrow: "Bahasa Indonesia", talkTitle: "Phrases to show",
     talkSub: "Tap a card to show it full screen to a driver, waiter or shop assistant. Standard Indonesian, with English and Chinese meaning.",
     g_move: "Getting around", g_pay: "Paying and prices", g_eat: "Eating out", g_nums: "Reading price tags",
@@ -1426,6 +1437,7 @@ const T = {
     g_bookFerry: "在线比较并预订船票",
     g_affiliate: "部分预订链接会给 Batam Uncle Says 少量佣金,你无需多付。",
     g_cta: "需要当天包车司机?", g_ctaBtn: "联系本地司机",
+    tip_title: "让这份指南保持免费", tip_body: "Batam Uncle Says 没有广告,也不收预订费。如果帮你省了时间或钱,可以请 uncle 喝杯咖啡。", tip_btn: "支持 Batam Uncle Says", tip_line: "帮到你了?支持一下 uncle",
     talkEyebrow: "印尼语", talkTitle: "出示常用语",
     talkSub: "点开卡片即可全屏显示,直接给司机、服务员或店员看。标准印尼语,附英文与中文意思。",
     g_move: "出行交通", g_pay: "付款与价格", g_eat: "吃饭点餐", g_nums: "看懂价格标签",
@@ -1907,7 +1919,8 @@ function buildPlan() {
       <a class="btn ghost" href="#price">${icon("i-price", "sm")}${t("seePrices")}</a>
     </div>
     ${GUIDES_ON ? `<a class="btn ghost block" href="#guide" style="margin-top:10px">${icon("i-shield", "sm")}${t("g_ctaBtn")}</a>` : ""}
-    <p class="meta" style="margin:10px 2px 0">${t("savedPlan")}</p>`;
+    <p class="meta" style="margin:10px 2px 0">${t("savedPlan")}</p>
+    ${TIP_URL ? `<p class="meta" style="margin:6px 2px 0"><a href="${TIP_URL}" target="_blank" rel="noopener">${t("tip_line")}</a></p>` : ""}`;
   updateNowBar();
   if (document.getElementById("phraseList")) renderTalk();
   const guidePlan = document.getElementById("gPlan");
@@ -2157,6 +2170,9 @@ function renderAbout() {
     return `<li>${photoCaption(key)}: <a href="${p.page}" target="_blank" rel="noopener">${p.author}</a>, <a href="${p.licenseUrl}" target="_blank" rel="noopener">${p.license}</a></li>`;
   }).join("");
   document.getElementById("footNote").textContent = tf("footNote", fmtDate(DATA.generated || DATA.rules.fx_date));
+  document.getElementById("aboutTip").innerHTML = TIP_URL
+    ? `<div class="card"><h2 style="margin-top:0">${t("tip_title")}</h2><p class="small" style="margin:0 0 12px">${t("tip_body")}</p><a class="btn block" style="margin-top:0" href="${TIP_URL}" target="_blank" rel="noopener">${t("tip_btn")}</a></div>`
+    : "";
 }
 
 
