@@ -1,7 +1,6 @@
 """Build files that depend on partners.json and data.js (runs in GitHub Actions after partners_check.py).
 
-Writes: partners.js (read by the app), driver-prices/index.html and ferry/index.html (static pages
-that search engines can index), sitemap.xml, robots.txt. Bumps the service worker VERSION when
+Writes: partners.js (read by the app), driver-prices/index.html and ferry/index.html. Bumps the service worker VERSION when
 partners.js changes so installed copies pick up the new list.
 """
 import datetime
@@ -40,51 +39,10 @@ def load_data_js():
 
 
 def page(title, description, canonical, body):
-    return f"""<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{esc(title)}</title>
-<meta name="description" content="{esc(description)}">
-<link rel="canonical" href="{canonical}">
-<meta property="og:title" content="{esc(title)}">
-<meta property="og:description" content="{esc(description)}">
-<meta property="og:url" content="{canonical}">
-<meta name="theme-color" content="#0b2a40">
-<link rel="icon" href="../icons/icon-192.png">
-<style>
-  @font-face {{ font-family: Inter; src: url(../fonts/inter-latin.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }}
-  :root {{ --ink: #14212b; --ink-2: #3d4b56; --ink-3: #66737d; --line: #e3e7ea; --bg: #f5f6f7; --accent: #0b5d7a; --deep: #0b2a40; }}
-  * {{ box-sizing: border-box; }}
-  body {{ margin: 0; font-family: Inter, system-ui, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.55; }}
-  header {{ background: var(--deep); color: #fff; padding: 14px 18px; }}
-  header a {{ color: #fff; text-decoration: none; font-weight: 600; }}
-  main {{ max-width: 760px; margin: 0 auto; padding: 22px 18px 48px; }}
-  h1 {{ font-size: 28px; line-height: 1.2; margin: 6px 0 10px; letter-spacing: -0.01em; }}
-  h2 {{ font-size: 19px; margin: 0 0 8px; }}
-  .lede {{ color: var(--ink-2); font-size: 16px; margin: 0 0 18px; }}
-  .card {{ background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-bottom: 12px; }}
-  table {{ width: 100%; border-collapse: collapse; font-size: 14.5px; }}
-  td, th {{ text-align: left; padding: 9px 0; border-bottom: 1px solid var(--line); vertical-align: top; }}
-  td.num, th.num {{ text-align: right; white-space: nowrap; font-weight: 600; }}
-  tr:last-child td {{ border-bottom: 0; }}
-  .meta {{ font-size: 13px; color: var(--ink-3); }}
-  .btn {{ display: inline-block; margin: 10px 10px 0 0; padding: 10px 16px; border-radius: 10px; background: var(--accent); color: #fff; text-decoration: none; font-weight: 600; font-size: 14.5px; }}
-  .btn.ghost {{ background: #fff; color: var(--accent); border: 1px solid #c9d2d8; }}
-  a {{ color: var(--accent); }}
-  footer {{ max-width: 760px; margin: 0 auto; padding: 0 18px 40px; font-size: 13px; color: var(--ink-3); }}
-</style>
-</head>
-<body>
-<header><a href="../">Batam Uncle Says</a></header>
-<main>
-{body}
-</main>
-<footer>Independent guide for day trips from Singapore. Not affiliated with any operator listed. Prices change; confirm with the operator before you travel.</footer>
-</body>
-</html>
-"""
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from site_template import page as template_page
+    return template_page(title, description, canonical.replace(SITE, ""), body)
 
 
 def operator_message():
@@ -161,13 +119,7 @@ def main():
     js_changed = write_if_changed(ROOT / "partners.js", js)
     write_if_changed(ROOT / "driver-prices" / "index.html", driver_page(partners))
     write_if_changed(ROOT / "ferry" / "index.html", ferry_page(data, partners))
-    today = partners["updated"]
-    urls = [SITE, SITE + "driver-prices/", SITE + "ferry/"]
-    sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(
-        f"  <url><loc>{u}</loc><lastmod>{today}</lastmod></url>\n" for u in urls
-    ) + "</urlset>\n"
-    write_if_changed(ROOT / "sitemap.xml", sitemap)
-    write_if_changed(ROOT / "robots.txt", f"User-agent: *\nAllow: /\nSitemap: {SITE}sitemap.xml\n")
+    # sitemap.xml, robots.txt and llms.txt are written by tools/seo_build.py
     if js_changed:
         sw_path = ROOT / "sw.js"
         sw = sw_path.read_text(encoding="utf-8")

@@ -1,0 +1,227 @@
+"""Build search pages from data.js, photos.js and partners.json (runs weekly in GitHub Actions).
+
+Writes: prices/, entry-rules/, money/, places/, area/<area>/ pages, sitemap.xml, robots.txt, llms.txt.
+Everything comes from the app's own sourced data; nothing is invented here.
+"""
+import datetime
+import json
+import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from site_template import SITE, esc, page  # noqa: E402
+
+ROOT = Path(__file__).resolve().parents[1]
+CATEGORY = {"eat": "Food", "spa": "Massage and spa", "shop": "Shopping", "play": "Things to do", "stay": "Hotels and resorts"}
+
+
+def load_js_object(path, name):
+    text = path.read_text(encoding="utf-8")
+    start = text.index(name)
+    brace = text.index("{", start)
+    depth = 0
+    for i in range(brace, len(text)):
+        if text[i] == "{":
+            depth += 1
+        elif text[i] == "}":
+            depth -= 1
+            if depth == 0:
+                return json.loads(text[brace:i + 1])
+    raise ValueError(name)
+
+
+def write_if_changed(path, content):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    old = path.read_text(encoding="utf-8") if path.exists() else None
+    if old != content:
+        path.write_text(content, encoding="utf-8", newline="\n")
+        print(f"wrote {path.relative_to(ROOT)}")
+
+
+def slug(text):
+    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+
+
+def fmt_date(iso):
+    d = datetime.date.fromisoformat(iso)
+    return f"{d.day} {d.strftime('%b %Y')}"
+
+
+def idr(n):
+    return "Rp " + f"{n:,.0f}".replace(",", ".")
+
+
+def source_link(url):
+    return f'<a href="{esc(url)}" rel="nofollow noopener">{esc(url.split("/")[2].replace("www.", ""))}</a>'
+
+
+def prices_page(data, partners):
+    rate = data["rules"]["fx_mid_market_sgd_idr"]
+    rows = []
+    sources = set()
+    for p in data["prices"]:
+        if p.get("low") is None:
+            continue
+        if p["currency"] == "IDR":
+            main = f"{idr(p['low'])} – {idr(p['high']).replace('Rp ', '')}"
+            other = f"about S${p['low'] / rate:,.0f} – {p['high'] / rate:,.0f}"
+        else:
+            main = f"S${p['low']} – {p['high']}"
+            other = f"about {idr(p['low'] * rate)} – {idr(p['high'] * rate).replace('Rp ', '')}"
+        rows.append(f"<tr><td>{esc(p['en'])}<br><span class=\"meta\">{other}</span></td><td class=\"num\">{main}</td></tr>")
+        if p.get("source"):
+            sources.add(p["source"])
+    charter = partners["charter"]
+    rows.append(
+        f"<tr><td>Car with English-speaking driver, full day (MPV)<br><span class=\"meta\">see <a href=\"../driver-prices/\">driver prices</a></span></td>"
+        f"<td class=\"num\">S${charter['mpv_sgd'][0]} – {charter['mpv_sgd'][1]}</td></tr>"
+    )
+    body = f"""<h1>How much things cost in Batam (SGD and rupiah)</h1>
+<p class="lede">Typical price ranges for the things Singapore day-trippers pay for most, so you can tell if a quote is fair. Converted at the mid-market rate of S$1 = {idr(rate)} ({fmt_date(data['rules']['fx_date'])}).</p>
+<div class="card"><table><tr><th>Item</th><th class="num">Usual range</th></tr>{''.join(rows)}</table>
+<p class="meta">{esc(data['rules'].get('fx_terminal_penalty', ''))}. Ranges from published guides, not yet checked in person. Sources: {' · '.join(source_link(s) for s in sorted(sources))}</p></div>
+<div class="card"><h2>Check a quote before you pay</h2><p>Type the price a shop or driver quoted you and the app tells you if it is low, fair or high, in both currencies.</p>
+<a class="btn" href="../#price">Check a price</a><a class="btn ghost" href="../#money">Currency converter</a></div>"""
+    return page(
+        "Batam prices in SGD and rupiah: massage, seafood, Grab, hotels",
+        f"What things cost in Batam for Singapore visitors: massage, seafood dinner, Grab, meals, hotels and a driver for the day, in rupiah and SGD at S$1 = {idr(rate)}.",
+        "prices/",
+        body,
+    )
+
+
+def entry_page(data):
+    items = "".join(f"<li>{esc(e['en'])} <span class=\"meta\">({source_link(e['source'])})</span></li>" for e in data["rules"]["entry"])
+    body = f"""<h1>Singapore to Batam entry rules: passport, arrival cards, duty-free</h1>
+<p class="lede">What Singapore residents need for a Batam day trip, in both directions. {esc(data['rules']['timezone_note'])}.</p>
+<div class="card"><ul class="list">{items}</ul></div>
+<div class="card"><h2>Tick it off before you leave</h2><p>The app has a checklist for both terminals that remembers what you have done.</p>
+<a class="btn" href="../#check">Open the checklist</a><a class="btn ghost" href="../ferry/">Ferry operators and fares</a></div>"""
+    return page(
+        "Singapore to Batam entry rules: passport, arrival card, duty-free (day trip)",
+        "Batam day trip from Singapore: visa-free stay, passport validity, All Indonesia arrival card, SG Arrival Card on the way back, and duty-free limits for short trips.",
+        "entry-rules/",
+        body,
+    )
+
+
+def money_page(data):
+    rate = data["rules"]["fx_mid_market_sgd_idr"]
+    tips = "".join(f"<li>{esc(t['en'])} <span class=\"meta\">({source_link(t['source'])})</span></li>" for t in data["rules"]["money_tips"])
+    examples = "".join(f"<tr><td>S${s}</td><td class=\"num\">{idr(s * rate)}</td></tr>" for s in (10, 20, 50, 100, 200))
+    body = f"""<h1>Money in Batam: exchange rate, cash and paying by QR</h1>
+<p class="lede">Mid-market rate on {fmt_date(data['rules']['fx_date'])}: S$1 = {idr(rate)}. {esc(data['rules'].get('fx_terminal_penalty', ''))}.</p>
+<div class="card"><table><tr><th>Singapore dollars</th><th class="num">Rupiah, mid-market</th></tr>{examples}</table></div>
+<div class="card"><h2>Tips</h2><ul class="list">{tips}</ul></div>
+<div class="card"><h2>Convert any amount</h2><p>The converter in the app works offline and lets you set the rate the money changer gives you.</p>
+<a class="btn" href="../#money">Open the converter</a><a class="btn ghost" href="../prices/">Typical prices</a></div>"""
+    return page(
+        f"Batam exchange rate and money tips: S$1 = {idr(rate)}",
+        "Money for a Batam day trip: today's SGD to rupiah rate, how much worse terminal counters are, licensed money changers, cash vs QRIS, Grab and Gojek.",
+        "money/",
+        body,
+    )
+
+
+def place_card(place, photos, place_photos, root):
+    key = place_photos.get(place["id"])
+    img = ""
+    if key and key in photos:
+        p = photos[key]
+        img = (f'<img src="{root}{esc(p["src"])}" width="{p["w"]}" height="{p["h"]}" alt="{esc(p["en"])}" loading="lazy">'
+               f'<p class="meta">Photo: {esc(p["author"])}, <a href="{esc(p["page"])}" rel="nofollow noopener">{esc(p["license"])}</a></p>')
+    source = f" · Source: {source_link(place['source'])}" if place.get("source") else ""
+    return f"""<div class="card">{img}
+  <h2>{esc(place['name'])}</h2>
+  <p>{esc(place['note_en'])}</p>
+  <p class="meta">{CATEGORY.get(place['category'], place['category'])} · {esc(place['area'])}{source} · Not yet visited in person; check opening hours.</p>
+  <a class="btn ghost" href="{root}?place={esc(place['id'])}#places">Open in the app</a>
+</div>"""
+
+
+def area_pages(data, photos, place_photos):
+    areas = {}
+    for place in data["places"]:
+        areas.setdefault(place["area"], []).append(place)
+    out = {}
+    for area, places in sorted(areas.items()):
+        cats = sorted({CATEGORY.get(p["category"], p["category"]).lower() for p in places})
+        body = f"""<h1>{esc(area)}, Batam: {', '.join(cats)}</h1>
+<p class="lede">{len(places)} places in {esc(area)} that Singapore day-trippers look for, from published guides. Plan them around your ferry times in the app.</p>
+{''.join(place_card(p, photos, place_photos, '../../') for p in places)}
+<div class="card"><h2>Getting there</h2><p>Book a car with an English-speaking driver, or plan a Grab route around your ferry.</p>
+<a class="btn" href="../../driver-prices/">Driver prices</a><a class="btn ghost" href="../../#plan">Plan my day</a></div>"""
+        path = f"area/{slug(area)}/"
+        out[path] = page(
+            f"{area}, Batam: {', '.join(cats)} for a day trip from Singapore",
+            f"{len(places)} places in {area}, Batam for Singapore visitors: " + ", ".join(p["name"] for p in places[:5]) + ".",
+            path,
+            body,
+            root="../../",
+            crumbs=[("Places", SITE + "places/"), (area, SITE + path)],
+        )
+    return areas, out
+
+
+def places_index(areas):
+    blocks = []
+    for area, places in sorted(areas.items()):
+        items = "".join(f"<li>{esc(p['name'])} <span class=\"meta\">({CATEGORY.get(p['category'], p['category'])})</span></li>" for p in places)
+        blocks.append(f'<div class="card"><h2><a href="../area/{slug(area)}/">{esc(area)}</a></h2><ul class="list">{items}</ul></div>')
+    total = sum(len(v) for v in areas.values())
+    body = f"""<h1>Things to do in Batam, by area</h1>
+<p class="lede">{total} restaurants, spas, malls, sights and hotels across {len(areas)} areas of Batam, from published guides.</p>
+{''.join(blocks)}"""
+    return page(
+        "Things to do in Batam by area: food, spas, malls, sights, hotels",
+        f"{total} places in Batam for Singapore day-trippers, grouped by area: Nagoya, Harbour Bay, Batam Centre, Nongsa, Barelang and more.",
+        "places/",
+        body,
+    )
+
+
+def main():
+    data = load_js_object(ROOT / "data.js", "window.BUS_DATA")
+    photos = load_js_object(ROOT / "photos.js", "window.BUS_PHOTOS")
+    place_photos = load_js_object(ROOT / "photos.js", "window.BUS_PLACE_PHOTOS")
+    partners = json.loads((ROOT / "partners.json").read_text(encoding="utf-8"))
+
+    pages = {
+        "prices/": prices_page(data, partners),
+        "entry-rules/": entry_page(data),
+        "money/": money_page(data),
+    }
+    areas, area_html = area_pages(data, photos, place_photos)
+    pages["places/"] = places_index(areas)
+    pages.update(area_html)
+    for path, content in pages.items():
+        write_if_changed(ROOT / path / "index.html", content)
+
+    all_paths = ["", "driver-prices/", "ferry/"] + list(pages)
+    today = partners.get("updated", datetime.date.today().isoformat())
+    sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(
+        f"  <url><loc>{SITE}{p}</loc><lastmod>{today}</lastmod></url>\n" for p in all_paths
+    ) + "</urlset>\n"
+    write_if_changed(ROOT / "sitemap.xml", sitemap)
+    write_if_changed(ROOT / "robots.txt", f"User-agent: *\nAllow: /\nSitemap: {SITE}sitemap.xml\n")
+    llms = [
+        "# Batam Uncle Says",
+        "",
+        "> Free mobile web app for Singapore residents planning a Batam day trip: ferry-timed day planner, price checker in SGD and rupiah, entry rules for both directions, Indonesian phrase cards, and direct WhatsApp contact with Batam drivers who publish their prices. Works offline. Facts are sourced; places are not yet visited in person.",
+        "",
+        "## Pages",
+        f"- [Trip planner app]({SITE}): plan a day around ferry times, leave-by countdown",
+        f"- [Batam driver prices]({SITE}driver-prices/): drivers with published prices and WhatsApp, re-checked weekly",
+        f"- [Singapore to Batam ferry]({SITE}ferry/): operators, all-in return fares, terminals",
+        f"- [Batam prices]({SITE}prices/): massage, seafood, Grab, meals, hotels in SGD and rupiah",
+        f"- [Entry rules]({SITE}entry-rules/): passport, arrival cards, duty-free",
+        f"- [Money]({SITE}money/): exchange rate, money changers, QRIS",
+        f"- [Places by area]({SITE}places/)",
+    ] + [f"- [{area}]({SITE}area/{slug(area)}/)" for area in sorted(areas)]
+    write_if_changed(ROOT / "llms.txt", "\n".join(llms) + "\n")
+    print(f"pages: {len(all_paths)}")
+
+
+if __name__ == "__main__":
+    main()

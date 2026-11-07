@@ -1,0 +1,20 @@
+# Batam Uncle Says
+
+> Free mobile web app for Singapore residents planning a Batam day trip: ferry-timed day planner, price checker in SGD and rupiah, entry rules for both directions, Indonesian phrase cards, and direct WhatsApp contact with Batam drivers who publish their prices. Works offline. Facts are sourced; places are not yet visited in person.
+
+## Pages
+- [Trip planner app](https://juw12.github.io/batam-uncle-says/): plan a day around ferry times, leave-by countdown
+- [Batam driver prices](https://juw12.github.io/batam-uncle-says/driver-prices/): drivers with published prices and WhatsApp, re-checked weekly
+- [Singapore to Batam ferry](https://juw12.github.io/batam-uncle-says/ferry/): operators, all-in return fares, terminals
+- [Batam prices](https://juw12.github.io/batam-uncle-says/prices/): massage, seafood, Grab, meals, hotels in SGD and rupiah
+- [Entry rules](https://juw12.github.io/batam-uncle-says/entry-rules/): passport, arrival cards, duty-free
+- [Money](https://juw12.github.io/batam-uncle-says/money/): exchange rate, money changers, QRIS
+- [Places by area](https://juw12.github.io/batam-uncle-says/places/)
+- [Barelang](https://juw12.github.io/batam-uncle-says/area/barelang/)
+- [Batam Centre](https://juw12.github.io/batam-uncle-says/area/batam-centre/)
+- [Bengkong](https://juw12.github.io/batam-uncle-says/area/bengkong/)
+- [Harbour Bay](https://juw12.github.io/batam-uncle-says/area/harbour-bay/)
+- [Nagoya](https://juw12.github.io/batam-uncle-says/area/nagoya/)
+- [Nongsa](https://juw12.github.io/batam-uncle-says/area/nongsa/)
+- [Sekupang](https://juw12.github.io/batam-uncle-says/area/sekupang/)
+- [Waterfront City](https://juw12.github.io/batam-uncle-says/area/waterfront-city/)

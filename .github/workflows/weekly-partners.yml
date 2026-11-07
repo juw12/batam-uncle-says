@@ -8,6 +8,8 @@ on:
     branches: [main]
     paths:
       - partners.json
+      - data.js
+      - photos.js
       - tools/**
       - .github/workflows/weekly-partners.yml
 
@@ -24,8 +26,10 @@ jobs:
           python-version: "3.12"
       - name: Check listed drivers and candidates
         run: python tools/partners_check.py
-      - name: Rebuild partners.js, search pages and sitemap
+      - name: Rebuild partners.js, driver and ferry pages
         run: python tools/partners_build.py
+      - name: Rebuild search pages, sitemap and llms.txt
+        run: python tools/seo_build.py
       - name: Commit changes
         run: |
           git config user.name "batam-uncle-bot"
@@ -38,8 +42,4 @@ jobs:
             git push
           fi
       - name: Tell search engines (IndexNow)
-        run: |
-          curl -s -X POST "https://api.indexnow.org/indexnow" \
-            -H "Content-Type: application/json" \
-            -d '{"host":"juw12.github.io","key":"${{ vars.INDEXNOW_KEY || 'b7c4e1f09a3d4c6e8f2a5b1d7e9c3f60' }}","keyLocation":"https://juw12.github.io/batam-uncle-says/b7c4e1f09a3d4c6e8f2a5b1d7e9c3f60.txt","urlList":["https://juw12.github.io/batam-uncle-says/","https://juw12.github.io/batam-uncle-says/driver-prices/","https://juw12.github.io/batam-uncle-says/ferry/"]}' \
-            -w "IndexNow HTTP %{http_code}\n" || true
+        run: python tools/indexnow.py
