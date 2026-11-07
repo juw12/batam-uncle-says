@@ -118,8 +118,12 @@
       "trakteer.id",
       "buymeacoffee.com",
       "www.buymeacoffee.com",
-      "github.com"
+      "github.com",
+      "sociabuzz.com",
+      "www.sociabuzz.com",
+      "lynk.id",
+      "teer.id"
     ],
-    "note": "Paste ONE payment link you own into tip_url (PayPal.me, Ko-fi, Saweria, Trakteer, Buy Me a Coffee or GitHub Sponsors). A 'Support' button then appears in the app and on every search page. Empty = hidden."
+    "note": "Paste ONE payment link you own into tip_url. Recommended for Indonesia without PayPal: SociaBuzz Tribe (https://sociabuzz.com/<username>/tribe, payout to GoPay or any bank, no KTP). Also accepted: Saweria, Trakteer, Lynk.id, Ko-fi, Buy Me a Coffee, GitHub Sponsors. Empty = hidden."
   }
 }
