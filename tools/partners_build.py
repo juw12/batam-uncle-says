@@ -68,11 +68,15 @@ def driver_page(partners, lang="en"):
         ) or ("<tr><td>当前价格请看其网站</td><td></td></tr>" if zh else "<tr><td>See their website for current prices</td><td></td></tr>")
         if zh:
             lang_names = {"English": "英语", "Chinese": "华语"}
+            if op["price_note"] == "See their website for prices":
+                note_zh = "价格请看其网站"
+            else:
+                note_zh = f'<span lang="en">{esc(op["price_note"])}</span>(运营方网站原文)'
             langs = f" · 语言:{esc('、'.join(lang_names.get(x, x) for x in op['languages']))}" if op.get("languages") else ""
             cards.append(f"""<div class="card">
   <h2>{esc(op['name'])}</h2>
   <table>{rows}</table>
-  <p class="meta"><span lang="en">{esc(op['price_note'])}</span>{langs}。{zh_date(op['checked'])}核查。车型和价格说明为运营方网站原文。</p>
+  <p class="meta">{note_zh}{langs}。{zh_date(op['checked'])}核查。</p>
   <a class="btn" href="https://wa.me/{op['whatsapp']}?text={quote(operator_message())}" rel="nofollow noopener">WhatsApp 联系</a><a class="btn ghost" href="{esc(op['website'])}" rel="nofollow noopener">他们的网站</a>
 </div>""")
             continue
