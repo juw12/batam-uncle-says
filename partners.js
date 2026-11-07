@@ -51,7 +51,7 @@ window.BUS_PARTNERS = {
    "price_note": "Private car charter, as listed on their website",
    "status": "active",
    "checked": "2026-11-07",
-   "fails": 1,
+   "fails": 0,
    "unreachable": 0
   },
   {
