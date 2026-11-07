@@ -92,6 +92,14 @@ def ferry_page(data, partners):
             f"<span class=\"meta\">{esc(' / '.join(f['sg']))} to {esc(', '.join(f['batam']))} · {esc(f['minutes'])} min · first/last from SG {esc(f['first_last_from_sg'])}{note}</span></td>"
             f"<td class=\"num\">{fare}</td></tr>"
         )
+    terminal_names = []
+    for f in data["ferries"]:
+        for t in f["batam"]:
+            if t not in terminal_names:
+                terminal_names.append(t)
+    terminal_links = "".join(
+        f'<li><a href="../terminal/{re.sub(r"[^a-z0-9]+", "-", t.lower()).strip("-")}/">{esc(t)}</a></li>' for t in terminal_names
+    )
     booking = partners["ferry_booking"]["easybook"] + partners["affiliates"].get("easybook_query", "")
     sources = sorted({f["source"] for f in data["ferries"]})
     body = f"""<h1>Singapore to Batam ferry: operators, fares and terminals</h1>
@@ -99,6 +107,7 @@ def ferry_page(data, partners):
 <div class="card"><table><tr><th>Operator and route</th><th class="num">Return, all-in</th></tr>{''.join(rows)}</table>
 <p class="meta">Fares from published sources, not checked at the counter. Confirm on the operator's site. Sources: {' · '.join(f'<a href="{esc(s)}" rel="nofollow noopener">{esc(s.split("/")[2])}</a>' for s in sources)}</p>
 <a class="btn" href="{esc(booking)}" rel="nofollow noopener sponsored">Compare and book tickets online</a></div>
+<div class="card"><h2>Batam terminals</h2><ul class="list">{terminal_links}</ul><a class="btn ghost" href="../day-trip/">Day trip guide</a></div>
 <div class="card">
   <h2>Plan your day around the ferry</h2>
   <p>Enter your arrival and return ferry times and get a timed plan with a leave-by countdown, a price check and entry rules. Works offline.</p>

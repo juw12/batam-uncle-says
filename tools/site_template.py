@@ -25,6 +25,7 @@ def tip_links():
     return found[:3]
 
 NAV = [
+    ("day-trip/", "Day trip"),
     ("driver-prices/", "Drivers"),
     ("ferry/", "Ferry"),
     ("prices/", "Prices"),
