@@ -2,7 +2,8 @@
 
 For every listed operator: fetch their own website and confirm their WhatsApp number is still on it.
   - found      -> stays active, "checked" date updated
-  - not found  -> fails += 1; after 2 failed weeks in a row the listing is paused (hidden in the app)
+  - page loads but number is gone -> fails += 1; after 2 such weeks in a row the listing is paused
+  - site unreachable or blocking bots -> unreachable += 1; paused only after 4 weeks in a row
   - found again after a pause -> active again
 For every candidate: if their website now shows a WhatsApp number, they are listed automatically
 (prices are not copied, the card links to their website).
@@ -19,6 +20,7 @@ DATA_PATH = ROOT / "partners.json"
 TODAY = datetime.date.today().isoformat()
 UA = "Mozilla/5.0 (compatible; BatamUncleSaysCheck/1.0; +https://juw12.github.io/batam-uncle-says/)"
 MAX_FAILS = 2
+MAX_UNREACHABLE = 4
 
 
 def fetch(url):
@@ -62,21 +64,27 @@ def main():
     for operator in data["operators"]:
         print(f"operator: {operator['name']}")
         page = fetch(operator["website"])
-        ok = page is not None and operator["whatsapp"] in numbers_on_page(page)
-        if ok:
+        if page is None or len(page) < 3000:
+            operator["unreachable"] = operator.get("unreachable", 0) + 1
+            print(f"  site unreachable or blocked ({operator['unreachable']} in a row), listing kept")
+            if operator["unreachable"] >= MAX_UNREACHABLE and operator["status"] == "active":
+                operator["status"] = "paused"
+                print("  paused: unreachable for too long")
+        elif operator["whatsapp"] in numbers_on_page(page):
             if operator["status"] != "active" or operator.get("fails"):
                 print("  back to active")
             operator["status"] = "active"
             operator["fails"] = 0
+            operator["unreachable"] = 0
             operator["checked"] = TODAY
-            changed = True
         else:
             operator["fails"] = operator.get("fails", 0) + 1
-            print(f"  number not found ({operator['fails']} in a row)")
+            operator["unreachable"] = 0
+            print(f"  page loads but number not found ({operator['fails']} in a row)")
             if operator["fails"] >= MAX_FAILS and operator["status"] == "active":
                 operator["status"] = "paused"
                 print("  paused")
-            changed = True
+        changed = True
 
     listed_sites = {op["website"].rstrip("/") for op in data["operators"]}
     remaining = []
