@@ -1,0 +1,2410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b2a40">
+<meta name="description" content="Plan a Batam day trip around your ferry, check if a price is fair, and know the rules at both terminals. Works offline.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Uncle Says">
+<title>Batam Uncle Says</title>
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --ink: #0f172a;
+    --ink-2: #475569;
+    --ink-3: #5f6b7c;
+    --line: #e4e7ec;
+    --line-strong: #cbd2dc;
+    --accent: #0b3b5c;
+    --accent-hover: #082d47;
+    --accent-soft: #e7eff6;
+    --deep: #0b2a40;
+    --sand: #f6efe4;
+    --sand-ink: #7a4a12;
+    --ok: #047857;
+    --ok-soft: #ecfdf5;
+    --warn: #9a4508;
+    --warn-soft: #fff6eb;
+    --bad: #b91c1c;
+    --bad-soft: #fef2f2;
+    --radius: 16px;
+    --display: "Instrument Serif", Georgia, "Times New Roman", serif;
+    --radius-sm: 10px;
+    --shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 16px rgba(15, 23, 42, 0.05);
+  }
+  @font-face { font-family: "Inter"; src: url("fonts/inter-latin.woff2") format("woff2"); font-weight: 400 700; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Instrument Serif"; src: url("fonts/instrument-serif-latin.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Instrument Serif"; src: url("fonts/instrument-serif-latin-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  .num { font-variant-numeric: tabular-nums; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  button, input, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .ico { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .ico.sm { width: 16px; height: 16px; }
+  .ico.xs { width: 14px; height: 14px; }
+
+  /* ---------- header ---------- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; min-width: 0; color: var(--ink); }
+  .brand:hover { text-decoration: none; }
+  .mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: var(--deep);
+    display: grid;
+    place-items: center;
+    flex: none;
+  }
+  .brand-name { font-weight: 700; font-size: 16px; letter-spacing: -0.015em; white-space: nowrap; }
+  .brand-sub { font-size: 12px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topnav { display: none; gap: 2px; margin-left: auto; }
+  .topnav a {
+    padding: 7px 11px;
+    border-radius: 8px;
+    color: var(--ink-2);
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .topnav a:hover { background: var(--bg); text-decoration: none; }
+  .topnav a.active { color: var(--accent); background: var(--accent-soft); }
+  .lang {
+    margin-left: auto;
+    display: inline-flex;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: 2px;
+    flex: none;
+  }
+  .lang button {
+    border: 0;
+    background: transparent;
+    padding: 4px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-2);
+    border-radius: 7px;
+    cursor: pointer;
+  }
+  .lang button.on { background: var(--accent); color: #fff; }
+
+  main { max-width: 1080px; margin: 0 auto; padding: 4px 16px 112px; }
+  section { display: none; }
+  section.active { display: block; animation: rise 0.18s ease-out; }
+  @keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .narrow { max-width: 720px; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); margin: 22px 0 6px; }
+  h1 { font-family: var(--display); font-size: 36px; line-height: 1.05; font-weight: 400; letter-spacing: -0.01em; margin: 0 0 10px; }
+  h1 em, .home-hero h1 em { font-style: italic; }
+  html[lang^=zh] h1 { font-family: inherit; font-size: 28px; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; }
+  .lede { color: var(--ink-2); margin: 0 0 20px; font-size: 15px; max-width: 620px; }
+  h2 { font-size: 18px; font-weight: 650; letter-spacing: -0.01em; margin: 30px 0 12px; }
+  .h2row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin: 30px 0 12px; }
+  .h2row h2 { margin: 0; }
+  .h2row a { font-size: 14px; font-weight: 500; white-space: nowrap; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  label, .label { display: block; font-size: 13px; font-weight: 500; color: var(--ink-2); margin-bottom: 6px; }
+  select, input[type=number], input[type=time] {
+    width: 100%;
+    height: 46px;
+    padding: 0 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    font-size: 15px;
+    min-width: 0;
+  }
+  select:focus, input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+  .toggles { display: flex; flex-wrap: wrap; gap: 8px; }
+  .toggle {
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-size: 14px;
+    color: var(--ink-2);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .toggle:hover { border-color: var(--ink-3); }
+  .toggle[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
+  .toggle .count { opacity: 0.75; font-size: 12.5px; margin-left: 4px; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 46px;
+    padding: 0 18px;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--accent-hover); text-decoration: none; }
+  .btn.block { display: flex; width: 100%; margin-top: 18px; }
+  .btn.ghost { background: var(--surface); color: var(--accent); border-color: var(--line-strong); }
+  .btn.ghost:hover { background: var(--accent-soft); }
+  .btn.light { background: #fff; color: var(--deep); border-color: #fff; }
+  .btn.light:hover { background: #eef3f7; }
+  .btn.outline-light { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.6); }
+  .btn.outline-light:hover { background: rgba(255, 255, 255, 0.12); }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: var(--warn-soft);
+    color: var(--warn);
+    white-space: nowrap;
+    vertical-align: 1px;
+  }
+  .pill::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+  .tag {
+    display: inline-block;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1;
+    padding: 5px 8px;
+    border-radius: 6px;
+    background: var(--ok-soft);
+    color: var(--ok);
+    white-space: nowrap;
+  }
+  .small { font-size: 13.5px; color: var(--ink-2); }
+  .meta { font-size: 13px; color: var(--ink-3); }
+  .links { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; }
+  .links a { font-size: 13.5px; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+
+  /* Uncle says note */
+  .uncle {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--sand);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin: 0 0 12px;
+    color: #3d2a12;
+    font-size: 14px;
+  }
+  .uncle .badge {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--sand-ink);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: -0.02em;
+  }
+  .uncle b { display: block; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sand-ink); margin-bottom: 2px; }
+  .uncle a { color: var(--sand-ink); font-weight: 500; }
+
+  /* ---------- home ---------- */
+  .home-hero {
+    position: relative;
+    margin: 0 -16px;
+    min-height: 460px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    background: var(--deep);
+    color: #fff;
+  }
+  .home-hero > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .home-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(8, 26, 40, 0.15) 0%, rgba(8, 26, 40, 0.55) 45%, rgba(8, 26, 40, 0.94) 100%);
+  }
+  .home-hero .inner { position: relative; z-index: 1; padding: 28px 20px 22px; width: 100%; }
+  .home-hero .kicker { font-size: 12.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #dbe7f0; margin-bottom: 10px; }
+  .home-hero h1 { color: #fff; font-size: 46px; line-height: 0.98; letter-spacing: -0.015em; margin-bottom: 12px; max-width: 600px; }
+  html[lang^=zh] .home-hero h1 { font-size: 32px; line-height: 1.2; }
+  .home-hero p { margin: 0 0 20px; color: #e6eef4; max-width: 520px; font-size: 15.5px; }
+  .home-hero .ctas { display: flex; flex-wrap: wrap; gap: 10px; }
+  .home-hero .credit { position: relative; z-index: 1; margin-top: 16px; font-size: 11.5px; color: #c9d6e0; }
+  .home-hero .credit a { color: #c9d6e0; text-decoration: underline; }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 18px 0 0;
+    box-shadow: var(--shadow);
+  }
+  .fact { background: var(--surface); padding: 14px 16px; min-width: 0; }
+  .fact .v { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+  .fact .k { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+  .fact .s { font-size: 12px; color: var(--ink-3); }
+
+  .tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .tool {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    color: var(--ink);
+    box-shadow: var(--shadow);
+    transition: border-color 0.15s, transform 0.15s;
+    min-width: 0;
+  }
+  .tool:hover { text-decoration: none; border-color: var(--line-strong); transform: translateY(-1px); }
+  .tool .ic { width: 38px; height: 38px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
+  .tool b { font-size: 15px; font-weight: 650; }
+  .tool span { font-size: 13px; color: var(--ink-2); line-height: 1.4; }
+
+  .bento { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .bcard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 168px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    color: #fff;
+    background: var(--deep);
+    isolation: isolate;
+  }
+  .bcard:hover { text-decoration: none; }
+  .bcard.big { grid-column: 1 / -1; min-height: 210px; }
+  .bcard > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; transition: transform 0.4s ease; }
+  .bcard:hover > img { transform: scale(1.03); }
+  .bcard::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(8, 26, 40, 0) 25%, rgba(8, 26, 40, 0.86) 100%); }
+  .bcard .txt { padding: 14px 16px 16px; }
+  .bcard b { display: block; font-size: 19px; font-weight: 650; letter-spacing: -0.01em; line-height: 1.2; }
+  .bcard.big b { font-family: var(--display); font-weight: 400; font-size: 30px; letter-spacing: 0; line-height: 1.05; }
+  html[lang^=zh] .bcard.big b { font-family: inherit; font-weight: 700; font-size: 22px; }
+  .bcard span { display: block; font-size: 13px; color: #dce6ee; margin-top: 3px; line-height: 1.35; }
+  .bcard .go { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 255, 255, 0.94); color: var(--deep); display: grid; place-items: center; }
+  .bcard .go .ico { transform: rotate(-45deg); }
+  .bcard.solid { background: linear-gradient(150deg, #0e4a6e, #0b2a40); min-height: 0; }
+  .bcard.solid::after { display: none; }
+  .bcard.solid .txt { padding-top: 56px; }
+  .rows { grid-column: 1 / -1; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .rows a, .rows button.row-btn { display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px 16px; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--ink); text-align: left; font: inherit; cursor: pointer; }
+  .rows > :last-child { border-bottom: 0; }
+  .rows a:hover, .rows button.row-btn:hover { background: var(--bg); text-decoration: none; }
+  .rows .ic { width: 40px; height: 40px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; flex: none; }
+  .rows .tx { flex: 1; min-width: 0; }
+  .rows .tx b { display: block; font-size: 15px; font-weight: 600; overflow-wrap: anywhere; }
+  .rows .tx span { display: block; font-size: 13px; color: var(--ink-2); }
+  .rows .chev { color: var(--ink-3); flex: none; }
+  .bento-credit { grid-column: 1 / -1; font-size: 11.5px; color: var(--ink-3); margin: 2px 2px 0; }
+  .bento-credit a { color: var(--ink-3); text-decoration: underline; }
+  @media (min-width: 720px) {
+    .bento { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .bcard.big { grid-column: span 2; grid-row: span 2; min-height: 360px; }
+    .bcard.big b { font-size: 40px; }
+    .bento .rows { grid-column: span 2; }
+  }
+  .row-ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex: none; color: #fff; background: linear-gradient(160deg, var(--tile-a), var(--tile-b)); }
+  .more-places { margin-top: 26px; }
+  .more-places h2 { margin: 0 0 4px; }
+  .more-places .lede-sm { margin: 0 0 12px; font-size: 13.5px; color: var(--ink-2); }
+  @media (min-width: 720px) {
+    .more-places .rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .more-places .rows > * { border-right: 1px solid var(--line); }
+  }
+
+  .rail-scroll {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 72%;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 16px;
+    align-items: stretch;
+    margin: 0 -16px;
+    padding: 2px 16px 10px;
+    scrollbar-width: none;
+  }
+  .rail-scroll::-webkit-scrollbar { display: none; }
+  .rail-scroll > * { scroll-snap-align: start; }
+
+  .trust { display: grid; gap: 12px; }
+  .trust-item { display: flex; gap: 12px; align-items: flex-start; }
+  .trust-item .ic { width: 34px; height: 34px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; flex: none; }
+  .trust-item b { display: block; font-size: 14.5px; }
+  .trust-item p { margin: 2px 0 0; font-size: 13.5px; color: var(--ink-2); }
+  .meter { height: 8px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); overflow: hidden; margin: 8px 0 6px; }
+  .meter > i { display: block; height: 100%; background: var(--accent); border-radius: 999px; min-width: 0; }
+
+  /* ---------- place cards ---------- */
+  .pgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .pcard {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: border-color 0.15s, transform 0.15s;
+    min-width: 0;
+  }
+  .pcard:hover { border-color: var(--line-strong); transform: translateY(-1px); }
+  .pcard .media { aspect-ratio: 4 / 3; width: 100%; height: auto; flex: none; }
+  .pcard .body { padding: 10px 12px 12px; min-width: 0; flex: 1; }
+  .pcard .cat { font-size: 11.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-3); }
+  .pcard .name { font-size: 14.5px; font-weight: 650; line-height: 1.3; margin: 2px 0 4px; overflow-wrap: anywhere; }
+  .pcard .area { font-size: 13px; color: var(--ink-2); display: flex; align-items: center; gap: 4px; }
+  .media { display: block; object-fit: cover; background: var(--line); }
+  .tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 12px;
+    overflow: hidden;
+    color: #fff;
+    background-image:
+      repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0 1px, transparent 1px 9px),
+      linear-gradient(160deg, var(--tile-a), var(--tile-b));
+    background-color: var(--tile-b);
+  }
+  .tile .tile-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .tile .tile-ic { width: 30px; height: 30px; border-radius: 50%; background: rgba(255, 255, 255, 0.16); display: grid; place-items: center; flex: none; }
+  .tile .tile-ic .ico { width: 16px; height: 16px; stroke-width: 1.7; }
+  .tile .tile-chip { font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 7px; border-radius: 999px; background: rgba(0, 0, 0, 0.28); color: #fff; white-space: nowrap; }
+  .tile .tile-area { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; overflow-wrap: anywhere; }
+  .tile .tile-cat { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255, 255, 255, 0.85); margin-bottom: 3px; }
+  .tile-eat { --tile-a: #9a4d1c; --tile-b: #6e3310; }
+  .tile-spa { --tile-a: #2a7458; --tile-b: #17503b; }
+  .tile-shop { --tile-a: #335591; --tile-b: #1f3a6b; }
+  .tile-play { --tile-a: #7a6418; --tile-b: #54430c; }
+  .tile-stay { --tile-a: #5b4b94; --tile-b: #3b2f6c; }
+  .sheet .tile .tile-area { font-size: 28px; }
+  .sheet .tile { padding: 18px; }
+
+  .filters { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; }
+  .seg { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px 2px; }
+  .seg::-webkit-scrollbar { display: none; }
+  .result-count { font-size: 13px; color: var(--ink-3); margin: 0 0 10px; }
+
+  /* ---------- sheet (dialog) ---------- */
+  dialog.sheet {
+    border: 0;
+    padding: 0;
+    margin: auto auto 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 92vh;
+    border-radius: 18px 18px 0 0;
+    background: var(--surface);
+    color: var(--ink);
+    overflow: auto;
+    box-shadow: 0 -10px 40px rgba(15, 23, 42, 0.2);
+  }
+  dialog.sheet::backdrop { background: rgba(10, 20, 32, 0.5); }
+  dialog.sheet[open] { animation: up 0.2s ease-out; }
+  @keyframes up { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .sheet .media { width: 100%; aspect-ratio: 16 / 9; }
+  .sheet .content { padding: 18px 20px 24px; }
+  .sheet h3 { font-size: 22px; letter-spacing: -0.02em; margin: 4px 0 6px; line-height: 1.2; }
+  .sheet .close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 0;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--ink);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+  }
+  .sheet .wrap { position: relative; }
+  .sheet .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+  .sheet .status { display: flex; gap: 10px; align-items: flex-start; background: var(--bg); border-radius: var(--radius-sm); padding: 12px; margin-top: 14px; font-size: 13.5px; color: var(--ink-2); }
+  .sheet .credit-line { font-size: 12px; color: var(--ink-3); margin-top: 10px; }
+  .sheet .credit-line a { color: var(--ink-3); text-decoration: underline; }
+  .more-list { list-style: none; margin: 0; padding: 8px 12px 20px; }
+  .more-list a { display: flex; align-items: center; gap: 14px; padding: 14px 8px; border-bottom: 1px solid var(--line); color: var(--ink); }
+  .more-list li:last-child a { border-bottom: 0; }
+  .more-list a:hover { text-decoration: none; background: var(--bg); }
+  .more-list .ic { width: 40px; height: 40px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; flex: none; }
+  .more-list b { display: block; font-size: 15px; }
+  .more-list span { font-size: 13px; color: var(--ink-2); }
+  .sheet-head { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 4px; }
+  .sheet-head b { font-size: 17px; }
+  .sheet-head .close { position: static; box-shadow: none; background: var(--bg); }
+
+  /* ---------- plan ---------- */
+  .plan-layout { display: grid; gap: 16px; align-items: start; }
+  .timeline { list-style: none; margin: 0; padding: 0; }
+  .timeline li { display: grid; grid-template-columns: 50px 16px 1fr; column-gap: 10px; }
+  .timeline .time { font-weight: 650; font-size: 14px; padding-top: 1px; }
+  .rail { position: relative; }
+  .rail::before { content: ""; position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; background: var(--line); }
+  .timeline li:first-child .rail::before { top: 8px; }
+  .timeline li:last-child .rail::before { bottom: calc(100% - 8px); }
+  .rail::after {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+  }
+  .timeline li.key .rail::after { background: var(--accent); }
+  .timeline .body { padding-bottom: 18px; min-width: 0; }
+  .timeline .title { font-weight: 600; font-size: 15px; }
+  .linkbtn { border: 0; background: none; padding: 0; color: var(--accent); font-weight: 500; cursor: pointer; text-align: left; font-size: 13.5px; }
+  .linkbtn:hover { text-decoration: underline; }
+  .with-thumb { display: flex; gap: 12px; align-items: flex-start; }
+  .with-thumb > .info { flex: 1; min-width: 0; }
+  .thumb { width: 64px; height: 48px; flex: none; border-radius: 8px; object-fit: cover; background: var(--line); }
+  .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+  .stat { background: var(--deep); color: #fff; border-radius: var(--radius); padding: 14px 16px; }
+  .stat .k { font-size: 12.5px; color: #c9d8e4; }
+  .stat .v { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.25; }
+  .stat.light { background: var(--surface); color: var(--ink); border: 1px solid var(--line); box-shadow: var(--shadow); }
+  .stat.light .k { color: var(--ink-2); }
+  .stat.wide { grid-column: 1 / -1; }
+  @media (min-width: 600px) { .stat.wide { grid-column: auto; } }
+  .row { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; font-size: 14px; }
+  .row .k { color: var(--ink-2); }
+  .row .v { font-weight: 600; text-align: right; }
+  .callout { border-radius: var(--radius-sm); padding: 10px 12px; font-size: 13.5px; margin-top: 12px; }
+  .callout.warn { background: var(--warn-soft); color: var(--warn); }
+  .callout.bad { background: var(--bad-soft); color: var(--bad); }
+  .xlinks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+
+
+
+  /* ---------- day-of clock ---------- */
+  .nowbar { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 12px; box-shadow: var(--shadow); }
+  .nowbar .clock { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 22px; letter-spacing: -0.02em; line-height: 1; }
+  .nowbar .clock small { display: block; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 4px; }
+  .nowbar .msg { flex: 1; min-width: 0; font-size: 14px; color: var(--ink-2); border-left: 1px solid var(--line); padding-left: 12px; }
+  .nowbar .msg b { color: var(--ink); }
+  .nowbar.live, .nowbar.live .clock { background: var(--deep); border-color: var(--deep); color: #fff; }
+  .nowbar.live .clock small, .nowbar.live .msg { color: #c9d8e4; border-color: rgba(255, 255, 255, 0.2); }
+  .nowbar.live .msg b { color: #fff; }
+  .nowbar.late { background: var(--bad-soft); border-color: var(--bad-soft); }
+  .nowbar[hidden], .nowbar:empty { display: none; }
+  a.nowbar { color: var(--ink); text-decoration: none; }
+  a.nowbar.live { color: #fff; }
+  .nowbar.late .msg b { color: var(--bad); }
+
+  /* ---------- phrases ---------- */
+  .phrase-group { margin-top: 22px; }
+  .phrase-group h2 { margin: 0 0 10px; }
+  .phrases { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .phrase { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); cursor: pointer; font: inherit; color: var(--ink); }
+  .phrase:hover { border-color: var(--line-strong); }
+  .phrase .tx { flex: 1; min-width: 0; }
+  .phrase .id { display: block; font-size: 17px; font-weight: 650; letter-spacing: -0.01em; line-height: 1.3; overflow-wrap: anywhere; }
+  .phrase .tr { display: block; font-size: 13.5px; color: var(--ink-2); margin-top: 2px; }
+  .phrase .big { flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
+  .numtable { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .numtable div { background: var(--surface); padding: 12px 14px; min-width: 0; }
+  .numtable b { display: block; font-size: 17px; font-variant-numeric: tabular-nums; }
+  .numtable span { font-size: 13.5px; color: var(--ink-2); }
+  dialog.showcard { width: 100%; max-width: 100%; height: 100%; max-height: 100%; margin: 0; border: 0; padding: 0; background: #fff; color: var(--ink); }
+  dialog.showcard::backdrop { background: rgba(10, 20, 32, 0.6); }
+  .showcard .wrap { min-height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 72px 28px 40px; position: relative; }
+  .showcard .say { font-size: clamp(42px, 12vw, 84px); font-weight: 700; line-height: 1.12; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+  .showcard .mean { margin-top: 18px; font-size: 17px; color: var(--ink-2); }
+  .showcard .close { position: absolute; top: 16px; right: 16px; width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--bg); display: grid; place-items: center; cursor: pointer; color: var(--ink); }
+  .showcard .hint { position: absolute; top: 26px; left: 28px; font-size: 12.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+  @media (min-width: 720px) {
+    .phrases { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .numtable { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  /* ---------- share ---------- */
+  .share-btn { display: flex; width: 100%; margin-top: 12px; }
+  .share-head-btn { height: 36px; padding: 0 12px; font-size: 14px; }
+  .card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 0 0 14px; }
+  .card-head h2 { margin: 0; }
+  .share-intro { margin: 0 0 12px; font-size: 14px; color: var(--ink-2); }
+  .share-preview {
+    margin: 0;
+    padding: 14px 16px;
+    max-height: 46vh;
+    overflow: auto;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    font: 14px/1.55 inherit;
+    font-family: inherit;
+    color: var(--ink);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .share-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+  .share-actions .wide { grid-column: 1 / -1; }
+  .share-status { min-height: 20px; margin-top: 10px; font-size: 13.5px; color: var(--ok); text-align: center; }
+  .share-note { margin: 6px 0 0; font-size: 12.5px; color: var(--ink-3); text-align: center; }
+  @media (min-width: 720px) {
+    dialog.sheet.share { max-width: 520px; margin: auto; border-radius: 18px; }
+  }
+
+  /* ---------- price check ---------- */
+  .verdict { margin-top: 18px; border-radius: var(--radius-sm); padding: 14px; background: var(--bg); }
+  .verdict .head { font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+  .verdict.ok { background: var(--ok-soft); } .verdict.ok .head { color: var(--ok); }
+  .verdict.warn { background: var(--warn-soft); } .verdict.warn .head { color: var(--warn); }
+  .verdict.bad { background: var(--bad-soft); } .verdict.bad .head { color: var(--bad); }
+  .scale { position: relative; height: 10px; background: #fff; border: 1px solid var(--line); border-radius: 999px; margin: 14px 0 6px; }
+  .scale .band { position: absolute; top: -1px; bottom: -1px; background: #b9d0e2; border-radius: 999px; }
+  .scale .marker { position: absolute; top: -6px; width: 4px; height: 20px; border-radius: 2px; background: var(--ink); transform: translateX(-2px); }
+  .scale-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-2); }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list > li { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .list > li:first-child { padding-top: 0; }
+  .list > li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .list .line { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .list .name { font-weight: 500; }
+  .list .value { text-align: right; font-weight: 650; white-space: nowrap; }
+  .strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0 0 16px; }
+  .strip.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .shot { margin: 0; min-width: 0; }
+  .shot img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-sm); background: var(--line); }
+  .shot figcaption { margin-top: 5px; font-size: 12.5px; color: var(--ink-2); line-height: 1.35; }
+
+  /* banner photo for sections */
+  .banner { position: relative; margin: 0 0 18px; border-radius: var(--radius); overflow: hidden; background: var(--deep); }
+  .banner img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 7; object-fit: cover; }
+  .banner figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px; padding: 8px 12px; font-size: 12px; color: #d3dee7; background: var(--deep); }
+  .banner figcaption a { color: #d3dee7; text-decoration: underline; }
+
+  /* ---------- money ---------- */
+  .converter { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: end; }
+  .converter .eq { padding-bottom: 12px; color: var(--ink-3); }
+  .converter input { font-size: 20px; font-weight: 650; height: 54px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .notes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .note { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 10px 12px; background: var(--surface); }
+  .note .idr { font-weight: 650; font-size: 14.5px; }
+  .note .sgd { font-size: 13px; color: var(--ink-2); }
+  .tips { list-style: none; margin: 0; padding: 0; counter-reset: tip; }
+  .tips li { position: relative; padding: 12px 0 12px 36px; border-bottom: 1px solid var(--line); font-size: 14px; counter-increment: tip; }
+  .tips li:first-child { padding-top: 0; }
+  .tips li:first-child::before { top: 0; }
+  .tips li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .tips li::before {
+    content: counter(tip);
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+  }
+
+  /* ---------- ferry ---------- */
+  .ferry-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+  .ferry-head b { font-size: 17px; display: block; }
+  .fare { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; text-align: right; line-height: 1.1; }
+  .fare small { display: block; font-size: 12px; font-weight: 500; color: var(--ink-3); letter-spacing: 0; }
+  .route { display: grid; grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr); gap: 8px; align-items: center; background: var(--bg); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 12px; }
+  .route .side .k { font-size: 11.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-3); }
+  .route .side div:last-child { font-size: 13.5px; font-weight: 500; }
+  .route .arrow { color: var(--ink-3); display: grid; place-items: center; }
+  dl.spec { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0 0 12px; font-size: 14px; }
+  dl.spec dt { color: var(--ink-3); }
+  dl.spec dd { margin: 0; }
+
+  /* ---------- checklist ---------- */
+  .progress-card { display: flex; align-items: center; gap: 16px; }
+  .ring { width: 64px; height: 64px; flex: none; }
+  .ring circle { fill: none; stroke-width: 6; }
+  .ring .bg { stroke: var(--line); }
+  .ring .fg { stroke: var(--accent); stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 0.25s; }
+  .progress-card b { font-size: 17px; display: block; }
+  .check { display: flex; gap: 12px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .check:last-child { border-bottom: 0; padding-bottom: 0; }
+  .check:first-child { padding-top: 0; }
+  .check input {
+    appearance: none;
+    flex: none;
+    width: 22px;
+    height: 22px;
+    margin: 0;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 7px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    background: #fff;
+  }
+  .check input:checked { background: var(--accent); border-color: var(--accent); }
+  .check input:checked::after {
+    content: "";
+    width: 5px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) translate(-1px, -1px);
+  }
+  .check input:checked + span .txt { color: var(--ink-3); text-decoration: line-through; }
+
+  /* ---------- about ---------- */
+  .credits ul { margin: 10px 0 0; padding-left: 18px; font-size: 12.5px; color: var(--ink-2); }
+  .credits li { margin: 4px 0; }
+  .credits a { color: var(--ink-2); text-decoration: underline; }
+  .site-foot { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-3); }
+  .foot-top { display: grid; gap: 20px; padding-bottom: 20px; }
+  .foot-name { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: var(--ink); letter-spacing: -0.01em; }
+  .mark.sm { width: 26px; height: 26px; border-radius: 8px; }
+  .foot-brand p { margin: 8px 0 0; max-width: 46ch; line-height: 1.55; color: var(--ink-2); }
+  .foot-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 16px; align-content: start; }
+  .foot-links a { color: var(--ink-2); padding: 4px 0; }
+  .foot-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+  @media (min-width: 760px) {
+    .foot-top { grid-template-columns: 1.4fr 1fr; gap: 32px; }
+  }
+  .site-foot a { color: var(--ink-2); }
+
+  /* ---------- bottom tab bar (mobile) ---------- */
+  .tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .tabbar a, .tabbar button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 9px 0 10px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-3);
+    min-width: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+  .tabbar a:hover { text-decoration: none; }
+  .tabbar .active { color: var(--accent); font-weight: 600; }
+
+  @media (min-width: 600px) {
+    .strip.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .facts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .tools { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .pgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .rail-scroll { grid-auto-columns: 40%; }
+    .notes { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (min-width: 768px) {
+    .tabbar { display: none; }
+    .topnav { display: flex; }
+    .lang { margin-left: 8px; }
+    .brand-sub { display: none; }
+    main { padding: 8px 24px 48px; }
+    .home-hero { margin: 16px 0 0; border-radius: 20px; min-height: 480px; }
+    .home-hero .inner { padding: 40px 40px 32px; }
+    .home-hero h1 { font-size: 64px; }
+    .home-hero p { font-size: 17px; }
+    h1 { font-size: 46px; }
+    .eyebrow { margin-top: 32px; }
+    .filters { grid-template-columns: 1fr 220px; align-items: center; }
+    .seg { flex-wrap: wrap; margin: 0; padding: 0; overflow: visible; }
+    .rail-scroll { margin: 0; padding: 2px 0 10px; grid-auto-columns: calc((100% - 36px) / 4); }
+    dialog.sheet { margin: auto; max-width: 560px; border-radius: 18px; }
+    .plan-layout { grid-template-columns: 360px minmax(0, 1fr); }
+    .plan-layout .card.form { position: sticky; top: 72px; }
+    .two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+    .two-col h2:first-child { margin-top: 0; }
+    .trust { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  }
+  @media (min-width: 1024px) {
+    .trust { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .pgrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .tools { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  }
+  @media (max-width: 360px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .converter { grid-template-columns: 1fr; }
+    .converter .eq { display: none; }
+    .home-hero h1 { font-size: 40px; }
+    .sheet .actions, .xlinks { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-plan" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h3M8 17h6"/></symbol>
+  <symbol id="i-price" viewBox="0 0 24 24"><path d="M20 13.5 13.5 20a1.5 1.5 0 0 1-2.1 0L4 12.6V4h8.6l7.4 7.4a1.5 1.5 0 0 1 0 2.1z"/><circle cx="8.5" cy="8.5" r="1.3"/></symbol>
+  <symbol id="i-money" viewBox="0 0 24 24"><path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/></symbol>
+  <symbol id="i-ferry" viewBox="0 0 24 24"><path d="M3 15.5 5 20h14l2-4.5-9-3z"/><path d="M6 14V9h12v5M12 9V4M9 6.5h6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M10 6.5h10M10 12h10M10 17.5h10M4 6.5l1.3 1.3L7.5 5.5M4 12l1.3 1.3 2.2-2.3M4 17.5l1.3 1.3 2.2-2.3"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8v.2"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="m8.2 10.8 7.6-4.1M8.2 13.2l7.6 4.1"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11.5" height="11.5" rx="2"/><path d="M15.5 8.5V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7.5a2 2 0 0 0 2 2h2.5"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M20 11.5a8 8 0 0 1-11.6 7.1L4 20l1.4-4.2A8 8 0 1 1 20 11.5z"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.5 19 6v5.5c0 4.3-3 7.6-7 9-4-1.4-7-4.7-7-9V6z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-eat" viewBox="0 0 24 24"><path d="M4 12h16a8 8 0 0 1-16 0zM8 8c0-1.5 1-2 1-3.5M12 8c0-1.5 1-2 1-3.5M16 8c0-1.5 1-2 1-3.5"/></symbol>
+  <symbol id="i-spa" viewBox="0 0 24 24"><path d="M12 20c-4.5 0-8-3-8-7 3 0 6 1.5 8 4 2-2.5 5-4 8-4 0 4-3.5 7-8 7z"/><path d="M12 17c-1.8-2-2.5-4.5-2-7.5.6-2.2 1.5-3.7 2-4.5.5.8 1.4 2.3 2 4.5.5 3-.2 5.5-2 7.5z"/></symbol>
+  <symbol id="i-shop" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6.5a3 3 0 0 1 6 0V8"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></symbol>
+  <symbol id="i-stay" viewBox="0 0 24 24"><path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5"/><circle cx="7" cy="11" r="1.6"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 15c2 0 2-1.5 4.5-1.5S10 15 12 15s2.5-1.5 4.5-1.5S19 15 21 15M3 19c2 0 2-1.5 4.5-1.5S10 19 12 19s2.5-1.5 4.5-1.5S19 19 21 19M12 11V4l5 4z"/></symbol>
+</svg>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#home">
+      <div class="mark" aria-hidden="true">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-wave"/></svg>
+      </div>
+      <div style="min-width:0">
+        <div class="brand-name">Batam Uncle Says</div>
+        <div class="brand-sub" data-i18n="tagline"></div>
+      </div>
+    </a>
+    <nav class="topnav" id="topnav" aria-label="Sections"></nav>
+    <div class="lang" role="group" aria-label="Language">
+      <button data-lang="en">EN</button>
+      <button data-lang="zh">中文</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Home -->
+  <section id="s-home">
+    <div class="home-hero" id="homeHero"></div>
+    <a class="nowbar" id="homeNow" href="#plan" hidden style="margin-top:14px"></a>
+    <div class="facts" id="homeFacts"></div>
+
+    <div class="h2row"><h2 data-i18n="homeToolsTitle"></h2></div>
+    <div class="bento" id="homeTools"></div>
+
+    <div class="h2row"><h2 data-i18n="homeUncleTitle"></h2></div>
+    <div id="homeUncle"></div>
+
+    <div class="h2row"><h2 data-i18n="homePicksTitle"></h2><a href="#places" data-i18n="seeAll"></a></div>
+    <div class="rail-scroll" id="homePicks"></div>
+
+    <div class="h2row"><h2 data-i18n="homeTrustTitle"></h2><a href="#about" data-i18n="howWeWork"></a></div>
+    <div class="card"><div class="trust" id="homeTrust"></div></div>
+  </section>
+
+  <!-- Plan -->
+  <section id="s-plan">
+    <div class="eyebrow" data-i18n="planEyebrow"></div>
+    <h1 data-i18n="planTitle"></h1>
+    <p class="lede" data-i18n="planSub"></p>
+    <div class="nowbar" id="nowBar"></div>
+    <div class="plan-layout">
+      <div class="card form">
+        <div class="field">
+          <label for="terminal" data-i18n="terminal"></label>
+          <select id="terminal"></select>
+        </div>
+        <div class="grid-2 field">
+          <div>
+            <label for="arrive" data-i18n="arrive"></label>
+            <input type="time" id="arrive" value="10:00">
+          </div>
+          <div>
+            <label for="returnFerry" data-i18n="returnFerry"></label>
+            <input type="time" id="returnFerry" value="18:00">
+          </div>
+        </div>
+        <div class="field">
+          <label for="crowd" data-i18n="crowd"></label>
+          <select id="crowd">
+            <option value="60" data-i18n="crowdNormal"></option>
+            <option value="120" data-i18n="crowdLong"></option>
+          </select>
+        </div>
+        <div class="field">
+          <span class="label" data-i18n="interests"></span>
+          <div class="toggles" id="interests"></div>
+        </div>
+        <button class="btn block" id="planBtn" data-i18n="planBtn"></button>
+      </div>
+      <div id="planOut"></div>
+    </div>
+  </section>
+
+  <!-- Price check -->
+  <section id="s-price">
+    <div class="narrow">
+      <div class="eyebrow" data-i18n="priceEyebrow"></div>
+      <h1 data-i18n="priceTitle"></h1>
+      <p class="lede" data-i18n="priceSub"></p>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="card">
+          <div class="field">
+            <label for="priceItem" data-i18n="whatItem"></label>
+            <select id="priceItem"></select>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label for="quoted" data-i18n="quoted"></label>
+              <input type="number" id="quoted" inputmode="numeric" placeholder="350000">
+            </div>
+            <div>
+              <label for="quotedCur" data-i18n="currency"></label>
+              <select id="quotedCur">
+                <option>IDR</option>
+                <option>SGD</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn block" id="checkBtn" data-i18n="checkBtn"></button>
+          <div id="verdict"></div>
+        </div>
+        <div class="strip" id="foodStrip"></div>
+      </div>
+      <div>
+        <h2 data-i18n="fairList"></h2>
+        <div class="card"><ul class="list" id="priceList"></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Money -->
+  <section id="s-money">
+    <div class="narrow">
+      <div class="eyebrow" data-i18n="moneyEyebrow"></div>
+      <h1 data-i18n="moneyTitle"></h1>
+      <p class="lede" id="fxNote"></p>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="card">
+          <div class="converter">
+            <div>
+              <label for="sgd">SGD</label>
+              <input type="number" id="sgd" class="num" value="100">
+            </div>
+            <div class="eq" aria-hidden="true">=</div>
+            <div>
+              <label for="idr">IDR</label>
+              <input type="number" id="idr" class="num">
+            </div>
+          </div>
+          <div class="chips" id="amountChips"></div>
+          <div class="field" style="margin-top:16px">
+            <label for="rate" data-i18n="rate"></label>
+            <input type="number" id="rate" class="num">
+          </div>
+          <p class="small" id="terminalLoss" style="margin:0"></p>
+        </div>
+        <h2 data-i18n="notesTitle"></h2>
+        <div class="notes" id="noteTable"></div>
+      </div>
+      <div>
+        <div id="moneyHero"></div>
+        <div id="moneyUncle"></div>
+        <h2 data-i18n="tips"></h2>
+        <div class="card"><ul class="tips" id="moneyTips"></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ferry -->
+  <section id="s-ferry">
+    <div class="narrow">
+      <div class="eyebrow" data-i18n="ferryEyebrow"></div>
+      <h1 data-i18n="ferryTitle"></h1>
+      <p class="lede" data-i18n="ferrySub"></p>
+    </div>
+    <div id="queueWarn"></div>
+    <div class="two-col" id="ferryList"></div>
+    <a class="btn ghost block" href="#plan" style="margin-top:4px"><span data-i18n="ferryToPlan"></span><svg class="ico sm"><use href="#i-arrow"/></svg></a>
+    <h2 data-i18n="terminalsTitle"></h2>
+    <div class="strip four" id="terminalStrip"></div>
+  </section>
+
+  <!-- Checklist -->
+  <section id="s-check">
+    <div class="narrow">
+      <div class="eyebrow" data-i18n="checkEyebrow"></div>
+      <h1 data-i18n="checkTitle"></h1>
+      <p class="lede" data-i18n="checkSub"></p>
+      <div id="checkList"></div>
+    </div>
+  </section>
+
+  <!-- Phrases -->
+  <section id="s-talk">
+    <div class="narrow">
+      <div class="eyebrow" data-i18n="talkEyebrow"></div>
+      <h1 data-i18n="talkTitle"></h1>
+      <p class="lede" data-i18n="talkSub"></p>
+      <div id="phraseList"></div>
+    </div>
+  </section>
+
+  <!-- Places -->
+  <section id="s-places">
+    <div class="eyebrow" data-i18n="placesEyebrow"></div>
+    <h1 data-i18n="placesTitle"></h1>
+    <p class="lede" data-i18n="placesSub"></p>
+    <div class="filters">
+      <div class="seg" id="catFilter"></div>
+      <select id="areaFilter" aria-label="Area"></select>
+    </div>
+    <p class="result-count" id="placeCount"></p>
+    <div class="pgrid" id="placeList"></div>
+      <div class="more-places" id="placeMore"></div>
+  </section>
+
+  <!-- About -->
+  <section id="s-about">
+    <div class="narrow">
+      <div class="eyebrow" data-i18n="aboutEyebrow"></div>
+      <h1 data-i18n="aboutTitle"></h1>
+      <p class="lede" data-i18n="aboutSub"></p>
+      <div class="card"><div class="trust" id="aboutTrust" style="grid-template-columns:1fr"></div></div>
+      <h2 data-i18n="statusTitle"></h2>
+      <div class="card" id="aboutStatus"></div>
+      <h2 data-i18n="creditsTitle"></h2>
+      <div class="card credits">
+        <p class="small" data-i18n="creditsNote" style="margin:0"></p>
+        <ul id="creditList"></ul>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-foot">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="foot-name">
+          <span class="mark sm" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-wave"/></svg></span>
+          Batam Uncle Says
+        </div>
+        <p data-i18n="footDisclaimer"></p>
+      </div>
+      <nav class="foot-links" id="footLinks" aria-label="Footer"></nav>
+    </div>
+    <div class="foot-bottom">
+      <span id="footNote"></span>
+      <span><button type="button" class="linkbtn" id="shareGuideBtn" hidden data-i18n="shareGuide"></button> <a href="#about" data-i18n="footAbout"></a></span>
+    </div>
+  </footer>
+</main>
+
+<nav class="tabbar" id="tabbar" aria-label="Sections"></nav>
+
+<dialog class="sheet" id="placeSheet" aria-labelledby="placeSheetTitle"></dialog>
+<dialog class="sheet" id="moreSheet" aria-label="More"></dialog>
+<dialog class="sheet share" id="shareSheet" aria-labelledby="shareSheetTitle"></dialog>
+<dialog class="showcard" id="showCard" aria-label="Phrase"></dialog>
+
+<script src="data.js"></script>
+<script src="photos.js"></script>
+<script>
+const DATA = window.BUS_DATA;
+
+const SECTIONS = [
+  { id: "home", icon: "i-home" },
+  { id: "plan", icon: "i-plan" },
+  { id: "price", icon: "i-price" },
+  { id: "money", icon: "i-money" },
+  { id: "ferry", icon: "i-ferry" },
+  { id: "check", icon: "i-check" },
+  { id: "places", icon: "i-pin" },
+  { id: "talk", icon: "i-chat" },
+  { id: "about", icon: "i-info" },
+];
+const TABBAR = ["home", "plan", "places", "price"];
+const MORE = ["money", "ferry", "check", "talk", "about"];
+const CATS = ["eat", "spa", "shop", "play", "stay"];
+
+const T = {
+  en: {
+    tagline: "Batam trips, checked by a local",
+    tab_home: "Home", tab_plan: "Plan", tab_price: "Prices", tab_money: "Money", tab_ferry: "Ferry", tab_check: "Checklist", tab_places: "Places", tab_about: "About", tab_more: "More",
+    more_money: "Converter, banknotes and exchange tips", more_ferry: "Operators, fares and terminals", more_check: "Entry rules for both directions", more_about: "Sources, verification and photo credits",
+    heroKicker: "Batam, Riau Islands · about 1 hour by ferry",
+    heroTitle: "Batam, without the guesswork.",
+    heroSub: "Plan a day around your ferry times, check a price before you pay, and know the rules at both terminals.",
+    heroCta1: "Plan my day", heroCta2: "Check a price",
+    f_ferry: "Lowest return ferry", f_ferry_s: "all-in, listed fare",
+    f_fx: "per S$1", f_fx_s: (d) => `mid-market, ${d}`,
+    f_tz: "Batam time", f_tz_s: "WIB, 1 h behind Singapore",
+    f_visa: "Visa-free", f_visa_s: "Singapore citizens, tourism",
+    homeToolsTitle: "Everything for the trip",
+    tool_plan: "A day plan built around your ferry", tool_price: "Is this price fair? Check in seconds", tool_money: "SGD and rupiah, both ways", tool_ferry: "Four operators compared", tool_check: "Arrival cards and customs", tool_places: (n) => `${n} places with maps`,
+    homeUncleTitle: "Uncle says",
+    uncleSays: "Uncle says",
+    u_queue_more: "Book a return ferry with time to spare.",
+    u_fx: "Terminal and airport money counters can be 8–12% worse than market. Change at a licensed changer in town instead.",
+    photoSoon: "No photo yet",
+    morePlaces: "More places", morePlacesSub: "Listed from published guides. Photos are added when Uncle visits.",
+    homePicksTitle: "Places to start with", seeAll: "See all",
+    homeTrustTitle: "How this guide works", howWeWork: "Details",
+    t1: "Every item links to its source", t1p: "Prices, ferries and places all cite the published guide or official site they came from.",
+    t2: "Marked unverified until visited", t2p: (v, n) => `${v} of ${n} places checked on the ground so far. Each will be dated when visited.`,
+    t3: "Dated and updated", t3p: (d) => `Data last compiled ${d}. Exchange rate is a dated mid-market figure you can edit.`,
+    planEyebrow: "Day trip", planTitle: "Plan around your ferry",
+    planSub: "Set your ferry times and what you'd like to do. The plan keeps time for the terminal queue and tells you when to leave.",
+    terminal: "Arrival terminal in Batam", arrive: "Arrival (Batam time)", returnFerry: "Return ferry (Batam time)",
+    crowd: "Terminal queue", crowdNormal: "Normal day (60 min buffer)", crowdLong: "Long weekend / holiday (120 min buffer)",
+    interests: "Activities", planBtn: "Update plan",
+    i_spa: "Massage & spa", i_shop: "Shopping", i_sights: "Sightseeing", i_seafood: "Seafood meal",
+    arriveStep: "Arrive and clear immigration", lunch: "Lunch", freeTime: "Free time", leave: "Depart for the terminal",
+    atTerminal: "Check in at the terminal", ferryBack: "Ferry to Singapore",
+    itinerary: "Your day", estCost: "Est. spend per person", estCostNote: "Includes return ferry, Grab rides and listed activities",
+    leaveBy: "Leave for terminal", activities: "Activities planned", skipped: "Not enough time for:",
+    noTime: "There isn't enough time between arrival and departure. Choose an earlier arrival or a later return ferry.",
+    tzNote: "All times are Batam time (WIB), one hour behind Singapore.",
+    details: "Details", seeFerries: "Compare ferries", seePrices: "Typical prices",
+    unverified: "Unverified", source: "Source", map: "Map", official: "Operator site",
+    priceEyebrow: "Before you pay", priceTitle: "Price check", priceSub: "Compare a quoted price with the typical range collected from published guides.",
+    whatItem: "Item or service", quoted: "Quoted price", currency: "Currency", checkBtn: "Check price",
+    v_cheap: "Below the typical range", v_fair: "Within the typical range", v_high: "Above the typical range. Consider negotiating.", v_bad: "Well above the typical range",
+    quotedLbl: "Quoted", typicalLbl: "Typical", noData: "No price data collected yet.",
+    fairList: "Typical prices",
+    moneyEyebrow: "Rupiah", moneyTitle: "Money & exchange", rate: "Exchange rate (IDR per 1 SGD)", tips: "Good to know",
+    fxNote: (date) => `Pre-filled with the mid-market rate on ${date}. Money changers will offer slightly less; change it to the rate you're quoted.`,
+    lossNote: (sgd, loss) => `A counter rate 10% below market would cost about S$${loss} on S$${sgd}.`,
+    notesTitle: "Banknotes in Singapore dollars",
+    ferryEyebrow: "Getting there", ferryTitle: "Ferries", ferrySub: "Return fares are all-in estimates including fees. Confirm the final total at checkout.",
+    fromSg: "Singapore", toBatam: "Batam", duration: "Journey", firstLast: "First / last from SG", returnFare: "return, all-in", toConfirm: "Fare to confirm", lowest: "Lowest listed",
+    ferryToPlan: "Plan a day around your ferry times",
+    terminalsTitle: "Batam terminals",
+    checkEyebrow: "Paperwork", checkTitle: "Travel checklist", checkSub: "Tick items off as you go. Progress is saved on this device only.",
+    before: "Before you go", returning: "Returning to Singapore", progress: (d, n) => `${d} of ${n} done`, progressAll: "All set. Have a good trip.", progressSub: "Rules from official sources, linked on each item.", reset: "Reset",
+    placesEyebrow: "Eat, relax, explore", placesTitle: "Places", placesSub: "Collected from published guides. Tap a place for its map and source. Each will be revisited and dated.",
+    all: "All", eat: "Eat", spa: "Spa", shop: "Shop", play: "See & do", stay: "Stay", allAreas: "All areas",
+    showing: (n) => `${n} places`,
+    openMap: "Open in Maps", readSource: "Read source", close: "Close",
+    notVisited: "Not yet visited by Uncle. Listed from a published guide; details may have changed.",
+    photo: "Photo",
+    aboutEyebrow: "About", aboutTitle: "How Uncle checks", aboutSub: "Batam Uncle Says is a planning tool for Singaporeans visiting Batam, run from Batam. It starts from published sources and replaces them with first-hand checks over time.",
+    statusTitle: "Verification status", creditsTitle: "Photo credits",
+    st_places: "Places visited", st_prices: "Prices confirmed in person", st_ferries: "Ferry fares confirmed",
+    st_note: "Everything else is shown with an Unverified label and a link to where it came from.",
+    creditsNote: "Real photos from Wikimedia Commons, used under the Creative Commons licences listed. Our own on-the-ground photos will replace them as places are verified.",
+    footNote: (d) => `Preview · data compiled ${d}`, footAbout: "Sources & photo credits",
+    share: "Share", sharePlan: "Send this plan to family or friends", sharePlace: "Share", shareGuide: "Share this guide",
+    shareTitlePlan: "Share this plan", shareTitlePlace: "Share this place", shareTitleGuide: "Share this guide",
+    shareIntro: "Plain text that reads well in WhatsApp, Telegram, WeChat or SMS.",
+    shareWa: "WhatsApp", shareCopy: "Copy text", shareMore: "More apps", copied: "Copied. Paste it into any chat.", copyFail: "Could not copy. Select the text and copy it manually.",
+    shareNoLink: "A link to open this in the app is added once the guide is online.",
+    sh_planHead: "Batam day trip plan",
+    sh_trip: (term, a, r) => `${term}, arrive ${a}, ferry back ${r}`,
+    sh_tz: "Batam time, 1 hour behind Singapore",
+    sh_leaveBy: (time) => `Leave for the terminal by ${time}.`,
+    sh_cost: (range) => `Est. spend per person: ${range} (return ferry, Grab rides and listed activities)`,
+    sh_skipped: (list) => `Not enough time for: ${list}`,
+    sh_bring: "Bring a passport valid at least 6 months. Submit the All Indonesia arrival card online within 72 h before arrival, and the SG Arrival Card within 3 days before coming back.",
+    sh_unverified: "Places are from published guides and not yet checked in person.",
+    sh_open: "Open this plan:", sh_openPlace: "More details:", sh_map: "Map:",
+    sh_from: "From Batam Uncle Says",
+    sh_placeUnverified: "Not yet visited in person. Check opening hours before you go.",
+    sh_guide: "Planning a Batam day trip? Ferry fares, fair prices, a day planner and entry rules in one place:",
+    tab_talk: "Phrases", more_talk: "Big-text cards to show a driver or shop", tool_talk: "Show-the-driver cards in Indonesian",
+    talkEyebrow: "Bahasa Indonesia", talkTitle: "Phrases to show",
+    talkSub: "Tap a card to show it full screen to a driver, waiter or shop assistant. Standard Indonesian, with English and Chinese meaning.",
+    g_move: "Getting around", g_pay: "Paying and prices", g_eat: "Eating out", g_nums: "Reading price tags",
+    numsNote: "Indonesia writes thousands with a dot, and shops often shorten ribu (thousand) to rb or k.",
+    showHint: "Please read", tapToShow: "Show full screen",
+    nowLabel: "Batam now", sgNow: (t) => `Singapore ${t}`,
+    nowBefore: (t) => `Your plan starts at <b>${t}</b>. Times below are Batam time.`,
+    nowLeaveIn: (d) => `Leave for the terminal in <b>${d}</b>.`,
+    nowLeaveNow: "<b>Time to head to the terminal now.</b>",
+    nowFerryIn: (d) => `Ferry departs in <b>${d}</b>. You should be at the terminal.`,
+    nowDone: "All times in this plan are Batam time, 1 hour behind Singapore.",
+    savedPlan: "Your plan is saved on this phone for the day of the trip.",
+    t4: "Works without mobile data", t4p: "Open it once on Wi-Fi. It keeps working at the terminal and on the ferry, even with no signal.",
+    footDisclaimer: "An independent guide for day trips from Singapore. Not affiliated with any ferry operator, hotel or venue. Check times, fares and entry rules with the operator before you travel.",
+  },
+  zh: {
+    tagline: "巴淡行程,本地人核实",
+    tab_home: "首页", tab_plan: "行程", tab_price: "价格", tab_money: "换汇", tab_ferry: "船票", tab_check: "清单", tab_places: "地点", tab_about: "关于", tab_more: "更多",
+    more_money: "换算、纸币对照与换汇须知", more_ferry: "船公司、票价与码头", more_check: "出入境规定", more_about: "来源、核实进度与图片来源",
+    heroKicker: "印尼廖内群岛巴淡岛 · 船程约1小时",
+    heroTitle: "去巴淡,不用再瞎猜。",
+    heroSub: "按船班时间安排一天行程,付款前先核对价格,两边码头的规定一次看清。",
+    heroCta1: "规划行程", heroCta2: "核对价格",
+    f_ferry: "最低来回船票", f_ferry_s: "含税,公开票价",
+    f_fx: "兑 1 新元", f_fx_s: (d) => `中间汇率,${d}`,
+    f_tz: "巴淡时间", f_tz_s: "WIB,比新加坡慢1小时",
+    f_visa: "免签", f_visa_s: "新加坡公民旅游",
+    homeToolsTitle: "出行所需,一站搞定",
+    tool_plan: "按船班生成一日行程", tool_price: "这价格合理吗?秒查", tool_money: "新元与印尼盾互换", tool_ferry: "四家船公司对比", tool_check: "入境卡与海关规定", tool_places: (n) => `${n} 个地点,附地图`,
+    homeUncleTitle: "Uncle 提醒",
+    uncleSays: "Uncle 提醒",
+    u_queue_more: "回程船班请预留充足时间。",
+    u_fx: "码头和机场的换汇柜台可能比市场价差 8–12%。请到市区持牌换汇店兑换。",
+    photoSoon: "暂无照片",
+    morePlaces: "更多地点", morePlacesSub: "整理自公开指南。Uncle 实地到访后会补上照片。",
+    homePicksTitle: "从这里开始", seeAll: "查看全部",
+    homeTrustTitle: "本指南如何运作", howWeWork: "详情",
+    t1: "每项信息都附来源", t1p: "价格、船班与地点均注明出处,可点开查看原始指南或官网。",
+    t2: "实地核实前标注“待核实”", t2p: (v, n) => `目前已实地核实 ${v} / ${n} 个地点。核实后会注明日期。`,
+    t3: "注明日期,持续更新", t3p: (d) => `数据整理于 ${d}。汇率为注明日期的中间价,可自行修改。`,
+    planEyebrow: "一日游", planTitle: "按船班规划行程",
+    planSub: "设定船班时间和想做的事。行程会预留码头排队时间,并告诉你何时出发去码头。",
+    terminal: "巴淡抵达码头", arrive: "抵达时间(巴淡时间)", returnFerry: "回程船班(巴淡时间)",
+    crowd: "码头排队", crowdNormal: "平日(预留60分钟)", crowdLong: "长周末/假期(预留120分钟)",
+    interests: "活动", planBtn: "更新行程",
+    i_spa: "按摩 Spa", i_shop: "购物", i_sights: "观光", i_seafood: "海鲜餐",
+    arriveStep: "抵达并办理入境", lunch: "午餐", freeTime: "自由活动", leave: "前往码头",
+    atTerminal: "码头办理登船", ferryBack: "搭船返回新加坡",
+    itinerary: "你的行程", estCost: "每人预计花费", estCostNote: "含来回船票、Grab 车费及所选活动",
+    leaveBy: "出发去码头", activities: "已安排活动", skipped: "时间不足,未安排:",
+    noTime: "抵达与回程之间时间不足。请选择更早的去程或更晚的回程。",
+    tzNote: "所有时间均为巴淡时间(WIB),比新加坡慢1小时。",
+    details: "详情", seeFerries: "比较船票", seePrices: "常见价格",
+    unverified: "待核实", source: "来源", map: "地图", official: "官网",
+    priceEyebrow: "付款之前", priceTitle: "价格核对", priceSub: "将报价与公开指南整理的常见价格区间对比。",
+    whatItem: "项目或服务", quoted: "报价", currency: "货币", checkBtn: "核对价格",
+    v_cheap: "低于常见价格", v_fair: "在常见价格区间内", v_high: "高于常见价格,建议议价", v_bad: "远高于常见价格",
+    quotedLbl: "报价", typicalLbl: "常见", noData: "尚未收集此项价格。",
+    fairList: "常见价格",
+    moneyEyebrow: "印尼盾", moneyTitle: "货币与换汇", rate: "汇率(1 SGD 兑 IDR)", tips: "注意事项",
+    fxNote: (date) => `默认为 ${date} 的中间汇率。换汇店的汇率会略低,请改为实际报价。`,
+    lossNote: (sgd, loss) => `若柜台汇率比市场低10%,换 S$${sgd} 约损失 S$${loss}。`,
+    notesTitle: "印尼盾纸币对应新元",
+    ferryEyebrow: "交通", ferryTitle: "船票", ferrySub: "来回票价为含税估算,请在付款页确认最终金额。",
+    fromSg: "新加坡", toBatam: "巴淡", duration: "航程", firstLast: "新加坡首/末班", returnFare: "来回含税", toConfirm: "票价待确认", lowest: "最低公开价",
+    ferryToPlan: "按船班时间规划一天行程",
+    terminalsTitle: "巴淡码头实景",
+    checkEyebrow: "证件手续", checkTitle: "出行清单", checkSub: "逐项勾选,进度仅保存在此设备上。",
+    before: "出发前", returning: "返回新加坡", progress: (d, n) => `已完成 ${d} / ${n}`, progressAll: "全部准备就绪,旅途愉快。", progressSub: "规定来自官方来源,每项均附链接。", reset: "重置",
+    placesEyebrow: "吃喝玩乐", placesTitle: "地点", placesSub: "整理自公开指南。点开地点可查看地图和来源,之后将逐一实地核实并标注日期。",
+    all: "全部", eat: "餐饮", spa: "Spa", shop: "购物", play: "景点", stay: "住宿", allAreas: "全部区域",
+    showing: (n) => `共 ${n} 个地点`,
+    openMap: "在地图中打开", readSource: "查看来源", close: "关闭",
+    notVisited: "Uncle 尚未实地到访。信息来自公开指南,可能已有变化。",
+    photo: "图片",
+    aboutEyebrow: "关于", aboutTitle: "Uncle 如何核实", aboutSub: "Batam Uncle Says 是为前往巴淡的新加坡游客而做的规划工具,由身在巴淡的本地团队维护。先从公开来源整理,再逐步换成第一手核实信息。",
+    statusTitle: "核实进度", creditsTitle: "图片来源",
+    st_places: "已到访地点", st_prices: "已现场确认价格", st_ferries: "已确认船票价格",
+    st_note: "其余信息均标注“待核实”,并附原始出处链接。",
+    creditsNote: "实拍照片来自 Wikimedia Commons,按所列知识共享(CC)许可使用。地点实地核实后,将换成我们自己拍摄的照片。",
+    footNote: (d) => `预览版 · 数据整理于 ${d}`, footAbout: "来源与图片来源",
+    share: "分享", sharePlan: "把行程发给家人朋友", sharePlace: "分享", shareGuide: "分享本指南",
+    shareTitlePlan: "分享行程", shareTitlePlace: "分享地点", shareTitleGuide: "分享本指南",
+    shareIntro: "纯文字格式,适合 WhatsApp、Telegram、微信或短信。",
+    shareWa: "WhatsApp", shareCopy: "复制文字", shareMore: "其他应用", copied: "已复制,可粘贴到任何聊天。", copyFail: "无法复制,请手动选择文字复制。",
+    shareNoLink: "指南上线后,会自动附上打开此行程的链接。",
+    sh_planHead: "巴淡一日游行程",
+    sh_trip: (term, a, r) => `${term},${a} 抵达,${r} 回程`,
+    sh_tz: "巴淡时间,比新加坡慢1小时",
+    sh_leaveBy: (time) => `${time} 前出发去码头。`,
+    sh_cost: (range) => `每人预计花费:${range}(含来回船票、Grab 车费及所选活动)`,
+    sh_skipped: (list) => `时间不足,未安排:${list}`,
+    sh_bring: "护照有效期至少6个月。抵达前72小时内在线填写 All Indonesia 入境卡,回新加坡前3天内提交 SG Arrival Card。",
+    sh_unverified: "地点来自公开指南,尚未实地核实。",
+    sh_open: "打开此行程:", sh_openPlace: "详情:", sh_map: "地图:",
+    sh_from: "来自 Batam Uncle Says",
+    sh_placeUnverified: "尚未实地到访,出发前请确认营业时间。",
+    sh_guide: "要去巴淡一日游?船票、合理价格、行程规划和出入境规定,一站看清:",
+    tab_talk: "常用语", more_talk: "大字卡片,直接给司机或店员看", tool_talk: "印尼语大字卡,给司机看",
+    talkEyebrow: "印尼语", talkTitle: "出示常用语",
+    talkSub: "点开卡片即可全屏显示,直接给司机、服务员或店员看。标准印尼语,附英文与中文意思。",
+    g_move: "出行交通", g_pay: "付款与价格", g_eat: "吃饭点餐", g_nums: "看懂价格标签",
+    numsNote: "印尼用点号分隔千位,商家常把 ribu(千)简写为 rb 或 k。",
+    showHint: "请看", tapToShow: "全屏显示",
+    nowLabel: "巴淡现在", sgNow: (t) => `新加坡 ${t}`,
+    nowBefore: (t) => `行程从 <b>${t}</b> 开始。以下均为巴淡时间。`,
+    nowLeaveIn: (d) => `还有 <b>${d}</b> 出发去码头。`,
+    nowLeaveNow: "<b>现在该出发去码头了。</b>",
+    nowFerryIn: (d) => `船还有 <b>${d}</b> 开,你应该已在码头。`,
+    nowDone: "行程中的时间均为巴淡时间,比新加坡慢1小时。",
+    savedPlan: "行程已保存在这台手机上,出行当天可直接查看。",
+    t4: "没有流量也能用", t4p: "用 Wi-Fi 打开一次,之后在码头和船上没信号也能照常使用。",
+    footDisclaimer: "面向新加坡一日游旅客的独立指南,与任何渡轮公司、酒店或商家无关联。出行前请向运营方核实班次、票价和入境规定。",
+  },
+};
+
+let lang = new URLSearchParams(location.search).get("lang") || localStorage.getItem("bus_lang") || "en";
+const t = (key) => T[lang][key] ?? key;
+const tf = (key, ...args) => T[lang][key](...args);
+const pick = (obj) => obj[lang] ?? obj.en ?? "";
+const fmtIdr = (n) => "Rp " + Math.round(n).toLocaleString("en-US");
+const fmtSgd = (n) => "S$" + (Math.round(n * 10) / 10).toLocaleString("en-US", { minimumFractionDigits: 0 });
+const pill = () => `<span class="pill">${t("unverified")}</span>`;
+const icon = (id, cls) => `<svg class="ico ${cls || ""}" aria-hidden="true"><use href="#${id}"/></svg>`;
+const ext = (url, label) => `<a href="${url}" target="_blank" rel="noopener">${label}${icon("i-ext", "xs")}</a>`;
+
+function fmtDate(iso) {
+  const d = new Date(iso + "T00:00:00");
+  if (lang === "zh") {
+    return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+  }
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+
+function getRate() {
+  return Number(localStorage.getItem("bus_rate")) || DATA.rules.fx_mid_market_sgd_idr;
+}
+
+function toSgd(amount, currency) {
+  return currency === "SGD" ? amount : amount / getRate();
+}
+
+function el(html) {
+  const holder = document.createElement("div");
+  holder.innerHTML = html.trim();
+  return holder.firstElementChild;
+}
+
+function uncleNote(html) {
+  return `<div class="uncle"><span class="badge" aria-hidden="true">U</span><div><b>${t("uncleSays")}</b>${html}</div></div>`;
+}
+
+/* ---------- navigation + language ---------- */
+function currentId() {
+  const id = (location.hash || "#home").slice(1);
+  return SECTIONS.some((s) => s.id === id) ? id : "home";
+}
+
+function renderNav() {
+  const byId = (id) => SECTIONS.find((s) => s.id === id);
+  const tabLink = (id) => `<a href="#${id}" data-tab="${id}">${icon(byId(id).icon)}<span>${t("tab_" + id)}</span></a>`;
+  document.getElementById("tabbar").innerHTML =
+    TABBAR.map(tabLink).join("") +
+    `<button type="button" id="moreBtn" data-more>${icon("i-more")}<span>${t("tab_more")}</span></button>`;
+  document.getElementById("topnav").innerHTML = SECTIONS.filter((s) => s.id !== "about")
+    .map((s) => `<a href="#${s.id}" data-tab="${s.id}">${t("tab_" + s.id)}</a>`).join("");
+  document.getElementById("footLinks").innerHTML = SECTIONS
+    .map((s) => `<a href="#${s.id}">${t("tab_" + s.id)}</a>`).join("");
+  document.getElementById("moreBtn").onclick = openMore;
+  markActiveTab();
+}
+
+function markActiveTab() {
+  const id = currentId();
+  document.querySelectorAll("main > section").forEach((s) => s.classList.toggle("active", s.id === "s-" + id));
+  document.querySelectorAll("[data-tab]").forEach((a) => {
+    const active = a.dataset.tab === id;
+    a.classList.toggle("active", active);
+    if (active) {
+      a.setAttribute("aria-current", "page");
+    } else {
+      a.removeAttribute("aria-current");
+    }
+  });
+  const moreBtn = document.getElementById("moreBtn");
+  if (moreBtn) moreBtn.classList.toggle("active", MORE.includes(id));
+}
+
+function showTab() {
+  markActiveTab();
+  window.scrollTo(0, 0);
+  const sheet = document.getElementById("moreSheet");
+  if (sheet.open) sheet.close();
+}
+
+function openMore() {
+  const sheet = document.getElementById("moreSheet");
+  sheet.innerHTML = `
+    <div class="sheet-head"><b>${t("tab_more")}</b><button class="close" type="button" aria-label="${t("close")}">${icon("i-close", "sm")}</button></div>
+    <ul class="more-list">${MORE.map((id) => {
+      const s = SECTIONS.find((x) => x.id === id);
+      return `<li><a href="#${id}"><span class="ic">${icon(s.icon)}</span><span><b>${t("tab_" + id)}</b><span>${t("more_" + id)}</span></span></a></li>`;
+    }).join("")}</ul>`;
+  sheet.querySelector(".close").onclick = () => sheet.close();
+  sheet.querySelectorAll("a").forEach((a) => {
+    a.onclick = () => sheet.close();
+  });
+  sheet.showModal();
+}
+
+function applyLang() {
+  document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
+  document.querySelectorAll(".lang button").forEach((b) => b.classList.toggle("on", b.dataset.lang === lang));
+  document.querySelectorAll("[data-i18n]").forEach((node) => {
+    node.textContent = t(node.dataset.i18n);
+  });
+  renderNav();
+  renderAll();
+}
+
+/* ---------- photos ---------- */
+const PHOTOS = window.BUS_PHOTOS || {};
+const PLACE_PHOTOS = window.BUS_PLACE_PHOTOS || {};
+
+function photoCaption(key) {
+  const p = PHOTOS[key];
+  return p ? (lang === "zh" ? p.zh : p.en) : "";
+}
+
+function photoImg(key, cls, eager) {
+  const p = PHOTOS[key];
+  if (!p) {
+    return "";
+  }
+  const loading = eager ? "eager" : "lazy";
+  return `<img class="${cls || ""}" src="${p.src}" width="${p.w}" height="${p.h}" alt="${photoCaption(key)}" loading="${loading}" decoding="async">`;
+}
+
+function photoCredit(key) {
+  const p = PHOTOS[key];
+  return `${t("photo")}: <a href="${p.page}" target="_blank" rel="noopener">${p.author}</a>, <a href="${p.licenseUrl}" target="_blank" rel="noopener">${p.license}</a>`;
+}
+
+function bannerFigure(key) {
+  return `
+    <figure class="banner">
+      ${photoImg(key)}
+      <figcaption><span>${photoCaption(key)}</span><span>${photoCredit(key)}</span></figcaption>
+    </figure>`;
+}
+
+function shotFigure(key) {
+  return `<figure class="shot">${photoImg(key)}<figcaption>${photoCaption(key)}</figcaption></figure>`;
+}
+
+function placeMedia(place, cls) {
+  const key = PLACE_PHOTOS[place.id];
+  if (key) {
+    return photoImg(key, "media " + (cls || ""));
+  }
+  return `<div class="media tile tile-${place.category} ${cls || ""}" role="img" aria-label="${t(place.category)}, ${place.area}. ${t("photoSoon")}">
+      <span class="tile-top" aria-hidden="true"><span class="tile-ic">${icon("i-" + place.category)}</span><span class="tile-chip">${t("photoSoon")}</span></span>
+      <span aria-hidden="true"><span class="tile-cat" style="display:block">${t(place.category)}</span><span class="tile-area" style="display:block">${place.area}</span></span>
+    </div>`;
+}
+
+/* ---------- home ---------- */
+function minFare() {
+  return Math.min(...DATA.ferries.filter((f) => f.return_all_in_sgd).map((f) => f.return_all_in_sgd));
+}
+
+function renderHome() {
+  document.getElementById("homeHero").innerHTML = `
+    ${photoImg("hero-barelang", "", true)}
+    <div class="inner">
+      <div class="kicker">${t("heroKicker")}</div>
+      <h1>${lang === "en" ? t("heroTitle").replace(", ", ", <em>") + "</em>" : t("heroTitle")}</h1>
+      <p>${t("heroSub")}</p>
+      <div class="ctas">
+        <a class="btn light" href="#plan">${t("heroCta1")}${icon("i-arrow", "sm")}</a>
+        <a class="btn outline-light" href="#price">${t("heroCta2")}</a>
+      </div>
+      <div class="credit">${photoCaption("hero-barelang")} · ${photoCredit("hero-barelang")}</div>
+    </div>`;
+
+  const rate = DATA.rules.fx_mid_market_sgd_idr;
+  document.getElementById("homeFacts").innerHTML = [
+    { v: fmtSgd(minFare()), k: t("f_ferry"), s: t("f_ferry_s") },
+    { v: "Rp " + rate.toLocaleString("en-US"), k: t("f_fx"), s: tf("f_fx_s", fmtDate(DATA.rules.fx_date)) },
+    { v: "−1 h", k: t("f_tz"), s: t("f_tz_s") },
+    { v: lang === "zh" ? "30 天" : "30 days", k: t("f_visa"), s: t("f_visa_s") },
+  ].map((f) => `<div class="fact"><div class="v num">${f.v}</div><div class="k">${f.k}</div><div class="s">${f.s}</div></div>`).join("");
+
+  const toolDesc = (id) => (id === "places" ? tf("tool_places", DATA.places.length) : t("tool_" + id));
+  const goIcon = `<span class="go" aria-hidden="true">${icon("i-arrow", "sm")}</span>`;
+  const photoCard = (id, key, cls) => `
+    <a class="bcard ${cls}" href="#${id}">
+      ${photoImg(key)}
+      ${goIcon}
+      <span class="txt"><b>${t("tab_" + id)}</b><span>${toolDesc(id)}</span></span>
+    </a>`;
+  const rowLink = (id) => {
+    const s = SECTIONS.find((x) => x.id === id);
+    return `<a href="#${id}"><span class="ic">${icon(s.icon)}</span><span class="tx"><b>${t("tab_" + id)}</b><span>${toolDesc(id)}</span></span><span class="chev">${icon("i-arrow", "sm")}</span></a>`;
+  };
+  const bentoPhotos = ["ferry-batam-centre", "food-fish", "place-maitreya"];
+  document.getElementById("homeTools").innerHTML = `
+    ${photoCard("plan", "ferry-batam-centre", "big")}
+    ${photoCard("price", "food-fish", "")}
+    ${photoCard("places", "place-maitreya", "")}
+    <div class="rows">${["ferry", "money", "talk", "check"].map(rowLink).join("")}</div>
+    <p class="bento-credit">${bentoPhotos.map((key) => `${photoCaption(key)}: ${photoCredit(key).replace(t("photo") + ": ", "")}`).join(" · ")}</p>`;
+
+  const q = DATA.rules.queue_warning;
+  document.getElementById("homeUncle").innerHTML = `<div class="two-col">
+    ${uncleNote(`${pick(q)} ${t("u_queue_more")} ${ext(q.source, t("source"))}`)}
+    ${uncleNote(`${t("u_fx")} <a href="#money">${t("tab_money")}</a>`)}
+  </div>`;
+
+  const picks = ["barelang-bridge", "duta-maitreya", "golden-prawn-933", "nagoya-hill", "harbour-bay-seafood", "montigo", "turi-beach", "mega-mall"];
+  document.getElementById("homePicks").innerHTML = picks
+    .map((id) => DATA.places.find((p) => p.id === id))
+    .filter(Boolean)
+    .map(placeCard)
+    .join("");
+  document.getElementById("homePicks").scrollLeft = 0;
+
+  const visited = DATA.places.filter((p) => p.verified).length;
+  document.getElementById("homeTrust").innerHTML = trustItems(visited);
+}
+
+function trustItems(visited) {
+  return [
+    { ic: "i-link", b: t("t1"), p: t("t1p") },
+    { ic: "i-shield", b: t("t2"), p: tf("t2p", visited, DATA.places.length) },
+    { ic: "i-clock", b: t("t3"), p: tf("t3p", fmtDate(DATA.generated || DATA.rules.fx_date)) },
+    { ic: "i-ferry", b: t("t4"), p: t("t4p") },
+  ].map((x) => `<div class="trust-item"><span class="ic">${icon(x.ic, "sm")}</span><div><b>${x.b}</b><p>${x.p}</p></div></div>`).join("");
+}
+
+/* ---------- places ---------- */
+function placeCard(p) {
+  return `
+    <button type="button" class="pcard" data-place="${p.id}">
+      ${placeMedia(p)}
+      <span class="body">
+        <span class="cat">${t(p.category)}</span>
+        <span class="name" style="display:block">${p.name}</span>
+        <span class="area">${icon("i-pin", "xs")}${p.area}</span>
+      </span>
+    </button>`;
+}
+
+let catFilter = "all";
+let areaFilter = "all";
+
+function renderPlaces() {
+  const catBox = document.getElementById("catFilter");
+  catBox.innerHTML = "";
+  for (const c of ["all", ...CATS]) {
+    const count = c === "all" ? DATA.places.length : DATA.places.filter((p) => p.category === c).length;
+    const button = el(`<button type="button" class="toggle" aria-pressed="${c === catFilter}">${t(c)}<span class="count">${count}</span></button>`);
+    button.onclick = () => {
+      catFilter = c;
+      renderPlaces();
+    };
+    catBox.appendChild(button);
+  }
+
+  const areaSelect = document.getElementById("areaFilter");
+  const areas = [...new Set(DATA.places.map((p) => p.area))].sort();
+  areaSelect.innerHTML = `<option value="all">${t("allAreas")}</option>` + areas.map((a) => `<option>${a}</option>`).join("");
+  areaSelect.value = areaFilter;
+  areaSelect.onchange = () => {
+    areaFilter = areaSelect.value;
+    renderPlaces();
+  };
+
+  const list = DATA.places
+    .filter((p) => (catFilter === "all" || p.category === catFilter) && (areaFilter === "all" || p.area === areaFilter))
+    .sort((a, b) => Number(Boolean(PLACE_PHOTOS[b.id])) - Number(Boolean(PLACE_PHOTOS[a.id])));
+  document.getElementById("placeCount").textContent = tf("showing", list.length);
+  const withPhoto = list.filter((p) => PLACE_PHOTOS[p.id]);
+  const withoutPhoto = list.filter((p) => !PLACE_PHOTOS[p.id]);
+  const placeRow = (p) => `
+    <button type="button" class="row-btn" data-place="${p.id}">
+      <span class="row-ic tile-${p.category}">${icon("i-" + p.category, "sm")}</span>
+      <span class="tx"><b>${p.name}</b><span>${t(p.category)} · ${p.area}</span></span>
+      <span class="chev">${icon("i-arrow", "sm")}</span>
+    </button>`;
+  document.getElementById("placeList").innerHTML = withPhoto.map(placeCard).join("");
+  document.getElementById("placeList").hidden = withPhoto.length === 0;
+  document.getElementById("placeMore").innerHTML = withoutPhoto.length
+    ? `<h2>${withPhoto.length ? t("morePlaces") : t("placesTitle")}</h2>
+       <p class="lede-sm">${t("morePlacesSub")}</p>
+       <div class="rows">${withoutPhoto.map(placeRow).join("")}</div>`
+    : "";
+}
+
+function openPlace(id) {
+  const p = DATA.places.find((x) => x.id === id);
+  if (!p) {
+    return;
+  }
+  const note = lang === "zh" ? (p.note_zh || p.note_en) : p.note_en;
+  const mapUrl = "https://www.google.com/maps/search/" + encodeURIComponent(p.name + " Batam");
+  const photoKey = PLACE_PHOTOS[p.id];
+  const host = new URL(p.source).hostname.replace(/^www\./, "");
+  const sheet = document.getElementById("placeSheet");
+  sheet.innerHTML = `
+    <div class="wrap">
+      <button class="close" type="button" aria-label="${t("close")}">${icon("i-close", "sm")}</button>
+      ${placeMedia(p)}
+      <div class="content">
+        <div class="pcard" style="all:unset"><span class="meta" style="font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:12px">${t(p.category)} · ${p.area}</span></div>
+        <h3 id="placeSheetTitle">${p.name}</h3>
+        ${note ? `<p class="small" style="margin:0;font-size:15px">${note}</p>` : ""}
+        <div class="status">${icon("i-info", "sm")}<div>${pill()}<div style="margin-top:6px">${t("notVisited")}</div><div class="meta" style="margin-top:4px">${t("source")}: ${host}</div></div></div>
+        <div class="actions">
+          <a class="btn" href="${mapUrl}" target="_blank" rel="noopener">${icon("i-pin", "sm")}${t("openMap")}</a>
+          <a class="btn ghost" href="${p.source}" target="_blank" rel="noopener">${t("readSource")}</a>
+          <button type="button" class="btn ghost" style="grid-column:1/-1" data-share-place="${p.id}">${icon("i-share", "sm")}${t("sharePlace")}</button>
+        </div>
+        ${photoKey ? `<div class="credit-line">${photoCaption(photoKey)} · ${photoCredit(photoKey)}</div>` : ""}
+      </div>
+    </div>`;
+  sheet.querySelector(".close").onclick = () => sheet.close();
+  sheet.showModal();
+}
+
+/* ---------- planner ---------- */
+const TERMINALS = {
+  "Batam Centre": ["Batam Centre", "Nagoya", "Bengkong", "Harbour Bay"],
+  "Harbour Bay": ["Harbour Bay", "Nagoya", "Bengkong", "Batam Centre"],
+  "Sekupang": ["Sekupang", "Waterfront City", "Nagoya", "Harbour Bay"],
+  "Nongsa Pura": ["Nongsa", "Batam Centre", "Nagoya"],
+  "Waterfront City": ["Waterfront City", "Sekupang", "Nagoya", "Harbour Bay"],
+};
+const INTERESTS = ["spa", "shop", "sights", "seafood"];
+const selectedInterests = new Set(["spa", "seafood"]);
+const isSeafood = (p) => p.category === "eat" && (p.name.toLowerCase().includes("seafood") || p.id === "golden-prawn-933");
+
+function priceRangeSgd(id) {
+  const item = DATA.prices.find((p) => p.id === id);
+  return { low: toSgd(item.low, item.currency), high: toSgd(item.high, item.currency) };
+}
+
+function nearestPlace(matches, terminal, avoidIds) {
+  const order = TERMINALS[terminal];
+  const rank = (area) => (order.indexOf(area) === -1 ? 99 : order.indexOf(area));
+  return DATA.places
+    .filter((p) => matches(p) && !avoidIds.has(p.id))
+    .sort((a, b) => rank(a.area) - rank(b.area))[0];
+}
+
+const minutes = (value) => {
+  const [h, m] = value.split(":").map(Number);
+  return h * 60 + m;
+};
+const hhmm = (total) => String(Math.floor(total / 60)).padStart(2, "0") + ":" + String(total % 60).padStart(2, "0");
+
+function buildPlan() {
+  const terminal = document.getElementById("terminal").value;
+  const arrive = minutes(document.getElementById("arrive").value);
+  const ferryBack = minutes(document.getElementById("returnFerry").value);
+  const buffer = Number(document.getElementById("crowd").value);
+  const grabLeg = 30;
+  const mustLeaveAt = ferryBack - buffer - grabLeg;
+  const out = document.getElementById("planOut");
+
+  if (mustLeaveAt - arrive < 90) {
+    out.innerHTML = `<div class="callout bad" style="margin-top:0">${t("noTime")}</div>`;
+    lastPlan = null;
+    return;
+  }
+
+  const steps = [{ at: arrive, title: t("arriveStep"), detail: terminal, key: true }];
+  const skipped = [];
+  const used = new Set();
+  const cost = { low: 0, high: 0 };
+  const addCost = (range) => {
+    cost.low += range.low;
+    cost.high += range.high;
+  };
+  let clock = arrive + 30;
+  let grabRides = 1;
+  let planned = 0;
+
+  const activities = [{ kind: "lunch", minutes: 60 }];
+  if (selectedInterests.has("sights")) activities.push({ kind: "sights", minutes: 150 });
+  if (selectedInterests.has("shop")) activities.push({ kind: "shop", minutes: 90 });
+  if (selectedInterests.has("spa")) activities.push({ kind: "spa", minutes: 120 });
+  if (selectedInterests.has("seafood")) activities.push({ kind: "seafood", minutes: 90 });
+
+  for (const act of activities) {
+    const label = act.kind === "lunch" ? t("lunch") : t("i_" + act.kind);
+    if (clock + act.minutes > mustLeaveAt) {
+      skipped.push(label);
+      continue;
+    }
+    let place = null;
+    if (act.kind === "lunch") {
+      place = nearestPlace((p) => p.category === "eat" && !isSeafood(p), terminal, used);
+      addCost(priceRangeSgd("local-meal"));
+    } else if (act.kind === "sights") {
+      place = DATA.places.find((p) => p.id === "barelang-bridge");
+    } else if (act.kind === "shop") {
+      place = nearestPlace((p) => p.category === "shop", terminal, used);
+    } else if (act.kind === "spa") {
+      place = nearestPlace((p) => p.category === "spa", terminal, used);
+      addCost(priceRangeSgd("massage"));
+    } else if (act.kind === "seafood") {
+      place = nearestPlace(isSeafood, terminal, used);
+      addCost(priceRangeSgd("seafood"));
+      const latestStart = mustLeaveAt - act.minutes;
+      if (latestStart - clock >= 45) {
+        steps.push({ at: clock, title: t("freeTime"), detail: "" });
+      }
+      clock = Math.max(clock, latestStart);
+    }
+    if (place) used.add(place.id);
+    steps.push({ at: clock, title: label, detail: place ? `${place.name} · ${place.area}` : "", place });
+    clock += act.minutes + 20;
+    grabRides += 1;
+    planned += 1;
+  }
+
+  const ferryFare = minFare();
+  addCost({ low: ferryFare, high: ferryFare });
+  const grab = priceRangeSgd("grab-bc-nagoya");
+  addCost({ low: grab.low * grabRides, high: grab.high * grabRides });
+
+  steps.push({ at: mustLeaveAt, title: t("leave"), detail: terminal });
+  steps.push({ at: ferryBack - buffer, title: t("atTerminal"), detail: "" });
+  steps.push({ at: ferryBack, title: t("ferryBack"), detail: "", key: true });
+
+  lastPlan = { terminal, arrive, ferryBack, buffer, mustLeaveAt, steps, cost, skipped };
+  if (planBooted) localStorage.setItem("bus_plan", new URLSearchParams({
+    t: terminal,
+    a: hhmm(arrive),
+    r: hhmm(ferryBack),
+    q: String(buffer),
+    i: [...selectedInterests].join(","),
+  }).toString());
+
+  const rows = steps.map((s) => {
+    const thumbKey = s.place && PLACE_PHOTOS[s.place.id];
+    return `
+    <li class="step${s.key ? " key" : ""}">
+      <div class="time num">${hhmm(s.at)}</div>
+      <div class="rail"></div>
+      <div class="body${thumbKey ? " with-thumb" : ""}">
+        <div class="info">
+          <div class="title">${s.title}</div>
+          ${s.detail ? `<div class="small">${s.detail}</div>` : ""}
+          ${s.place ? `<div style="margin-top:4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">${pill()}<button type="button" class="linkbtn" data-place="${s.place.id}">${t("details")}</button></div>` : ""}
+        </div>
+        ${thumbKey ? photoImg(thumbKey, "thumb") : ""}
+      </div>
+    </li>`;
+  }).join("");
+
+  out.innerHTML = `
+    <div class="stats">
+      <div class="stat"><div class="k">${t("leaveBy")}</div><div class="v num">${hhmm(mustLeaveAt)}</div></div>
+      <div class="stat light"><div class="k">${t("activities")}</div><div class="v num">${planned}</div></div>
+      <div class="stat light wide"><div class="k">${t("estCost")}</div><div class="v num">S$${Math.round(cost.low)}–${Math.round(cost.high)}</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2>${t("itinerary")}</h2><button type="button" class="btn ghost share-head-btn" data-share="plan">${icon("i-share", "sm")}${t("share")}</button></div>
+      <ol class="timeline">${rows}</ol>
+      <p class="meta" style="margin:4px 0 0">${t("estCostNote")}. ${t("tzNote")}</p>
+      ${skipped.length ? `<div class="callout warn">${t("skipped")} ${skipped.join(", ")}</div>` : ""}
+    </div>
+    <button type="button" class="btn share-btn" data-share="plan">${icon("i-chat", "sm")}${t("sharePlan")}</button>
+    <div class="xlinks">
+      <a class="btn ghost" href="#ferry">${icon("i-ferry", "sm")}${t("seeFerries")}</a>
+      <a class="btn ghost" href="#price">${icon("i-price", "sm")}${t("seePrices")}</a>
+    </div>
+    <p class="meta" style="margin:10px 2px 0">${t("savedPlan")}</p>`;
+  updateNowBar();
+  if (document.getElementById("phraseList")) renderTalk();
+}
+
+function renderPlanForm() {
+  const select = document.getElementById("terminal");
+  const current = select.value;
+  select.innerHTML = Object.keys(TERMINALS).map((name) => `<option>${name}</option>`).join("");
+  if (current) select.value = current;
+
+  const box = document.getElementById("interests");
+  box.innerHTML = "";
+  for (const key of INTERESTS) {
+    const button = el(`<button type="button" class="toggle" aria-pressed="${selectedInterests.has(key)}">${t("i_" + key)}</button>`);
+    button.onclick = () => {
+      if (selectedInterests.has(key)) {
+        selectedInterests.delete(key);
+      } else {
+        selectedInterests.add(key);
+      }
+      button.setAttribute("aria-pressed", selectedInterests.has(key));
+      buildPlan();
+    };
+    box.appendChild(button);
+  }
+  buildPlan();
+}
+
+/* ---------- price check ---------- */
+function rangeText(item) {
+  if (item.low == null) return `<span class="meta">${t("noData")}</span>`;
+  if (item.currency === "IDR") {
+    return `${fmtIdr(item.low)} – ${fmtIdr(item.high).replace("Rp ", "")}<div class="meta num" style="font-weight:400">${fmtSgd(toSgd(item.low, "IDR"))} – ${fmtSgd(toSgd(item.high, "IDR"))}</div>`;
+  }
+  return `${fmtSgd(item.low)} – ${fmtSgd(item.high)}`;
+}
+
+function renderPrices() {
+  const select = document.getElementById("priceItem");
+  const current = select.value;
+  select.innerHTML = DATA.prices.map((p) => `<option value="${p.id}">${pick(p)}</option>`).join("");
+  if (current) select.value = current;
+
+  document.getElementById("priceList").innerHTML = DATA.prices.map((p) => `
+    <li>
+      <div class="line">
+        <span class="name">${pick(p)}</span>
+        <span class="value num">${rangeText(p)}</span>
+      </div>
+      <div class="links" style="margin-top:4px">${p.source ? ext(p.source, t("source")) : ""}${pill()}</div>
+    </li>`).join("");
+  document.getElementById("foodStrip").innerHTML = ["food-fish", "food-squid", "food-gonggong"].map(shotFigure).join("");
+}
+
+function checkPrice() {
+  const item = DATA.prices.find((p) => p.id === document.getElementById("priceItem").value);
+  const quoted = Number(document.getElementById("quoted").value);
+  const currency = document.getElementById("quotedCur").value;
+  const out = document.getElementById("verdict");
+  if (item.low == null) {
+    out.innerHTML = `<p class="meta" style="margin:12px 0 0">${t("noData")}</p>`;
+    return;
+  }
+  if (!quoted) {
+    out.innerHTML = "";
+    return;
+  }
+
+  const q = toSgd(quoted, currency);
+  const low = toSgd(item.low, item.currency);
+  const high = toSgd(item.high, item.currency);
+  let tone = "ok";
+  let head = t("v_fair");
+  if (q < low) {
+    head = t("v_cheap");
+  } else if (q > high * 1.3) {
+    tone = "bad";
+    head = t("v_bad");
+  } else if (q > high) {
+    tone = "warn";
+    head = t("v_high");
+  }
+
+  const max = Math.max(high * 1.5, q * 1.1);
+  const pct = (v) => Math.min(100, Math.max(0, (v / max) * 100)).toFixed(1);
+  const quotedText = currency === "IDR" ? `${fmtIdr(quoted)} (${fmtSgd(q)})` : `${fmtSgd(quoted)} (${fmtIdr(quoted * getRate())})`;
+
+  out.innerHTML = `
+    <div class="verdict ${tone}" role="status">
+      <div class="head">${head}</div>
+      <div class="scale" aria-hidden="true">
+        <div class="band" style="left:${pct(low)}%;width:${(pct(high) - pct(low)).toFixed(1)}%"></div>
+        <div class="marker" style="left:${pct(q)}%"></div>
+      </div>
+      <div class="scale-labels num"><span>${fmtSgd(0)}</span><span>${fmtSgd(max)}</span></div>
+      <div class="row num"><span class="k">${t("quotedLbl")}</span><span class="v">${quotedText}</span></div>
+      <div class="row num"><span class="k">${t("typicalLbl")}</span><span class="v">${fmtSgd(low)} – ${fmtSgd(high)}</span></div>
+    </div>`;
+}
+
+/* ---------- money ---------- */
+function renderMoney() {
+  document.getElementById("rate").value = getRate();
+  document.getElementById("fxNote").textContent = T[lang].fxNote(fmtDate(DATA.rules.fx_date));
+  document.getElementById("moneyHero").innerHTML = bannerFigure("money-rupiah");
+  document.getElementById("moneyUncle").innerHTML = uncleNote(t("u_fx"));
+  const chips = document.getElementById("amountChips");
+  chips.innerHTML = "";
+  for (const amount of [20, 50, 100, 200, 500]) {
+    const chip = el(`<button type="button" class="toggle num">S$${amount}</button>`);
+    chip.onclick = () => {
+      document.getElementById("sgd").value = amount;
+      convert("sgd");
+    };
+    chips.appendChild(chip);
+  }
+  convert("sgd");
+  document.getElementById("moneyTips").innerHTML = DATA.rules.money_tips.map((tip) =>
+    `<li>${pick(tip)} <span class="links" style="display:inline-flex">${ext(tip.source, t("source"))}</span></li>`).join("");
+}
+
+function renderNotes() {
+  const rate = Number(document.getElementById("rate").value) || getRate();
+  document.getElementById("noteTable").innerHTML = [2000, 5000, 10000, 20000, 50000, 100000].map((n) =>
+    `<div class="note"><div class="idr num">Rp ${n.toLocaleString("en-US")}</div><div class="sgd num">≈ S$${(n / rate).toFixed(2)}</div></div>`).join("");
+}
+
+function convert(from) {
+  const rate = Number(document.getElementById("rate").value) || getRate();
+  const sgdInput = document.getElementById("sgd");
+  const idrInput = document.getElementById("idr");
+  if (from === "sgd") {
+    idrInput.value = Math.round(Number(sgdInput.value) * rate);
+  } else {
+    sgdInput.value = (Number(idrInput.value) / rate).toFixed(2);
+  }
+  const sgd = Number(sgdInput.value) || 0;
+  document.getElementById("terminalLoss").textContent = T[lang].lossNote(sgd, (sgd * 0.1).toFixed(0));
+  document.querySelectorAll("#amountChips .toggle").forEach((chip) => {
+    chip.setAttribute("aria-pressed", chip.textContent === "S$" + sgd);
+  });
+  renderNotes();
+}
+
+/* ---------- ferry ---------- */
+function renderFerry() {
+  const q = DATA.rules.queue_warning;
+  document.getElementById("queueWarn").innerHTML = uncleNote(`${pick(q)} ${t("u_queue_more")} ${ext(q.source, t("source"))}`);
+  const lowest = minFare();
+  document.getElementById("ferryList").innerHTML = DATA.ferries.map((f) => `
+    <div class="card">
+      <div class="ferry-head">
+        <div><b>${f.operator}</b>${f.return_all_in_sgd === lowest ? `<span class="tag" style="margin-top:6px">${t("lowest")}</span>` : ""}</div>
+        ${f.return_all_in_sgd
+          ? `<div class="fare num">${fmtSgd(f.return_all_in_sgd)}<small>${t("returnFare")}</small></div>`
+          : `<div class="meta" style="text-align:right">${t("toConfirm")}</div>`}
+      </div>
+      <div class="route">
+        <div class="side"><div class="k">${t("fromSg")}</div><div>${f.sg.join(", ")}</div></div>
+        <div class="arrow">${icon("i-arrow", "sm")}</div>
+        <div class="side"><div class="k">${t("toBatam")}</div><div>${f.batam.join(", ")}</div></div>
+      </div>
+      <dl class="spec">
+        <dt>${t("duration")}</dt><dd class="num">${f.minutes} min</dd>
+        <dt>${t("firstLast")}</dt><dd class="num">${f.first_last_from_sg}</dd>
+      </dl>
+      <div class="links">${ext(f.url, t("official"))}${ext(f.source, t("source"))}${pill()}</div>
+    </div>`).join("");
+  document.getElementById("terminalStrip").innerHTML =
+    ["ferry-batam-centre", "ferry-harbour-bay", "ferry-sekupang", "ferry-waterfront"].map(shotFigure).join("");
+}
+
+/* ---------- checklist ---------- */
+function renderChecklist() {
+  const done = JSON.parse(localStorage.getItem("bus_checks") || "{}");
+  const groups = [
+    { title: t("before"), items: [0, 1, 2] },
+    { title: t("returning"), items: [3, 4, 5] },
+  ];
+  const total = DATA.rules.entry.length;
+  const box = document.getElementById("checkList");
+  box.innerHTML = "";
+
+  const progress = el(`<div class="card progress-card"></div>`);
+  const updateProgress = () => {
+    const count = Object.values(done).filter(Boolean).length;
+    const circumference = 2 * Math.PI * 26;
+    const offset = circumference * (1 - count / total);
+    progress.innerHTML = `
+      <svg class="ring" viewBox="0 0 64 64" aria-hidden="true">
+        <circle class="bg" cx="32" cy="32" r="26"/>
+        <circle class="fg" cx="32" cy="32" r="26" stroke-dasharray="${circumference.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"/>
+      </svg>
+      <div style="flex:1;min-width:0">
+        <b class="num">${tf("progress", count, total)}</b>
+        <div class="small">${count === total ? t("progressAll") : t("progressSub")}</div>
+      </div>
+      <button type="button" class="toggle" id="resetChecks">${t("reset")}</button>`;
+    progress.querySelector("#resetChecks").onclick = () => {
+      localStorage.removeItem("bus_checks");
+      renderChecklist();
+    };
+  };
+  updateProgress();
+  box.appendChild(progress);
+
+  for (const group of groups) {
+    box.appendChild(el(`<h2>${group.title}</h2>`));
+    const card = el(`<div class="card"></div>`);
+    for (const i of group.items) {
+      const rule = DATA.rules.entry[i];
+      const row = el(`
+        <label class="check">
+          <input type="checkbox" ${done[i] ? "checked" : ""}>
+          <span><span class="txt">${pick(rule)}</span><span class="links" style="margin-top:4px">${ext(rule.source, t("source"))}</span></span>
+        </label>`);
+      row.querySelector("input").onchange = (event) => {
+        done[i] = event.target.checked;
+        localStorage.setItem("bus_checks", JSON.stringify(done));
+        updateProgress();
+      };
+      card.appendChild(row);
+    }
+    box.appendChild(card);
+  }
+  box.appendChild(el(`<p class="meta">${t("tzNote")}</p>`));
+}
+
+/* ---------- about ---------- */
+function renderAbout() {
+  const visited = DATA.places.filter((p) => p.verified).length;
+  document.getElementById("aboutTrust").innerHTML = trustItems(visited);
+  const bar = (label, v, n) => `
+    <div style="margin-bottom:14px">
+      <div class="row" style="padding:0"><span class="k">${label}</span><span class="v num">${v} / ${n}</span></div>
+      <div class="meter"><i style="width:${n ? (v / n) * 100 : 0}%"></i></div>
+    </div>`;
+  document.getElementById("aboutStatus").innerHTML =
+    bar(t("st_places"), visited, DATA.places.length) +
+    bar(t("st_prices"), DATA.prices.filter((p) => p.verified).length, DATA.prices.length) +
+    bar(t("st_ferries"), DATA.ferries.filter((f) => f.verified).length, DATA.ferries.length) +
+    `<p class="meta" style="margin:0">${t("st_note")}</p>`;
+  document.getElementById("creditList").innerHTML = Object.keys(PHOTOS).map((key) => {
+    const p = PHOTOS[key];
+    return `<li>${photoCaption(key)}: <a href="${p.page}" target="_blank" rel="noopener">${p.author}</a>, <a href="${p.licenseUrl}" target="_blank" rel="noopener">${p.license}</a></li>`;
+  }).join("");
+  document.getElementById("footNote").textContent = tf("footNote", fmtDate(DATA.generated || DATA.rules.fx_date));
+}
+
+
+
+/* ---------- phrases ---------- */
+function ferryTimeId() {
+  const ferry = lastPlan ? hhmm(lastPlan.ferryBack) : "18:00";
+  return ferry.replace(":", ".");
+}
+
+function phraseGroups() {
+  return [
+    ["g_move", [
+      ["Tolong antar ke pelabuhan feri, ya.", "Please take me to the ferry terminal.", "请送我去渡轮码头。"],
+      [`Saya harus naik kapal jam ${ferryTimeId()}.`, `I have to catch the ferry at ${ferryTimeId().replace(".", ":")}.`, `我要赶 ${ferryTimeId().replace(".", ":")} 的船。`],
+      ["Berapa ongkosnya?", "How much is the fare?", "车费多少?"],
+      ["Tolong pakai argo.", "Please use the meter.", "请打表。"],
+      ["Berhenti di sini, ya.", "Please stop here.", "请在这里停车。"],
+    ]],
+    ["g_pay", [
+      ["Berapa harganya?", "How much is this?", "这个多少钱?"],
+      ["Terlalu mahal. Bisa kurang?", "Too expensive. Can you lower the price?", "太贵了,可以便宜点吗?"],
+      ["Tolong tulis harganya.", "Please write the price down.", "请把价格写下来。"],
+      ["Bisa bayar pakai QRIS?", "Can I pay with QRIS?", "可以用 QRIS 付款吗?"],
+      ["Minta struknya, ya.", "A receipt, please.", "请给我收据。"],
+    ]],
+    ["g_eat", [
+      ["Berapa harganya per kilo?", "What is the price per kilo?", "每公斤多少钱?"],
+      ["Tidak pedas, ya.", "Not spicy, please.", "不要辣。"],
+      ["Tanpa es, ya.", "No ice, please.", "不要加冰。"],
+      ["Di mana toilet?", "Where is the toilet?", "洗手间在哪里?"],
+      ["Terima kasih.", "Thank you.", "谢谢。"],
+    ]],
+  ];
+}
+
+const PRICE_WORDS = [
+  [10000, "10rb", "sepuluh ribu"],
+  [20000, "20rb", "dua puluh ribu"],
+  [50000, "50rb", "lima puluh ribu"],
+  [100000, "100rb", "seratus ribu"],
+];
+
+let phraseIndex = [];
+
+function renderTalk() {
+  phraseIndex = [];
+  const groups = phraseGroups().map(([key, items]) => {
+    const cards = items.map(([idText, en, zh]) => {
+      const n = phraseIndex.push({ idText, mean: lang === "zh" ? zh : en }) - 1;
+      return `<button type="button" class="phrase" data-phrase="${n}">
+        <span class="tx"><span class="id" lang="id">${idText}</span><span class="tr">${lang === "zh" ? zh : en}</span></span>
+        <span class="big" aria-label="${t("tapToShow")}">${icon("i-ext", "sm")}</span>
+      </button>`;
+    }).join("");
+    return `<div class="phrase-group"><h2>${t(key)}</h2><div class="phrases">${cards}</div></div>`;
+  }).join("");
+  const nums = PRICE_WORDS.map(([amount, short, words]) => `
+    <div><b>Rp ${amount.toLocaleString("de-DE")}</b><span>${short} · <span lang="id">${words}</span><br>≈ ${fmtSgd(toSgd(amount, "IDR"))}</span></div>`).join("");
+  document.getElementById("phraseList").innerHTML = `${groups}
+    <div class="phrase-group"><h2>${t("g_nums")}</h2><p class="small" style="margin:0 0 10px">${t("numsNote")}</p><div class="numtable">${nums}</div></div>`;
+}
+
+function showPhrase(n) {
+  const phrase = phraseIndex[n];
+  if (!phrase) return;
+  const card = document.getElementById("showCard");
+  card.innerHTML = `<div class="wrap">
+    <span class="hint" lang="id">Mohon dibaca</span>
+    <button class="close" type="button" aria-label="${t("close")}">${icon("i-close", "sm")}</button>
+    <div class="say" lang="id"></div>
+    <div class="mean"></div>
+  </div>`;
+  card.querySelector(".say").textContent = phrase.idText;
+  card.querySelector(".mean").textContent = phrase.mean;
+  card.querySelector(".close").onclick = () => card.close();
+  card.onclick = (event) => {
+    if (event.target === card) card.close();
+  };
+  card.showModal();
+}
+
+/* ---------- day-of clock ---------- */
+function batamNowMinutes() {
+  const override = new URLSearchParams(location.search).get("now");
+  if (override && /^\d{2}:\d{2}$/.test(override)) return minutes(override);
+  const now = new Date();
+  return ((now.getUTCHours() + 7) % 24) * 60 + now.getUTCMinutes();
+}
+
+function fmtDuration(total) {
+  const h = Math.floor(total / 60);
+  const m = total % 60;
+  if (lang === "zh") return (h ? `${h} 小时 ` : "") + `${m} 分钟`;
+  return (h ? `${h} h ` : "") + `${m} min`;
+}
+
+function updateNowBar() {
+  const bar = document.getElementById("nowBar");
+  if (!bar || !lastPlan) return;
+  const now = batamNowMinutes();
+  const plan = lastPlan;
+  let state = "";
+  let message;
+  if (now < plan.arrive) {
+    message = tf("nowBefore", hhmm(plan.arrive));
+  } else if (now < plan.mustLeaveAt) {
+    state = "live";
+    message = tf("nowLeaveIn", fmtDuration(plan.mustLeaveAt - now));
+  } else if (now < plan.ferryBack) {
+    state = "late";
+    message = now < plan.ferryBack - plan.buffer ? t("nowLeaveNow") : tf("nowFerryIn", fmtDuration(plan.ferryBack - now));
+  } else {
+    message = t("nowDone");
+  }
+  const html = `<div class="clock num"><small>${t("nowLabel")}</small>${hhmm(now)}</div>
+    <div class="msg">${message}<div style="font-size:12.5px;margin-top:2px">${tf("sgNow", hhmm((now + 60) % 1440))}</div></div>`;
+  bar.className = "nowbar " + state;
+  bar.innerHTML = html;
+  const homeBar = document.getElementById("homeNow");
+  if (homeBar) {
+    homeBar.hidden = !state;
+    homeBar.className = "nowbar " + state;
+    homeBar.innerHTML = html;
+  }
+}
+setInterval(updateNowBar, 30000);
+
+/* ---------- sharing ---------- */
+let lastPlan = null;
+let planBooted = false;
+const isHosted = location.protocol === "http:" || location.protocol === "https:";
+
+function appLink(params, hash) {
+  if (!isHosted) return "";
+  const query = new URLSearchParams(params);
+  if (lang !== "en") query.set("lang", lang);
+  const qs = query.toString();
+  return location.origin + location.pathname + (qs ? "?" + qs : "") + hash;
+}
+
+function planLink() {
+  return appLink({
+    t: lastPlan.terminal,
+    a: hhmm(lastPlan.arrive),
+    r: hhmm(lastPlan.ferryBack),
+    q: String(lastPlan.buffer),
+    i: [...selectedInterests].join(","),
+  }, "#plan");
+}
+
+function planShareText() {
+  const plan = lastPlan;
+  const stepLine = (s) => {
+    let detail = s.detail;
+    if (s.place) {
+      detail = `${s.place.name} (${s.place.area})`;
+    }
+    return `${hhmm(s.at)}  ${s.title}${detail ? ": " + detail : ""}`;
+  };
+  const costRange = `S$${Math.round(plan.cost.low)}–${Math.round(plan.cost.high)}`;
+  const parts = [
+    t("sh_planHead"),
+    tf("sh_trip", plan.terminal, hhmm(plan.arrive), hhmm(plan.ferryBack)),
+    `(${t("sh_tz")})`,
+    "",
+    ...plan.steps.map(stepLine),
+    "",
+    tf("sh_leaveBy", hhmm(plan.mustLeaveAt)),
+    tf("sh_cost", costRange),
+  ];
+  if (plan.skipped.length) {
+    parts.push(tf("sh_skipped", plan.skipped.join(", ")));
+  }
+  parts.push("", t("sh_bring"), t("sh_unverified"));
+  const link = planLink();
+  if (link) {
+    parts.push("", t("sh_open"), link);
+  }
+  parts.push("", t("sh_from"));
+  return parts.join("\n");
+}
+
+function placeShareText(p) {
+  const note = lang === "zh" ? (p.note_zh || p.note_en) : p.note_en;
+  const mapUrl = "https://www.google.com/maps/search/" + encodeURIComponent(p.name + " Batam");
+  const parts = [p.name, `${t(p.category)} · ${p.area}, Batam`];
+  if (note) parts.push(note);
+  parts.push("", t("sh_map"), mapUrl);
+  const link = appLink({ place: p.id }, "#places");
+  if (link) parts.push("", t("sh_openPlace"), link);
+  parts.push("", t("sh_placeUnverified"), t("sh_from"));
+  return parts.join("\n");
+}
+
+function guideShareText() {
+  return [t("sh_guide"), appLink({}, "#home"), "", t("sh_from")].join("\n");
+}
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (error) {
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("readonly", "");
+    area.style.position = "fixed";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.select();
+    let ok = false;
+    try {
+      ok = document.execCommand("copy");
+    } catch (fallbackError) {
+      ok = false;
+    }
+    area.remove();
+    return ok;
+  }
+}
+
+function openShare(title, text) {
+  const sheet = document.getElementById("shareSheet");
+  const canNativeShare = typeof navigator.share === "function";
+  sheet.innerHTML = `
+    <div class="sheet-head"><b id="shareSheetTitle"></b><button class="close" type="button" aria-label="${t("close")}">${icon("i-close", "sm")}</button></div>
+    <div class="content" style="padding-top:8px">
+      <p class="share-intro">${t("shareIntro")}</p>
+      <pre class="share-preview" id="sharePreview"></pre>
+      <div class="share-actions">
+        <a class="btn${canNativeShare ? "" : " wide"}" id="shareWa" target="_blank" rel="noopener">${icon("i-chat", "sm")}${t("shareWa")}</a>
+        ${canNativeShare ? `<button type="button" class="btn ghost" id="shareNative">${icon("i-share", "sm")}${t("shareMore")}</button>` : ""}
+        <button type="button" class="btn ghost wide" id="shareCopy">${icon("i-copy", "sm")}${t("shareCopy")}</button>
+      </div>
+      <div class="share-status" id="shareStatus" role="status" aria-live="polite"></div>
+      ${isHosted ? "" : `<p class="share-note">${t("shareNoLink")}</p>`}
+    </div>`;
+  sheet.querySelector("#shareSheetTitle").textContent = title;
+  sheet.querySelector("#sharePreview").textContent = text;
+  sheet.querySelector("#shareWa").href = "https://wa.me/?text=" + encodeURIComponent(text);
+  const status = sheet.querySelector("#shareStatus");
+  sheet.querySelector(".close").onclick = () => sheet.close();
+  sheet.querySelector("#shareCopy").onclick = async () => {
+    const ok = await copyText(text);
+    status.style.color = ok ? "" : "var(--bad)";
+    status.textContent = ok ? t("copied") : t("copyFail");
+  };
+  if (canNativeShare) {
+    sheet.querySelector("#shareNative").onclick = () => {
+      navigator.share({ title, text }).catch(() => {});
+    };
+  }
+  const placeSheet = document.getElementById("placeSheet");
+  if (placeSheet.open) placeSheet.close();
+  sheet.showModal();
+}
+
+function sharePlan() {
+  if (!lastPlan) buildPlan();
+  if (!lastPlan) return;
+  openShare(t("shareTitlePlan"), planShareText());
+}
+
+function sharePlace(id) {
+  const p = DATA.places.find((x) => x.id === id);
+  if (p) openShare(t("shareTitlePlace"), placeShareText(p));
+}
+
+function restoreSharedPlan(params) {
+  const terminal = params.get("t");
+  if (!terminal || !TERMINALS[terminal]) return false;
+  const timePattern = /^\d{2}:\d{2}$/;
+  document.getElementById("terminal").value = terminal;
+  if (timePattern.test(params.get("a") || "")) document.getElementById("arrive").value = params.get("a");
+  if (timePattern.test(params.get("r") || "")) document.getElementById("returnFerry").value = params.get("r");
+  if (["60", "120"].includes(params.get("q"))) document.getElementById("crowd").value = params.get("q");
+  if (params.has("i")) {
+    selectedInterests.clear();
+    params.get("i").split(",").filter((k) => INTERESTS.includes(k)).forEach((k) => selectedInterests.add(k));
+  }
+  renderPlanForm();
+  return true;
+}
+
+/* ---------- wiring ---------- */
+function renderAll() {
+  renderHome();
+  renderPlanForm();
+  renderPrices();
+  renderMoney();
+  renderFerry();
+  renderChecklist();
+  renderPlaces();
+  renderTalk();
+  renderAbout();
+}
+
+document.querySelectorAll(".lang button").forEach((button) => {
+  button.onclick = () => {
+    lang = button.dataset.lang;
+    localStorage.setItem("bus_lang", lang);
+    applyLang();
+    const verdict = document.getElementById("verdict");
+    if (verdict.innerHTML.trim()) checkPrice();
+  };
+});
+document.addEventListener("click", (event) => {
+  const trigger = event.target.closest("[data-place]");
+  if (trigger) {
+    openPlace(trigger.dataset.place);
+  }
+  if (event.target.closest("[data-share=plan]")) {
+    sharePlan();
+  }
+  const phraseButton = event.target.closest("[data-phrase]");
+  if (phraseButton) {
+    showPhrase(Number(phraseButton.dataset.phrase));
+  }
+  const placeShare = event.target.closest("[data-share-place]");
+  if (placeShare) {
+    sharePlace(placeShare.dataset.sharePlace);
+  }
+});
+document.querySelectorAll("dialog.sheet").forEach((dialog) => {
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+});
+document.getElementById("planBtn").onclick = buildPlan;
+["terminal", "arrive", "returnFerry", "crowd"].forEach((id) => {
+  document.getElementById(id).addEventListener("change", buildPlan);
+});
+document.getElementById("checkBtn").onclick = checkPrice;
+document.getElementById("rate").oninput = () => {
+  localStorage.setItem("bus_rate", document.getElementById("rate").value);
+  convert("sgd");
+};
+document.getElementById("sgd").oninput = () => convert("sgd");
+document.getElementById("idr").oninput = () => convert("idr");
+window.addEventListener("hashchange", showTab);
+
+applyLang();
+markActiveTab();
+
+const sharedParams = new URLSearchParams(location.search);
+if (!restoreSharedPlan(sharedParams)) {
+  const savedPlan = localStorage.getItem("bus_plan");
+  if (savedPlan) restoreSharedPlan(new URLSearchParams(savedPlan));
+}
+planBooted = true;
+buildPlan();
+if (isHosted && "serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+if (sharedParams.get("place")) openPlace(sharedParams.get("place"));
+const shareGuideBtn = document.getElementById("shareGuideBtn");
+shareGuideBtn.hidden = !isHosted;
+shareGuideBtn.onclick = () => openShare(t("shareTitleGuide"), guideShareText());
+
+// Demo hooks for screenshots: ?demo=price fills the price form, ?demo=place opens a place sheet.
+const demo = new URLSearchParams(location.search).get("demo");
+if (demo === "price") {
+  document.getElementById("priceItem").value = "massage";
+  document.getElementById("quoted").value = 650000;
+  checkPrice();
+}
+if (demo === "place") openPlace("barelang-bridge");
+</script>
+</body>
+</html>
