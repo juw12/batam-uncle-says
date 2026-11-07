@@ -1,10 +1,11 @@
 /* Batam Uncle Says - offline cache. Bump VERSION when files change. */
-const VERSION = "bus-2026-11-07-r4b";
+const VERSION = "bus-2026-11-07-r5";
 const FILES = [
   "./",
   "index.html",
   "data.js",
   "photos.js",
+  "partners.js",
   "manifest.webmanifest",
   "fonts/instrument-serif-latin-italic.woff2",
   "fonts/instrument-serif-latin.woff2",
