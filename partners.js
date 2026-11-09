@@ -1,6 +1,6 @@
 /* Generated from partners.json by tools/partners_build.py. Edit the JSON, not this file. */
 window.BUS_PARTNERS = {
- "updated": "2026-11-07",
+ "updated": "2026-11-09",
  "licence_source": "https://mediacenter.batam.go.id/2019/04/30/hpi-sambut-baik-perwako-pramuwisata/",
  "affiliates": {
   "easybook_query": "",
@@ -55,7 +55,7 @@ window.BUS_PARTNERS = {
    ],
    "price_note": "Private car charter, as listed on their website",
    "status": "active",
-   "checked": "2026-11-07",
+   "checked": "2026-11-09",
    "fails": 0,
    "unreachable": 0
   },
@@ -85,7 +85,7 @@ window.BUS_PARTNERS = {
    ],
    "price_note": "Weekday prices (Monday to Friday) as listed on their website, including fuel and driver",
    "status": "active",
-   "checked": "2026-11-07",
+   "checked": "2026-11-09",
    "fails": 0,
    "unreachable": 0
   },
@@ -99,7 +99,7 @@ window.BUS_PARTNERS = {
    "prices": [],
    "price_note": "See their website for prices",
    "status": "active",
-   "checked": "2026-11-07",
+   "checked": "2026-11-09",
    "fails": 0,
    "unreachable": 0
   },
@@ -113,7 +113,7 @@ window.BUS_PARTNERS = {
    "prices": [],
    "price_note": "See their website for prices",
    "status": "active",
-   "checked": "2026-11-07",
+   "checked": "2026-11-09",
    "fails": 0,
    "unreachable": 0
   },
@@ -127,7 +127,7 @@ window.BUS_PARTNERS = {
    "prices": [],
    "price_note": "See their website for prices",
    "status": "active",
-   "checked": "2026-11-07",
+   "checked": "2026-11-09",
    "fails": 0,
    "unreachable": 0
   },
@@ -141,7 +141,7 @@ window.BUS_PARTNERS = {
    "prices": [],
    "price_note": "See their website for prices",
    "status": "active",
-   "checked": "2026-11-07",
+   "checked": "2026-11-09",
    "fails": 0,
    "unreachable": 0
   },
@@ -155,7 +155,7 @@ window.BUS_PARTNERS = {
    "prices": [],
    "price_note": "See their website for prices",
    "status": "active",
-   "checked": "2026-11-07",
+   "checked": "2026-11-09",
    "fails": 0,
    "unreachable": 0
   },
@@ -169,7 +169,7 @@ window.BUS_PARTNERS = {
    "prices": [],
    "price_note": "See their website for prices",
    "status": "active",
-   "checked": "2026-11-07",
+   "checked": "2026-11-09",
    "fails": 0,
    "unreachable": 0
   }

@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-07",
+  "updated": "2026-11-09",
   "licence_source": "https://mediacenter.batam.go.id/2019/04/30/hpi-sambut-baik-perwako-pramuwisata/",
   "affiliates": {
     "easybook_query": "",
@@ -54,7 +54,7 @@
       ],
       "price_note": "Private car charter, as listed on their website",
       "status": "active",
-      "checked": "2026-11-07",
+      "checked": "2026-11-09",
       "fails": 0,
       "unreachable": 0
     },
@@ -84,7 +84,7 @@
       ],
       "price_note": "Weekday prices (Monday to Friday) as listed on their website, including fuel and driver",
       "status": "active",
-      "checked": "2026-11-07",
+      "checked": "2026-11-09",
       "fails": 0,
       "unreachable": 0
     },
@@ -98,7 +98,7 @@
       "prices": [],
       "price_note": "See their website for prices",
       "status": "active",
-      "checked": "2026-11-07",
+      "checked": "2026-11-09",
       "fails": 0,
       "unreachable": 0
     },
@@ -112,7 +112,7 @@
       "prices": [],
       "price_note": "See their website for prices",
       "status": "active",
-      "checked": "2026-11-07",
+      "checked": "2026-11-09",
       "fails": 0,
       "unreachable": 0
     },
@@ -126,7 +126,7 @@
       "prices": [],
       "price_note": "See their website for prices",
       "status": "active",
-      "checked": "2026-11-07",
+      "checked": "2026-11-09",
       "fails": 0,
       "unreachable": 0
     },
@@ -140,7 +140,7 @@
       "prices": [],
       "price_note": "See their website for prices",
       "status": "active",
-      "checked": "2026-11-07",
+      "checked": "2026-11-09",
       "fails": 0,
       "unreachable": 0
     },
@@ -154,7 +154,7 @@
       "prices": [],
       "price_note": "See their website for prices",
       "status": "active",
-      "checked": "2026-11-07",
+      "checked": "2026-11-09",
       "fails": 0,
       "unreachable": 0
     },
@@ -168,7 +168,7 @@
       "prices": [],
       "price_note": "See their website for prices",
       "status": "active",
-      "checked": "2026-11-07",
+      "checked": "2026-11-09",
       "fails": 0,
       "unreachable": 0
     }
