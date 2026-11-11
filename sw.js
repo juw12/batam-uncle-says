@@ -1,5 +1,5 @@
 /* Batam Uncle Says - offline cache. Bump VERSION when files change. */
-const VERSION = "bus-2026-11-11-p1703";
+const VERSION = "bus-2026-11-12-p0700";
 const FILES = [
   "./",
   "index.html",
@@ -49,7 +49,29 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const request = event.request;
-  if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin) {
+  const url = new URL(request.url);
+  if (request.method !== "GET" || url.origin !== self.location.origin) {
+    return;
+  }
+  /* data.js holds the daily events and prices: ask the network first so the first open of the day
+     is current, and fall back to the saved copy when offline or slow (3 seconds). */
+  if (url.pathname.endsWith("/data.js")) {
+    event.respondWith(
+      caches.open(VERSION).then(async (cache) => {
+        const cached = await cache.match(request, { ignoreSearch: true });
+        const fresh = fetch(request, { cache: "no-cache" }).then((response) => {
+          if (response.ok) {
+            cache.put(request, response.clone());
+          }
+          return response;
+        });
+        if (!cached) {
+          return fresh;
+        }
+        const giveUp = new Promise((resolve) => setTimeout(() => resolve(cached), 3000));
+        return Promise.race([fresh.catch(() => cached), giveUp]);
+      })
+    );
     return;
   }
   event.respondWith(
