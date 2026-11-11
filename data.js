@@ -650,7 +650,7 @@ window.BUS_DATA = {
  "return_ferries": {
   "note_en": "Last daily sailing from Batam to Singapore, Batam time (WIB). Arrive at the terminal about 1 hour before.",
   "source": "https://batam.co.id/transportasi/panduan-feri-batam-singapura-lima-pelabuhan/",
-  "as_of": "2026-11-09",
+  "as_of": "2026-11-11",
   "verified": false,
   "last": [
    {
@@ -746,7 +746,7 @@ window.BUS_DATA = {
  "routes": {
   "note_en": "Departures from Singapore to Batam, Singapore time (SGT), read from each operator's official timetable.",
   "source": "https://batam.co.id/transportasi/panduan-feri-batam-singapura-lima-pelabuhan/",
-  "as_of": "2026-11-09",
+  "as_of": "2026-11-11",
   "verified": false,
   "list": [
    {
