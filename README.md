@@ -1,6 +1,6 @@
 # Batam Uncle Says
 
-A mobile-first guide for Singaporeans on a Batam day trip: a day plan built around your ferry times, a fair-price check, money converter, ferry comparison, entry checklist, places, and show-the-driver phrase cards in Indonesian. English and Chinese. Works offline after the first visit.
+A mobile-first guide for Singaporeans on a Batam day trip: a day plan built around your ferry times, a fair-price check, money converter, ferry comparison, entry checklist, places, what's on in Batam (events re-read every morning), and show-the-driver phrase cards in Indonesian. English and Chinese. Works offline after the first visit.
 
 Live: https://juw12.github.io/batam-uncle-says/
 

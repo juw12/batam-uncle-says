@@ -987,5 +987,239 @@ window.BUS_DATA = {
    }
   ],
   "source": "https://www.agoda.com/"
+ },
+ "events": {
+  "note_en": "Read from batam.co.id, which names the news source behind every date. Dates can move, so check the source before you travel for an event.",
+  "note_zh": "资料读取自 batam.co.id,每个日期都注明新闻来源。日期可能变动,专程前往前请先查看来源。",
+  "manual": [
+   {
+    "id": "batam-marching-arts-2026",
+    "name": "Batam International Marching Arts Competition",
+    "start": "2026-11-27",
+    "end": "2026-11-29",
+    "venue": "Batam",
+    "confirmed": false,
+    "sources": [
+     {
+      "label": "Nagoya Pos (Dispar Kepri calendar)",
+      "url": "https://nagoyapos.com/2026/11/07/15-event-wisata-kepri-november-2026-ada-moonrun-festival-melayu-hingga-konser-charly-van-houten/"
+     }
+    ]
+   },
+   {
+    "id": "hjb-197-pawai-budaya",
+    "name": "Pawai Budaya HJB ke-197",
+    "start": "2026-12-20",
+    "end": "2026-12-20",
+    "venue": "Jalan Engku Putri to Dataran Engku Putri, Batam Centre",
+    "confirmed": false,
+    "note_en": "Planned to start at 08:00 with about 5,000 people in the parade, plus a food and small-business bazaar.",
+    "note_zh": "计划上午 8 点开始,约 5,000 人参加游行,另有美食与小商家市集。",
+    "sources": [
+     {
+      "label": "Disbudpar Batam",
+      "url": "https://disbudpar.batam.go.id/2026/10/25/batam-bakal-pecahkan-rekor-muri-di-hjb-ke-197/"
+     }
+    ]
+   }
+  ],
+  "hide": [
+   "md-48-tim-dari-indonesia-dan-mancanegara-siap-berlaga-di-batam-"
+  ],
+  "labels": {
+   "md-artotel-batam-gelar-pameran-seni-kontemporer-karya-era-prema": {
+    "en": "Art exhibition: Organic Syntax and Layers of Becoming",
+    "zh": "当代艺术展:Organic Syntax 与 Layers of Becoming"
+   },
+   "md-pkp-expo-2026-batam-diskon-properti-besar-dan-cicilan-hingga": {
+    "en": "PKP Expo 2026 (property fair)",
+    "zh": "PKP Expo 2026 房产展"
+   },
+   "md-semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-dan-video-re": {
+    "en": "Batam anniversary photo, Reels and feature-writing contest",
+    "zh": "巴淡建城纪念摄影、短视频与专题写作比赛"
+   },
+   "md-sea-eagle-boat-race-batam-2026-digelar-13-15-november": {
+    "en": "Batam International Sea Eagle Boat Race 2026 (rowing)",
+    "zh": "2026 巴淡国际 Sea Eagle 划船赛"
+   },
+   "lp-tiara-convention-hall-dipadati-penonton-festival-batam-bonap": {
+    "en": "Festival Batam Bonapasogit 2026: Batak tor-tor dance final",
+    "zh": "2026 巴淡 Bonapasogit 节:巴塔克 Tor-tor 舞决赛"
+   },
+   "md-48-tim-berebut-gelar-di-batam-hotel-dan-umkm-mengincar-berka": {
+    "en": "International Soccer Batam Cup III 2026 (youth football, U-12 and U-16)",
+    "zh": "2026 巴淡杯 III 国际青少年足球赛(U-12、U-16)"
+   },
+   "md-king-nassar-bakal-meriahkan-hari-jadi-batam-bidik-wisatawan-": {
+    "en": "Batam's 197th anniversary celebration (Hari Jadi Batam)",
+    "zh": "巴淡建城 197 周年庆典"
+   },
+   "hjb-197-pawai-budaya": {
+    "en": "Batam anniversary culture parade (Pawai Budaya)",
+    "zh": "巴淡建城纪念文化游行"
+   },
+   "batam-marching-arts-2026": {
+    "en": "Batam International Marching Arts Competition",
+    "zh": "巴淡国际行进乐队艺术比赛"
+   }
+  },
+  "source": "https://batam.co.id/event-batam/",
+  "as_of": "2026-11-11",
+  "list": [
+   {
+    "id": "md-pkp-expo-2026-batam-diskon-properti-besar-dan-cicilan-hingga",
+    "name": "PKP Expo 2026",
+    "start": "2026-10-30",
+    "end": "2026-11-22",
+    "venue": "Grand Batam Mall",
+    "confirmed": false,
+    "sources": [
+     {
+      "label": "Batam Pos",
+      "url": "https://metropolis.batampos.co.id/pkp-expo-tebar-promo-palugada-di-grand-batam-mall/"
+     },
+     {
+      "label": "Batamtoday.com",
+      "url": "https://batamtoday.com/news/pkp-expo-hadirkan-promo-palugada-di-grand-batam-mall-tawarkan-diskon-besar-besaran-dan-cicilan-hingga-100-kali"
+     },
+     {
+      "label": "Batam Click",
+      "url": "https://batamclick.com/30/10/2026/cicilan-100-bulan-dan-diskon-besar-pkp-expo-tawarkan-18-proyek-properti-di-batam/"
+     }
+    ],
+    "place_id": "grand-batam"
+   },
+   {
+    "id": "md-artotel-batam-gelar-pameran-seni-kontemporer-karya-era-prema",
+    "name": "Organic Syntax dan Layers of Becoming",
+    "start": "2026-10-30",
+    "end": "2027-02-28",
+    "venue": "ARTSPACE, ARTOTEL Batam",
+    "confirmed": true,
+    "sources": [
+     {
+      "label": "Tribunbatam.id",
+      "url": "https://batam.tribunnews.com/kota-batam/699412/artotel-batam-hadirkan-dua-pameran-seni-kontemporer-organic-syntax-dan-layers-of-becoming"
+     },
+     {
+      "label": "patrolmedia.co.id",
+      "url": "https://patrolmedia.co.id/2026/10/30/artotel-batam-gelar-pameran-seni-kontemporer-karya-era-premakara-dan-abyu-amanda-aldi/"
+     },
+     {
+      "label": "inikepri.com",
+      "url": "https://www.inikepri.com/2026/10/31/artotel-batam-hadirkan-dua-pameran-seni-kontemporer-ada-organic-syntax-dan-layers-of-becoming/"
+     }
+    ]
+   },
+   {
+    "id": "md-semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-dan-video-re",
+    "name": "Lomba Foto, Reels, dan Feature",
+    "start": "2026-11-11",
+    "end": "2026-11-30",
+    "venue": "Batam",
+    "confirmed": false,
+    "sources": [
+     {
+      "label": "Batamnews",
+      "url": "https://www.batamnews.co.id/berita-131667-semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-video-reels-dan-feature-berhadiah-rp94-5-juta.html"
+     },
+     {
+      "label": "Pemerintah Kota Batam",
+      "url": "https://mediacenter.batam.go.id/2026/11/10/semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-dan-video-reels-serta-menulis-feature-berhadiah-rp945-juta/"
+     },
+     {
+      "label": "patrolmedia.co.id",
+      "url": "https://patrolmedia.co.id/2026/11/11/pemko-batam-gelar-lomba-foto-reels-dan-feature-berhadiah-rp-945-juta-yuk-daftar/"
+     }
+    ]
+   },
+   {
+    "id": "md-sea-eagle-boat-race-batam-2026-digelar-13-15-november",
+    "name": "Sea Eagle Boat Race Batam 2026",
+    "start": "2026-11-13",
+    "end": "2026-11-15",
+    "venue": "Perairan Kelang-Kelang Laut, Belakang Padang",
+    "confirmed": true,
+    "sources": [
+     {
+      "label": "Jawa Pos",
+      "url": "https://batampos.jawapos.com/batam/2610220008/sea-eagle-boat-race-batam-2026-digelar-1315-november"
+     },
+     {
+      "label": "Jawa Pos",
+      "url": "https://batampos.jawapos.com/batam/2610220008/sea-eagle-boat-race-batam-2026-digelar-13-15-november"
+     },
+     {
+      "label": "Posmetrobatam.co.id",
+      "url": "https://posmetrobatam.co.id/batam-international-sea-eagle-boat-race-2026-siap-digelar-disbudpar-targetkan-dongkrak-ekonomi-belakang-padang/"
+     }
+    ]
+   },
+   {
+    "id": "lp-tiara-convention-hall-dipadati-penonton-festival-batam-bonap",
+    "name": "Festival Batam Bonapasogit 2026",
+    "start": "2026-11-28",
+    "end": "2026-11-28",
+    "venue": "Gedung Tiarma Convention Hall, Batam",
+    "confirmed": false,
+    "sources": [
+     {
+      "label": "Independen News",
+      "url": "https://independennews.com/tiara-convention-hall-dipadati-penonton-festival-batam-bonapasogit-jadi-panggung-pelestarian-budaya/"
+     },
+     {
+      "label": "Lentera Kepri",
+      "url": "https://lenterakepri.com/34-tim-tortor-batak-ramaikan-festival-batam-bonapasogit-2026/"
+     }
+    ]
+   },
+   {
+    "id": "md-48-tim-dari-indonesia-dan-mancanegara-siap-berlaga-di-batam-",
+    "name": "Batam Cup III 2026",
+    "start": "2026-12-15",
+    "end": "2026-12-15",
+    "venue": "Batam",
+    "confirmed": false,
+    "sources": [
+     {
+      "label": "Arira News",
+      "url": "https://ariranews.com/48-tim-dari-indonesia-dan-mancanegara-siap-berlaga-di-batam-cup-iii-2026-digelar-15-19-desember/"
+     },
+     {
+      "label": "WartaKepri.co.id",
+      "url": "https://wartakepri.co.id/2026/10/25/48-tim-indonesia-dan-mancanegara-siap-berlaga-di-batam-cup-iii-2026-digelar-14-19-desember/"
+     }
+    ]
+   },
+   {
+    "id": "md-48-tim-berebut-gelar-di-batam-hotel-dan-umkm-mengincar-berka",
+    "name": "48 Tim Berebut Gelar di Batam, Hotel dan UMKM Mengincar Berkah",
+    "start": "2026-12-15",
+    "end": "2026-12-19",
+    "venue": "Batam",
+    "confirmed": false,
+    "sources": [
+     {
+      "label": "Batam Click",
+      "url": "https://batamclick.com/25/10/2026/48-tim-berebut-gelar-di-batam-hotel-dan-umkm-mengincar-berkah/"
+     }
+    ]
+   },
+   {
+    "id": "md-king-nassar-bakal-meriahkan-hari-jadi-batam-bidik-wisatawan-",
+    "name": "Hari Jadi Batam",
+    "start": "2026-12-23",
+    "end": "2026-12-23",
+    "venue": "Alun-alun Engku Putri",
+    "confirmed": false,
+    "sources": [
+     {
+      "label": "Jawa Pos",
+      "url": "https://batampos.jawapos.com/amp/batam/2610220027/king-nassar-bakal-meriahkan-hari-jadi-batam-bidik-wisatawan-malaysia-singapura"
+     }
+    ]
+   }
+  ]
  }
 };

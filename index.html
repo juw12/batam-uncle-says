@@ -99,7 +99,7 @@
   .brand-sub { font-size: 12px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .topnav { display: none; gap: 2px; margin-left: auto; }
   .topnav a {
-    padding: 7px 11px;
+    padding: 7px 8px;
     border-radius: 8px;
     color: var(--ink-2);
     font-size: 14px;
@@ -473,6 +473,17 @@
   .oleh-item { padding: 12px 14px; border: 1px solid var(--line, #e3e0d8); border-radius: 14px; background: var(--card, #fff); }
   .oleh-item b { display: block; }
   .oleh-item p { margin: 4px 0 6px; font-size: 14px; }
+  .ev { display: flex; gap: 14px; padding: 14px 16px; margin-bottom: 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+  .ev-date { flex: none; width: 52px; height: 56px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: grid; place-content: center; text-align: center; line-height: 1.1; }
+  .ev-date b { font-size: 20px; font-weight: 700; }
+  .ev-date span { font-size: 12px; font-weight: 600; }
+  .ev-body { flex: 1; min-width: 0; }
+  .ev-when { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 13px; color: var(--ink-2); }
+  .ev-state { font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+  .ev-state.now { background: var(--ok-soft); color: var(--ok); }
+  .ev-name { display: block; margin: 4px 0 2px; font-size: 16px; font-weight: 650; overflow-wrap: anywhere; }
+  .ev-body p { margin: 2px 0 0; font-size: 14px; color: var(--ink-2); }
+  .ev-body .links { margin-top: 8px; }
   .keep { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: rgba(0,0,0,.06); }
   .partner-badge { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: #1f6f4a; color: #fff; margin-left: 6px; vertical-align: middle; }
 
@@ -851,7 +862,10 @@
   }
   @media (min-width: 768px) {
     .tabbar { display: none; }
-    .topnav { display: flex; }
+    /* narrow screens scroll the section links sideways, they never run under the name */
+    .topnav { display: flex; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+    .topnav::-webkit-scrollbar { display: none; }
+    .brand, .lang { flex: none; }
     .lang { margin-left: 8px; }
     .brand-sub { display: none; }
     main { padding: 8px 24px 48px; }
@@ -921,6 +935,7 @@
   <symbol id="i-spa" viewBox="0 0 24 24"><path d="M12 20c-4.5 0-8-3-8-7 3 0 6 1.5 8 4 2-2.5 5-4 8-4 0 4-3.5 7-8 7z"/><path d="M12 17c-1.8-2-2.5-4.5-2-7.5.6-2.2 1.5-3.7 2-4.5.5.8 1.4 2.3 2 4.5.5 3-.2 5.5-2 7.5z"/></symbol>
   <symbol id="i-shop" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6.5a3 3 0 0 1 6 0V8"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.6"/></symbol>
   <symbol id="i-oleh" viewBox="0 0 24 24"><path d="M4 10h16v10H4zM3 7h18v3H3zM12 7v13M12 7c-1.5-3-5-3.5-5-1.2C7 7 9.5 7 12 7zm0 0c1.5-3 5-3.5 5-1.2C17 7 14.5 7 12 7z"/></symbol>
   <symbol id="i-stay" viewBox="0 0 24 24"><path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5"/><circle cx="7" cy="11" r="1.6"/></symbol>
   <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 15c2 0 2-1.5 4.5-1.5S10 15 12 15s2.5-1.5 4.5-1.5S19 15 21 15M3 19c2 0 2-1.5 4.5-1.5S10 19 12 19s2.5-1.5 4.5-1.5S19 19 21 19M12 11V4l5 4z"/></symbol>
@@ -957,6 +972,11 @@
 
     <div class="h2row"><h2 data-i18n="homeUncleTitle"></h2></div>
     <div id="homeUncle"></div>
+
+    <div id="homeEventsBlock" hidden>
+      <div class="h2row"><h2 data-i18n="eventsTitle"></h2><a href="#events" data-i18n="seeAll"></a></div>
+      <div class="rows" id="homeEvents"></div>
+    </div>
 
     <div class="h2row"><h2 data-i18n="homePicksTitle"></h2><a href="#places" data-i18n="seeAll"></a></div>
     <div class="rail-scroll" id="homePicks"></div>
@@ -1179,6 +1199,18 @@
     </div>
   </section>
 
+  <!-- What's on -->
+  <section id="s-events">
+    <div class="narrow">
+      <div class="eyebrow" data-i18n="eventsEyebrow"></div>
+      <h1 data-i18n="eventsTitle"></h1>
+      <p class="lede" data-i18n="eventsSub"></p>
+      <div id="eventsList"></div>
+      <p class="meta" id="eventsCredit"></p>
+      <div id="eventsAsk"></div>
+    </div>
+  </section>
+
   <!-- About -->
   <section id="s-about">
     <div class="narrow">
@@ -1260,12 +1292,13 @@ const SECTIONS = [
   { id: "places", icon: "i-pin" },
   { id: "stay", icon: "i-stay" },
   { id: "oleh", icon: "i-oleh" },
+  { id: "events", icon: "i-cal" },
   { id: "talk", icon: "i-chat" },
   { id: "guide", icon: "i-shield" },
   { id: "about", icon: "i-info" },
 ].filter((s) => s.id !== "guide" || GUIDES_ON);
 const TABBAR = ["home", "plan", "places", "price"];
-const MORE = ["stay", "oleh", "guide", "money", "ferry", "check", "talk", "about"].filter((id) => id !== "guide" || GUIDES_ON);
+const MORE = ["events", "stay", "oleh", "guide", "money", "ferry", "check", "talk", "about"].filter((id) => id !== "guide" || GUIDES_ON);
 const CATS = ["eat", "spa", "shop", "oleh", "play", "stay"];
 
 const T = {
@@ -1327,6 +1360,12 @@ const T = {
     all: "All", eat: "Eat", spa: "Spa", shop: "Shop", play: "See & do", stay: "Stay", allAreas: "All areas",
     oleh: "Oleh-oleh", tab_stay: "Hotels", tab_oleh: "Oleh-oleh",
     more_stay: "Search hotels by area and ferry terminal", more_oleh: "What to buy, where, and what Singapore allows",
+    tab_events: "What's on", more_events: "Events and festivals in Batam, checked daily",
+    eventsEyebrow: "Events and festivals", eventsTitle: "What's on in Batam", eventsSub: "Running now and coming up. Checked every morning against the local event calendar, with the news source behind each date.",
+    evNow: "On now", evToday: "Today", evTomorrow: "Tomorrow", evIn: (n) => `In ${n} days`, evTo: "to",
+    evConfirmed: "Date confirmed.", evReported: "Date from news reports. Check before you go.",
+    evNone: "No events listed right now. Check back soon.", evRead: (date) => `Last read ${date}.`,
+    evAsk: "Mall or organiser in Batam? Send us your event and we will list it free.", evAskCta: "Email your event",
     stayEyebrow: "Staying the night", stayTitle: "Find a hotel in Batam", staySub: "Pick your dates and an area, then compare live prices on the big booking sites. You book and pay on their site.",
     checkIn: "Check-in", nights: "Nights", adults: "Adults", rooms: "Rooms", stayArea: "Area", anyArea: "Anywhere in Batam",
     searchOn: (site) => `Search on ${site}`, nearTerminal: (x) => `Nearest ferry terminal: ${x}`,
@@ -1472,6 +1511,12 @@ const T = {
     all: "全部", eat: "餐饮", spa: "Spa", shop: "购物", play: "景点", stay: "住宿", allAreas: "全部区域",
     oleh: "伴手礼", tab_stay: "酒店", tab_oleh: "伴手礼",
     more_stay: "按区域和码头搜索酒店", more_oleh: "买什么、去哪买、新加坡入境规定",
+    tab_events: "活动", more_events: "巴淡活动与节庆,每日核对",
+    eventsEyebrow: "活动与节庆", eventsTitle: "巴淡近期活动", eventsSub: "正在进行和即将举行的活动。每天早上对照当地活动日历更新,每个日期都附新闻来源。",
+    evNow: "进行中", evToday: "今天", evTomorrow: "明天", evIn: (n) => `${n} 天后`, evTo: "至",
+    evConfirmed: "日期已确认。", evReported: "日期来自媒体报道,出发前请再确认。",
+    evNone: "目前没有活动信息,请稍后再看。", evRead: (date) => `最近读取:${date}。`,
+    evAsk: "巴淡的商场或主办方?把活动发给我们,免费刊登。", evAskCta: "电邮活动资料",
     stayEyebrow: "住一晚", stayTitle: "找巴淡酒店", staySub: "选好日期和区域,再到大型订房网站比较实时价格。在对方网站预订和付款。",
     checkIn: "入住日期", nights: "晚数", adults: "成人", rooms: "房间", stayArea: "区域", anyArea: "巴淡全岛",
     searchOn: (site) => `在 ${site} 搜索`, nearTerminal: (x) => `最近码头:${x}`,
@@ -1609,7 +1654,8 @@ function renderNav() {
   document.getElementById("tabbar").innerHTML =
     TABBAR.map(tabLink).join("") +
     `<button type="button" id="moreBtn" data-more>${icon("i-more")}<span>${t("tab_more")}</span></button>`;
-  document.getElementById("topnav").innerHTML = SECTIONS.filter((s) => s.id !== "about")
+  // the name on the left already goes home, so the top bar skips Home (and About, which is in the footer)
+  document.getElementById("topnav").innerHTML = SECTIONS.filter((s) => s.id !== "about" && s.id !== "home")
     .map((s) => `<a href="#${s.id}" data-tab="${s.id}">${t("tab_" + s.id)}</a>`).join("");
   document.getElementById("footLinks").innerHTML = SECTIONS
     .map((s) => `<a href="#${s.id}">${t("tab_" + s.id)}</a>`).join("");
@@ -1631,6 +1677,10 @@ function markActiveTab() {
   });
   const moreBtn = document.getElementById("moreBtn");
   if (moreBtn) moreBtn.classList.toggle("active", MORE.includes(id));
+  // when the top bar is scrolling sideways, keep the current section in view
+  const topnav = document.getElementById("topnav");
+  const current = topnav.querySelector("a.active");
+  if (current) topnav.scrollLeft = current.offsetLeft - topnav.offsetLeft - (topnav.clientWidth - current.offsetWidth) / 2;
 }
 
 function showTab() {
@@ -2644,6 +2694,90 @@ function renderOleh() {
     `<li>${lang === "zh" ? rule.zh : rule.en} <span class="links" style="display:inline-flex">${ext(rule.source, t("source"))}</span></li>`).join("");
 }
 
+/* ---------- what's on (data.js events: list is refreshed daily by tools/events_refresh.py, manual is ours) ---------- */
+// event text comes from another site, so it is escaped before it goes into the page
+const safe = (value) => String(value ?? "").replace(/[&<>"']/g, (ch) => `&#${ch.charCodeAt(0)};`);
+
+function batamToday() {
+  return new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
+}
+
+function liveEvents() {
+  const block = DATA.events || {};
+  const today = batamToday();
+  const hidden = block.hide || [];
+  return [...(block.list || []), ...(block.manual || [])]
+    .filter((e) => !hidden.includes(e.id) && e.end >= today)
+    .sort((a, b) => a.start.localeCompare(b.start) || a.end.localeCompare(b.end));
+}
+
+function eventName(e) {
+  const label = ((DATA.events || {}).labels || {})[e.id];
+  return (label && label[lang]) || e.name;
+}
+
+function eventDates(e) {
+  return e.start === e.end ? fmtDate(e.start) : `${fmtDate(e.start)} ${t("evTo")} ${fmtDate(e.end)}`;
+}
+
+function eventState(e) {
+  const today = batamToday();
+  if (e.start === today && e.end === today) return { text: t("evToday"), now: true };
+  if (e.start <= today) return { text: t("evNow"), now: true };
+  const days = Math.round((Date.parse(e.start) - Date.parse(today)) / 864e5);
+  return { text: days === 1 ? t("evTomorrow") : tf("evIn", days), now: false };
+}
+
+function eventCard(e) {
+  const state = eventState(e);
+  const name = eventName(e);
+  const start = new Date(e.start + "T00:00:00");
+  const month = lang === "zh" ? `${start.getMonth() + 1}月` : start.toLocaleDateString("en-GB", { month: "short" });
+  const place = e.place_id && DATA.places.find((p) => p.id === e.place_id);
+  const mapUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(e.venue + ", Batam");
+  const where = place
+    ? `<button type="button" class="linkbtn" data-place="${safe(place.id)}">${safe(e.venue)}</button>`
+    : safe(e.venue);
+  const note = pick({ en: e.note_en, zh: e.note_zh || e.note_en });
+  // one link per news outlet: the calendar sometimes lists the same outlet twice
+  const sources = (e.sources || []).filter((s, i, all) => all.findIndex((o) => o.label === s.label) === i);
+  return `
+    <div class="ev">
+      <div class="ev-date" aria-hidden="true"><b class="num">${start.getDate()}</b><span>${month}</span></div>
+      <div class="ev-body">
+        <div class="ev-when"><span>${eventDates(e)}</span><span class="ev-state${state.now ? " now" : ""}">${state.text}</span></div>
+        <b class="ev-name">${safe(name)}</b>
+        ${name !== e.name ? `<p class="meta">${safe(e.name)}</p>` : ""}
+        <p>${where}</p>
+        ${note ? `<p>${safe(note)}</p>` : ""}
+        <p class="meta">${t(e.confirmed ? "evConfirmed" : "evReported")}</p>
+        <div class="links">
+          ${!place && e.venue !== "Batam" ? ext(safe(mapUrl), t("map")) : ""}
+          ${sources.map((s) => ext(safe(s.url), safe(s.label))).join("")}
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderEvents() {
+  const block = DATA.events || {};
+  const events = liveEvents();
+  document.getElementById("eventsList").innerHTML = events.length
+    ? events.map(eventCard).join("")
+    : `<div class="card"><p class="meta" style="margin:0">${t("evNone")}</p></div>`;
+  document.getElementById("eventsCredit").innerHTML = block.as_of
+    ? `${safe(pick({ en: block.note_en, zh: block.note_zh }))} ${tf("evRead", fmtDate(block.as_of))} ${ext(safe(block.source), "batam.co.id")}`
+    : "";
+  document.getElementById("eventsAsk").innerHTML = uncleNote(
+    `${t("evAsk")} <a href="mailto:juwpegatron@gmail.com?subject=Batam%20Uncle%20Says%20event">${t("evAskCta")}</a>`);
+
+  document.getElementById("homeEventsBlock").hidden = !events.length;
+  document.getElementById("homeEvents").innerHTML = events.slice(0, 3).map((e) => `
+    <a href="#events"><span class="ic">${icon("i-cal")}</span>
+      <span class="tx"><b>${safe(eventName(e))}</b><span>${eventState(e).text} · ${eventDates(e)} · ${safe(e.venue)}</span></span>
+      <span class="chev">${icon("i-arrow", "sm")}</span></a>`).join("");
+}
+
 /* ---------- partners (venues that agreed to a referral deal) ---------- */
 function venueFor(placeId) {
   return VENUES.find((v) => v.place_id === placeId);
@@ -2892,6 +3026,7 @@ function renderAll() {
   renderFerryBooking();
   renderStay();
   renderOleh();
+  renderEvents();
   renderAbout();
   renderBiz();
 }
