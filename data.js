@@ -1220,6 +1220,201 @@ window.BUS_DATA = {
      }
     ]
    }
+  ],
+  "runs_source": "https://indonesiamarathon.com/llms-full.txt",
+  "runs": [
+   {
+    "id": "run-bener-run",
+    "name": "Bener Run",
+    "start": "2026-11-15",
+    "end": "2026-11-15",
+    "venue": "Resto Lempah Kuning, Bundaran Ocarina Batam Centre",
+    "confirmed": false,
+    "kind": "run",
+    "sources": [
+     {
+      "label": "Indonesia Marathon",
+      "url": "https://indonesiamarathon.com/event/bener-run"
+     }
+    ],
+    "type": "Fun Run",
+    "distance": "5K, 10K",
+    "fee_low": 150000,
+    "fee_high": 190000
+   },
+   {
+    "id": "run-genfest-fun-run-5k",
+    "name": "GenFest Fun Run 5K",
+    "start": "2026-11-15",
+    "end": "2026-11-15",
+    "venue": "Harbour Bay Ferry",
+    "confirmed": false,
+    "kind": "run",
+    "sources": [
+     {
+      "label": "Indonesia Marathon",
+      "url": "https://indonesiamarathon.com/event/genfest-fun-run-5k"
+     }
+    ],
+    "type": "Fun Run",
+    "distance": "5K",
+    "signup": "https://l.ead.me/bh2MEM"
+   },
+   {
+    "id": "run-polibatam-run-2026",
+    "name": "Polibatam Run 2026",
+    "start": "2026-11-29",
+    "end": "2026-11-29",
+    "venue": "Politeknik Negeri Batam",
+    "confirmed": false,
+    "kind": "run",
+    "sources": [
+     {
+      "label": "Indonesia Marathon",
+      "url": "https://indonesiamarathon.com/event/polibatam-run-2026"
+     }
+    ],
+    "type": "Fun Run",
+    "distance": "5K, 10K",
+    "fee_low": 126000,
+    "fee_high": 180000
+   },
+   {
+    "id": "run-run-the-city",
+    "name": "RUN THE CITY",
+    "start": "2026-11-29",
+    "end": "2026-11-29",
+    "venue": "K Square Mall",
+    "confirmed": false,
+    "kind": "run",
+    "sources": [
+     {
+      "label": "Indonesia Marathon",
+      "url": "https://indonesiamarathon.com/event/run-the-city"
+     }
+    ],
+    "type": "Fun Run",
+    "distance": "5K",
+    "fee_low": 200000,
+    "fee_high": 200000
+   },
+   {
+    "id": "run-batam-night-run-vol-2",
+    "name": "Batam Night Run Vol. 2",
+    "start": "2026-12-02",
+    "end": "2026-12-02",
+    "venue": "Bukit Tiban Vitka",
+    "confirmed": false,
+    "kind": "run",
+    "sources": [
+     {
+      "label": "Indonesia Marathon",
+      "url": "https://indonesiamarathon.com/event/batam-night-run-vol-2"
+     }
+    ],
+    "type": "Road Run",
+    "distance": "5K",
+    "fee_low": 200000,
+    "fee_high": 200000
+   },
+   {
+    "id": "run-indo-marines-run-2026",
+    "name": "Indo Marines Run 2026",
+    "start": "2026-12-06",
+    "end": "2026-12-06",
+    "venue": "Yonif 10 Marinir Barelang Bridge",
+    "confirmed": false,
+    "kind": "run",
+    "sources": [
+     {
+      "label": "Indonesia Marathon",
+      "url": "https://indonesiamarathon.com/event/indo-marines-run-2026"
+     }
+    ],
+    "type": "Trail Run",
+    "distance": "5K",
+    "fee_low": 225000,
+    "fee_high": 300000,
+    "signup": "https://artatix.co.id/event/indo_marines_run_2026"
+   },
+   {
+    "id": "run-gogo-run-2026",
+    "name": "GOGO RUN 2026",
+    "start": "2026-12-13",
+    "end": "2026-12-13",
+    "venue": "K-Square Batam",
+    "confirmed": false,
+    "kind": "run",
+    "sources": [
+     {
+      "label": "Indonesia Marathon",
+      "url": "https://indonesiamarathon.com/event/gogo-run-2026"
+     }
+    ],
+    "type": "Fun Run",
+    "distance": "10K",
+    "fee_low": 350000,
+    "fee_high": 350000,
+    "signup": "https://my.raceresult.com/426982/info"
+   },
+   {
+    "id": "run-tak-sabar-run-2027",
+    "name": "Tak Sabar Run 2027",
+    "start": "2027-01-17",
+    "end": "2027-01-17",
+    "venue": "Show Room JETOUR Batam",
+    "confirmed": false,
+    "kind": "run",
+    "sources": [
+     {
+      "label": "Indonesia Marathon",
+      "url": "https://indonesiamarathon.com/event/tak-sabar-run-2027"
+     }
+    ],
+    "type": "Fun Run",
+    "distance": "7.5K",
+    "fee_low": 145000,
+    "fee_high": 145000
+   },
+   {
+    "id": "run-batam-fun-run-78k",
+    "name": "Batam Fun Run 7.8K",
+    "start": "2027-01-24",
+    "end": "2027-01-24",
+    "venue": "Simpang Martabak Har Nagoya",
+    "confirmed": false,
+    "kind": "run",
+    "sources": [
+     {
+      "label": "Indonesia Marathon",
+      "url": "https://indonesiamarathon.com/event/batam-fun-run-78k"
+     }
+    ],
+    "type": "Fun Run",
+    "distance": "7.8K",
+    "fee_low": 200000,
+    "fee_high": 200000,
+    "signup": "https://batamfunrun.id/"
+   },
+   {
+    "id": "run-six-to-six-night-trail-endurance",
+    "name": "Six to Six Night Trail Endurance",
+    "start": "2027-07-25",
+    "end": "2027-07-25",
+    "venue": "Batam",
+    "confirmed": false,
+    "kind": "run",
+    "sources": [
+     {
+      "label": "Indonesia Marathon",
+      "url": "https://indonesiamarathon.com/event/six-to-six-night-trail-endurance"
+     }
+    ],
+    "type": "Trail Run",
+    "distance": "9K",
+    "fee_low": 450000,
+    "fee_high": 600000
+   }
   ]
  }
 };

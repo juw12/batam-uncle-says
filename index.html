@@ -1364,6 +1364,8 @@ const T = {
     eventsEyebrow: "Events and festivals", eventsTitle: "What's on in Batam", eventsSub: "Running now and coming up. Checked every morning against the local event calendar, with the news source behind each date.",
     evNow: "On now", evToday: "Today", evTomorrow: "Tomorrow", evIn: (n) => `In ${n} days`, evTo: "to",
     evConfirmed: "Date confirmed.", evReported: "Date from news reports. Check before you go.",
+    evRunDate: "Date from a run calendar. Confirm with the organiser before you sign up.",
+    evSignup: "Sign up", evRun: "Fun run", evRuns: "Fun runs are read from a run calendar:",
     evNone: "No events listed right now. Check back soon.", evRead: (date) => `Last read ${date}.`,
     evAsk: "Mall or organiser in Batam? Send us your event and we will list it free.", evAskCta: "Email your event",
     stayEyebrow: "Staying the night", stayTitle: "Find a hotel in Batam", staySub: "Pick your dates and an area, then compare live prices on the big booking sites. You book and pay on their site.",
@@ -1515,6 +1517,8 @@ const T = {
     eventsEyebrow: "活动与节庆", eventsTitle: "巴淡近期活动", eventsSub: "正在进行和即将举行的活动。每天早上对照当地活动日历更新,每个日期都附新闻来源。",
     evNow: "进行中", evToday: "今天", evTomorrow: "明天", evIn: (n) => `${n} 天后`, evTo: "至",
     evConfirmed: "日期已确认。", evReported: "日期来自媒体报道,出发前请再确认。",
+    evRunDate: "日期来自跑步赛事日历,报名前请向主办方确认。",
+    evSignup: "报名", evRun: "趣味跑", evRuns: "路跑活动读取自赛事日历:",
     evNone: "目前没有活动信息,请稍后再看。", evRead: (date) => `最近读取:${date}。`,
     evAsk: "巴淡的商场或主办方?把活动发给我们,免费刊登。", evAskCta: "电邮活动资料",
     stayEyebrow: "住一晚", stayTitle: "找巴淡酒店", staySub: "选好日期和区域,再到大型订房网站比较实时价格。在对方网站预订和付款。",
@@ -2706,7 +2710,7 @@ function liveEvents() {
   const block = DATA.events || {};
   const today = batamToday();
   const hidden = block.hide || [];
-  return [...(block.list || []), ...(block.manual || [])]
+  return [...(block.list || []), ...(block.manual || []), ...(block.runs || [])]
     .filter((e) => !hidden.includes(e.id) && e.end >= today)
     .sort((a, b) => a.start.localeCompare(b.start) || a.end.localeCompare(b.end));
 }
@@ -2728,7 +2732,24 @@ function eventState(e) {
   return { text: days === 1 ? t("evTomorrow") : tf("evIn", days), now: false };
 }
 
+const RUN_TYPES_ZH = { "Fun Run": "趣味跑", "Road Run": "路跑", "Trail Run": "越野跑" };
+
+// "Fun Run · 5K, 10K · Rp 150,000 – 190,000 (S$12.3 – S$15.6)"
+function runLine(e) {
+  const type = e.type ? (lang === "zh" && RUN_TYPES_ZH[e.type]) || e.type : t("evRun");
+  const parts = [safe(type)];
+  if (e.distance) parts.push(safe(e.distance));
+  if (e.fee_low) {
+    const high = e.fee_high > e.fee_low ? e.fee_high : null;
+    const idr = fmtIdr(e.fee_low) + (high ? ` – ${fmtIdr(high).replace("Rp ", "")}` : "");
+    const sgd = fmtSgd(toSgd(e.fee_low, "IDR")) + (high ? ` – ${fmtSgd(toSgd(high, "IDR"))}` : "");
+    parts.push(`<span class="num">${idr} (${sgd})</span>`);
+  }
+  return parts.join(" · ");
+}
+
 function eventCard(e) {
+  const isRun = e.kind === "run";
   const state = eventState(e);
   const name = eventName(e);
   const start = new Date(e.start + "T00:00:00");
@@ -2749,9 +2770,11 @@ function eventCard(e) {
         <b class="ev-name">${safe(name)}</b>
         ${name !== e.name ? `<p class="meta">${safe(e.name)}</p>` : ""}
         <p>${where}</p>
+        ${isRun ? `<p>${runLine(e)}</p>` : ""}
         ${note ? `<p>${safe(note)}</p>` : ""}
-        <p class="meta">${t(e.confirmed ? "evConfirmed" : "evReported")}</p>
+        <p class="meta">${t(e.confirmed ? "evConfirmed" : isRun ? "evRunDate" : "evReported")}</p>
         <div class="links">
+          ${isRun && e.signup ? ext(safe(e.signup), t("evSignup")) : ""}
           ${!place && e.venue !== "Batam" ? ext(safe(mapUrl), t("map")) : ""}
           ${sources.map((s) => ext(safe(s.url), safe(s.label))).join("")}
         </div>
@@ -2767,6 +2790,7 @@ function renderEvents() {
     : `<div class="card"><p class="meta" style="margin:0">${t("evNone")}</p></div>`;
   document.getElementById("eventsCredit").innerHTML = block.as_of
     ? `${safe(pick({ en: block.note_en, zh: block.note_zh }))} ${tf("evRead", fmtDate(block.as_of))} ${ext(safe(block.source), "batam.co.id")}`
+      + ((block.runs || []).length ? ` ${t("evRuns")} ${ext("https://indonesiamarathon.com/", "Indonesia Marathon")}` : "")
     : "";
   document.getElementById("eventsAsk").innerHTML = uncleNote(
     `${t("evAsk")} <a href="mailto:juwpegatron@gmail.com?subject=Batam%20Uncle%20Says%20event">${t("evAskCta")}</a>`);
