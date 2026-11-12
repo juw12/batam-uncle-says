@@ -650,9 +650,81 @@ window.BUS_DATA = {
  "return_ferries": {
   "note_en": "Last daily sailing from Batam to Singapore, Batam time (WIB). Arrive at the terminal about 1 hour before.",
   "source": "https://batam.co.id/transportasi/panduan-feri-batam-singapura-lima-pelabuhan/",
-  "as_of": "2026-11-11",
+  "as_of": "2026-11-12",
   "verified": false,
   "last": [
+   {
+    "from": "Batam Centre",
+    "to": "HarbourFront",
+    "operator": "BatamFast",
+    "time": "06:00"
+   },
+   {
+    "from": "Batam Centre",
+    "to": "Tanah Merah",
+    "operator": "BatamFast",
+    "time": "07:45"
+   },
+   {
+    "from": "Batam Centre",
+    "to": "HarbourFront",
+    "operator": "Majestic Fast Ferry",
+    "time": "06:00"
+   },
+   {
+    "from": "Batam Centre",
+    "to": "HarbourFront",
+    "operator": "Sindo Ferry",
+    "time": "06:00"
+   },
+   {
+    "from": "Batam Centre",
+    "to": "Tanah Merah",
+    "operator": "Sindo Ferry",
+    "time": "08:00"
+   },
+   {
+    "from": "Gold Coast Bengkong",
+    "to": "HarbourFront",
+    "operator": "Sindo Ferry",
+    "time": "15:30"
+   },
+   {
+    "from": "Harbour Bay",
+    "to": "HarbourFront",
+    "operator": "Horizon Fast Ferry",
+    "time": "06:00"
+   },
+   {
+    "from": "Nongsa Pura",
+    "to": "Tanah Merah",
+    "operator": "BatamFast",
+    "time": "06:00"
+   },
+   {
+    "from": "Sekupang",
+    "to": "HarbourFront",
+    "operator": "BatamFast",
+    "time": "06:00"
+   },
+   {
+    "from": "Sekupang",
+    "to": "HarbourFront",
+    "operator": "Majestic Fast Ferry",
+    "time": "06:00"
+   },
+   {
+    "from": "Sekupang",
+    "to": "HarbourFront",
+    "operator": "Sindo Ferry",
+    "time": "06:00"
+   },
+   {
+    "from": "Waterfront City",
+    "to": "HarbourFront",
+    "operator": "Sindo Ferry",
+    "time": "13:20"
+   },
    {
     "from": "Batam Centre",
     "to": "HarbourFront",
@@ -732,13 +804,6 @@ window.BUS_DATA = {
     "to": "HarbourFront",
     "operator": "Sindo Ferry",
     "time": "20:30"
-   },
-   {
-    "from": "Waterfront City",
-    "to": "HarbourFront",
-    "operator": "Sindo Ferry",
-    "time": "14:50",
-    "days": "Saturday and Sunday only"
    }
   ],
   "note_zh": "巴淡往新加坡每日最后一班,巴淡时间(WIB)。请提前约1小时到码头。"
@@ -746,7 +811,7 @@ window.BUS_DATA = {
  "routes": {
   "note_en": "Departures from Singapore to Batam, Singapore time (SGT), read from each operator's official timetable.",
   "source": "https://batam.co.id/transportasi/panduan-feri-batam-singapura-lima-pelabuhan/",
-  "as_of": "2026-11-11",
+  "as_of": "2026-11-12",
   "verified": false,
   "list": [
    {
