@@ -1205,6 +1205,7 @@
       <div class="eyebrow" data-i18n="eventsEyebrow"></div>
       <h1 data-i18n="eventsTitle"></h1>
       <p class="lede" data-i18n="eventsSub"></p>
+      <div class="seg" id="eventsFilter" style="margin-bottom:16px"></div>
       <div id="eventsList"></div>
       <p class="meta" id="eventsCredit"></p>
       <div id="eventsAsk"></div>
@@ -1366,6 +1367,7 @@ const T = {
     evConfirmed: "Date confirmed.", evReported: "Date from news reports. Check before you go.",
     evRunDate: "Date from a run calendar. Confirm with the organiser before you sign up.",
     evSignup: "Sign up", evRun: "Fun run", evRuns: "Fun runs are read from a run calendar:",
+    evChipRuns: "Fun runs", evChipBazaar: "Bazaars & food",
     evNone: "No events listed right now. Check back soon.", evRead: (date) => `Last read ${date}.`,
     evAsk: "Mall or organiser in Batam? Send us your event and we will list it free.", evAskCta: "Email your event",
     stayEyebrow: "Staying the night", stayTitle: "Find a hotel in Batam", staySub: "Pick your dates and an area, then compare live prices on the big booking sites. You book and pay on their site.",
@@ -1519,6 +1521,7 @@ const T = {
     evConfirmed: "日期已确认。", evReported: "日期来自媒体报道,出发前请再确认。",
     evRunDate: "日期来自跑步赛事日历,报名前请向主办方确认。",
     evSignup: "报名", evRun: "趣味跑", evRuns: "路跑活动读取自赛事日历:",
+    evChipRuns: "路跑", evChipBazaar: "市集与美食",
     evNone: "目前没有活动信息,请稍后再看。", evRead: (date) => `最近读取:${date}。`,
     evAsk: "巴淡的商场或主办方?把活动发给我们,免费刊登。", evAskCta: "电邮活动资料",
     stayEyebrow: "住一晚", stayTitle: "找巴淡酒店", staySub: "选好日期和区域,再到大型订房网站比较实时价格。在对方网站预订和付款。",
@@ -2782,11 +2785,42 @@ function eventCard(e) {
     </div>`;
 }
 
+// which filter chip an event sits under: fun runs, bazaars and food markets, or neither
+const BAZAAR_WORDS = /bazaa?r|kuliner|culinary|food fest|night market|pasar malam/i;
+let evFilter = "all";
+
+function eventGroup(e) {
+  if (e.kind === "run") return "run";
+  if (e.kind === "bazaar" || BAZAAR_WORDS.test(`${e.name} ${e.note_en || ""}`)) return "bazaar";
+  return "other";
+}
+
 function renderEvents() {
   const block = DATA.events || {};
   const events = liveEvents();
-  document.getElementById("eventsList").innerHTML = events.length
-    ? events.map(eventCard).join("")
+  // a chip only shows when it has events; with nothing to filter the row stays hidden
+  const chips = [["all", t("all")], ["run", t("evChipRuns")], ["bazaar", t("evChipBazaar")]]
+    .map(([group, label]) => ({
+      group,
+      label,
+      count: group === "all" ? events.length : events.filter((e) => eventGroup(e) === group).length,
+    }))
+    .filter((chip) => chip.group === "all" || chip.count);
+  if (!chips.some((chip) => chip.group === evFilter)) evFilter = "all";
+  const filterBox = document.getElementById("eventsFilter");
+  filterBox.innerHTML = "";
+  filterBox.style.display = chips.length > 1 ? "" : "none";
+  for (const chip of chips.length > 1 ? chips : []) {
+    const button = el(`<button type="button" class="toggle" aria-pressed="${chip.group === evFilter}">${chip.label}<span class="count">${chip.count}</span></button>`);
+    button.onclick = () => {
+      evFilter = chip.group;
+      renderEvents();
+    };
+    filterBox.appendChild(button);
+  }
+  const shown = evFilter === "all" ? events : events.filter((e) => eventGroup(e) === evFilter);
+  document.getElementById("eventsList").innerHTML = shown.length
+    ? shown.map(eventCard).join("")
     : `<div class="card"><p class="meta" style="margin:0">${t("evNone")}</p></div>`;
   document.getElementById("eventsCredit").innerHTML = block.as_of
     ? `${safe(pick({ en: block.note_en, zh: block.note_zh }))} ${tf("evRead", fmtDate(block.as_of))} ${ext(safe(block.source), "batam.co.id")}`

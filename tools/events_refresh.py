@@ -9,7 +9,7 @@ Fun runs come from indonesiamarathon.com, a run calendar that publishes a plain-
 fee and sign-up link. It is a directory and not the organiser, so runs are never marked confirmed.
 
 Kept by hand in data.js and never touched here:
-  events.manual  events we add ourselves (for example from a mall's own calendar)
+  events.manual  events we add ourselves, by hand or through the issue form (tools/event_intake.py)
   events.labels  English and Chinese names, keyed by event id
   events.hide    ids to leave out (duplicates of another entry)
 

@@ -1,0 +1,73 @@
+name: Add an event to What's on
+description: A bazaar, food market or mall event with a date and a link. The bot puts it in the app.
+title: "[event] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fill this in when a mall, organiser or foodie tells you about an event. The bot checks it and adds it to **What's on** in a few minutes, then answers here. Keep the title starting with `[event]`.
+  - type: input
+    id: name
+    attributes:
+      label: Event name
+      description: The name as the organiser writes it.
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - Bazaar or food market
+        - Something else
+    validations:
+      required: true
+  - type: input
+    id: start
+    attributes:
+      label: Start date
+      description: Year first, like 2026-12-05. "5 Dec 2026" also works.
+    validations:
+      required: true
+  - type: input
+    id: end
+    attributes:
+      label: End date
+      description: Leave empty for a one-day event.
+  - type: input
+    id: venue
+    attributes:
+      label: Venue
+      description: Where it is, for example the mall name and the floor or hall.
+    validations:
+      required: true
+  - type: input
+    id: source_link
+    attributes:
+      label: Source link
+      description: The post or page that shows the date (Instagram post, website, news article). Starts with https://
+    validations:
+      required: true
+  - type: input
+    id: source_name
+    attributes:
+      label: Source name
+      description: Short name shown on the link, for example "Mall's Instagram".
+    validations:
+      required: true
+  - type: input
+    id: note_en
+    attributes:
+      label: Note in English
+      description: Optional. One short line, for example opening hours or what is sold.
+  - type: input
+    id: note_zh
+    attributes:
+      label: Note in Chinese
+      description: Optional. The same line in Chinese. English is shown if this is empty.
+  - type: checkboxes
+    id: confirmed
+    attributes:
+      label: Confirmed
+      options:
+        - label: The organiser or mall confirmed this date to me directly

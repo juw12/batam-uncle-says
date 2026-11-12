@@ -1,0 +1,57 @@
+name: Add event from form
+
+# The owner fills the "Add an event to What's on" issue form; this reads it, adds the event to
+# data.js and answers on the issue. Only issues opened by the repo owner are read, because the
+# repo is public and anyone can open an issue.
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: add-event
+  cancel-in-progress: false
+
+jobs:
+  add:
+    if: startsWith(github.event.issue.title, '[event]') && github.event.issue.user.login == github.repository_owner
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check the form and add the event to data.js
+        id: intake
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: python tools/event_intake.py
+      - name: Commit changes
+        if: steps.intake.outputs.ok == 'true'
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          git config user.name "batam-uncle-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data.js
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "What's on: event from form #$ISSUE_NUMBER"
+            git pull --rebase
+            git push
+          fi
+      - name: Answer on the issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ADDED: ${{ steps.intake.outputs.ok }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file intake-result.md
+          if [ "$ADDED" = "true" ]; then
+            gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"
+          fi
