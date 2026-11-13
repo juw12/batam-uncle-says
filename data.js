@@ -1130,7 +1130,7 @@ window.BUS_DATA = {
    }
   },
   "source": "https://batam.co.id/event-batam/",
-  "as_of": "2026-11-11",
+  "as_of": "2026-11-13",
   "list": [
    {
     "id": "md-pkp-expo-2026-batam-diskon-properti-besar-dan-cicilan-hingga",
@@ -1178,28 +1178,6 @@ window.BUS_DATA = {
     ]
    },
    {
-    "id": "md-semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-dan-video-re",
-    "name": "Lomba Foto, Reels, dan Feature",
-    "start": "2026-11-11",
-    "end": "2026-11-30",
-    "venue": "Batam",
-    "confirmed": false,
-    "sources": [
-     {
-      "label": "Batamnews",
-      "url": "https://www.batamnews.co.id/berita-131667-semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-video-reels-dan-feature-berhadiah-rp94-5-juta.html"
-     },
-     {
-      "label": "Pemerintah Kota Batam",
-      "url": "https://mediacenter.batam.go.id/2026/11/10/semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-dan-video-reels-serta-menulis-feature-berhadiah-rp945-juta/"
-     },
-     {
-      "label": "patrolmedia.co.id",
-      "url": "https://patrolmedia.co.id/2026/11/11/pemko-batam-gelar-lomba-foto-reels-dan-feature-berhadiah-rp-945-juta-yuk-daftar/"
-     }
-    ]
-   },
-   {
     "id": "md-sea-eagle-boat-race-batam-2026-digelar-13-15-november",
     "name": "Sea Eagle Boat Race Batam 2026",
     "start": "2026-11-13",
@@ -1236,6 +1214,28 @@ window.BUS_DATA = {
      {
       "label": "Lentera Kepri",
       "url": "https://lenterakepri.com/34-tim-tortor-batak-ramaikan-festival-batam-bonapasogit-2026/"
+     }
+    ]
+   },
+   {
+    "id": "md-semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-dan-video-re",
+    "name": "Lomba HJB Batam ke-197 2026",
+    "start": "2026-11-30",
+    "end": "2026-11-30",
+    "venue": "Batam",
+    "confirmed": true,
+    "sources": [
+     {
+      "label": "Batamnews",
+      "url": "https://www.batamnews.co.id/berita-131667-semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-video-reels-dan-feature-berhadiah-rp94-5-juta.html"
+     },
+     {
+      "label": "Pemerintah Kota Batam",
+      "url": "https://mediacenter.batam.go.id/2026/11/10/semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-dan-video-reels-serta-menulis-feature-berhadiah-rp945-juta/"
+     },
+     {
+      "label": "patrolmedia.co.id",
+      "url": "https://patrolmedia.co.id/2026/11/11/pemko-batam-gelar-lomba-foto-reels-dan-feature-berhadiah-rp-945-juta-yuk-daftar/"
      }
     ]
    },
@@ -1305,7 +1305,8 @@ window.BUS_DATA = {
     "type": "Fun Run",
     "distance": "5K, 10K",
     "fee_low": 150000,
-    "fee_high": 190000
+    "fee_high": 190000,
+    "signup": "https://docs.google.com/forms/d/e/1FAIpQLSfvL_qG5YMS8IOgOiPgUxTHrt9Kwp7ZUJG3fVCovLDltDcJZQ/viewform"
    },
    {
     "id": "run-genfest-fun-run-5k",
@@ -1342,7 +1343,8 @@ window.BUS_DATA = {
     "type": "Fun Run",
     "distance": "5K, 10K",
     "fee_low": 126000,
-    "fee_high": 180000
+    "fee_high": 180000,
+    "signup": "https://polibatam.id/FunRun2026"
    },
    {
     "id": "run-run-the-city",
@@ -1361,7 +1363,8 @@ window.BUS_DATA = {
     "type": "Fun Run",
     "distance": "5K",
     "fee_low": 200000,
-    "fee_high": 200000
+    "fee_high": 200000,
+    "signup": "https://bravepay.store/competitions/run-the-city-yamaha-1793390155"
    },
    {
     "id": "run-batam-night-run-vol-2",
@@ -1380,7 +1383,8 @@ window.BUS_DATA = {
     "type": "Road Run",
     "distance": "5K",
     "fee_low": 200000,
-    "fee_high": 200000
+    "fee_high": 200000,
+    "signup": "https://link.tiptip.id/BatamNightRun3"
    },
    {
     "id": "run-indo-marines-run-2026",
@@ -1439,7 +1443,8 @@ window.BUS_DATA = {
     "type": "Fun Run",
     "distance": "7.5K",
     "fee_low": 145000,
-    "fee_high": 145000
+    "fee_high": 145000,
+    "signup": "https://docs.google.com/forms/d/e/1FAIpQLSe_PEmFf_ymTkfGjZplZ7Y-10nK6yhR6fxZ4R8CWhoiUdALyA/viewform"
    },
    {
     "id": "run-batam-fun-run-78k",
