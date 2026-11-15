@@ -1130,7 +1130,7 @@ window.BUS_DATA = {
    }
   },
   "source": "https://batam.co.id/event-batam/",
-  "as_of": "2026-11-13",
+  "as_of": "2026-11-15",
   "list": [
    {
     "id": "md-pkp-expo-2026-batam-diskon-properti-besar-dan-cicilan-hingga",
@@ -1178,6 +1178,24 @@ window.BUS_DATA = {
     ]
    },
    {
+    "id": "lp-batam-gelar-lomba-perahu-sea-eagle-2026-di-belakang-padang",
+    "name": "Lomba Perahu Sea Eagle 2026",
+    "start": "2026-11-13",
+    "end": "2026-11-15",
+    "venue": "Batam",
+    "confirmed": false,
+    "sources": [
+     {
+      "label": "CentralBatam",
+      "url": "https://centralbatam.co.id/batam-lomba-perahu-sea-eagle"
+     },
+     {
+      "label": "CentralBatam",
+      "url": "https://centralbatam.co.id/lomba-perahu-naga-belakang-padang"
+     }
+    ]
+   },
+   {
     "id": "md-sea-eagle-boat-race-batam-2026-digelar-13-15-november",
     "name": "Sea Eagle Boat Race Batam 2026",
     "start": "2026-11-13",
@@ -1196,6 +1214,34 @@ window.BUS_DATA = {
      {
       "label": "Posmetrobatam.co.id",
       "url": "https://posmetrobatam.co.id/batam-international-sea-eagle-boat-race-2026-siap-digelar-disbudpar-targetkan-dongkrak-ekonomi-belakang-padang/"
+     }
+    ]
+   },
+   {
+    "id": "md-singkirkan-lawan-tangguh-podsi-siak-tembus-final-kejuaraan-d",
+    "name": "Kejuaraan Dayung Internasional di Batam",
+    "start": "2026-11-13",
+    "end": "2026-11-15",
+    "venue": "Batam",
+    "confirmed": false,
+    "sources": [
+     {
+      "label": "AmiraRiau",
+      "url": "https://amirariau.com/singkirkan-lawan-tangguh-podsi-siak-tembus-final-kejuaraan-dayung-internasional-di-batam"
+     }
+    ]
+   },
+   {
+    "id": "md-kapolri-dijadwalkan-hadiri-poliran-work-festival-2026-di-bat",
+    "name": "Poliran Work Festival 2026",
+    "start": "2026-11-26",
+    "end": "2026-11-26",
+    "venue": "Dataran Engku Putri, Batam Center",
+    "confirmed": false,
+    "sources": [
+     {
+      "label": "Batamnews",
+      "url": "https://www.batamnews.co.id/berita-131731-kapolri-dijadwalkan-hadiri-poliran-work-festival-2026-di-batam-ada-job-fair.html"
      }
     ]
    },
