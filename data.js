@@ -1104,10 +1104,6 @@ window.BUS_DATA = {
     "en": "Batam anniversary photo, Reels and feature-writing contest",
     "zh": "巴淡建城纪念摄影、短视频与专题写作比赛"
    },
-   "md-sea-eagle-boat-race-batam-2026-digelar-13-15-november": {
-    "en": "Batam International Sea Eagle Boat Race 2026 (rowing)",
-    "zh": "2026 巴淡国际 Sea Eagle 划船赛"
-   },
    "lp-tiara-convention-hall-dipadati-penonton-festival-batam-bonap": {
     "en": "Festival Batam Bonapasogit 2026: Batak tor-tor dance final",
     "zh": "2026 巴淡 Bonapasogit 节:巴塔克 Tor-tor 舞决赛"
@@ -1130,7 +1126,7 @@ window.BUS_DATA = {
    }
   },
   "source": "https://batam.co.id/event-batam/",
-  "as_of": "2026-11-15",
+  "as_of": "2026-11-16",
   "list": [
    {
     "id": "md-pkp-expo-2026-batam-diskon-properti-besar-dan-cicilan-hingga",
@@ -1178,56 +1174,24 @@ window.BUS_DATA = {
     ]
    },
    {
-    "id": "lp-batam-gelar-lomba-perahu-sea-eagle-2026-di-belakang-padang",
-    "name": "Lomba Perahu Sea Eagle 2026",
-    "start": "2026-11-13",
-    "end": "2026-11-15",
+    "id": "md-semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-dan-video-re",
+    "name": "Lomba HJB Batam ke-197 2026",
+    "start": "2026-11-10",
+    "end": "2026-11-30",
     "venue": "Batam",
     "confirmed": false,
     "sources": [
      {
-      "label": "CentralBatam",
-      "url": "https://centralbatam.co.id/batam-lomba-perahu-sea-eagle"
+      "label": "Batamnews",
+      "url": "https://www.batamnews.co.id/berita-131667-semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-video-reels-dan-feature-berhadiah-rp94-5-juta.html"
      },
      {
-      "label": "CentralBatam",
-      "url": "https://centralbatam.co.id/lomba-perahu-naga-belakang-padang"
-     }
-    ]
-   },
-   {
-    "id": "md-sea-eagle-boat-race-batam-2026-digelar-13-15-november",
-    "name": "Sea Eagle Boat Race Batam 2026",
-    "start": "2026-11-13",
-    "end": "2026-11-15",
-    "venue": "Perairan Kelang-Kelang Laut, Belakang Padang",
-    "confirmed": true,
-    "sources": [
-     {
-      "label": "Jawa Pos",
-      "url": "https://batampos.jawapos.com/batam/2610220008/sea-eagle-boat-race-batam-2026-digelar-1315-november"
+      "label": "Pemerintah Kota Batam",
+      "url": "https://mediacenter.batam.go.id/2026/11/10/semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-dan-video-reels-serta-menulis-feature-berhadiah-rp945-juta/"
      },
      {
-      "label": "Jawa Pos",
-      "url": "https://batampos.jawapos.com/batam/2610220008/sea-eagle-boat-race-batam-2026-digelar-13-15-november"
-     },
-     {
-      "label": "Posmetrobatam.co.id",
-      "url": "https://posmetrobatam.co.id/batam-international-sea-eagle-boat-race-2026-siap-digelar-disbudpar-targetkan-dongkrak-ekonomi-belakang-padang/"
-     }
-    ]
-   },
-   {
-    "id": "md-singkirkan-lawan-tangguh-podsi-siak-tembus-final-kejuaraan-d",
-    "name": "Kejuaraan Dayung Internasional di Batam",
-    "start": "2026-11-13",
-    "end": "2026-11-15",
-    "venue": "Batam",
-    "confirmed": false,
-    "sources": [
-     {
-      "label": "AmiraRiau",
-      "url": "https://amirariau.com/singkirkan-lawan-tangguh-podsi-siak-tembus-final-kejuaraan-dayung-internasional-di-batam"
+      "label": "patrolmedia.co.id",
+      "url": "https://patrolmedia.co.id/2026/11/11/pemko-batam-gelar-lomba-foto-reels-dan-feature-berhadiah-rp-945-juta-yuk-daftar/"
      }
     ]
    },
@@ -1260,28 +1224,6 @@ window.BUS_DATA = {
      {
       "label": "Lentera Kepri",
       "url": "https://lenterakepri.com/34-tim-tortor-batak-ramaikan-festival-batam-bonapasogit-2026/"
-     }
-    ]
-   },
-   {
-    "id": "md-semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-dan-video-re",
-    "name": "Lomba HJB Batam ke-197 2026",
-    "start": "2026-11-30",
-    "end": "2026-11-30",
-    "venue": "Batam",
-    "confirmed": true,
-    "sources": [
-     {
-      "label": "Batamnews",
-      "url": "https://www.batamnews.co.id/berita-131667-semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-video-reels-dan-feature-berhadiah-rp94-5-juta.html"
-     },
-     {
-      "label": "Pemerintah Kota Batam",
-      "url": "https://mediacenter.batam.go.id/2026/11/10/semarak-hjb-ke-197-pemko-batam-gelar-lomba-foto-dan-video-reels-serta-menulis-feature-berhadiah-rp945-juta/"
-     },
-     {
-      "label": "patrolmedia.co.id",
-      "url": "https://patrolmedia.co.id/2026/11/11/pemko-batam-gelar-lomba-foto-reels-dan-feature-berhadiah-rp-945-juta-yuk-daftar/"
      }
     ]
    },
@@ -1334,44 +1276,6 @@ window.BUS_DATA = {
   ],
   "runs_source": "https://indonesiamarathon.com/llms-full.txt",
   "runs": [
-   {
-    "id": "run-bener-run",
-    "name": "Bener Run",
-    "start": "2026-11-15",
-    "end": "2026-11-15",
-    "venue": "Resto Lempah Kuning, Bundaran Ocarina Batam Centre",
-    "confirmed": false,
-    "kind": "run",
-    "sources": [
-     {
-      "label": "Indonesia Marathon",
-      "url": "https://indonesiamarathon.com/event/bener-run"
-     }
-    ],
-    "type": "Fun Run",
-    "distance": "5K, 10K",
-    "fee_low": 150000,
-    "fee_high": 190000,
-    "signup": "https://docs.google.com/forms/d/e/1FAIpQLSfvL_qG5YMS8IOgOiPgUxTHrt9Kwp7ZUJG3fVCovLDltDcJZQ/viewform"
-   },
-   {
-    "id": "run-genfest-fun-run-5k",
-    "name": "GenFest Fun Run 5K",
-    "start": "2026-11-15",
-    "end": "2026-11-15",
-    "venue": "Harbour Bay Ferry",
-    "confirmed": false,
-    "kind": "run",
-    "sources": [
-     {
-      "label": "Indonesia Marathon",
-      "url": "https://indonesiamarathon.com/event/genfest-fun-run-5k"
-     }
-    ],
-    "type": "Fun Run",
-    "distance": "5K",
-    "signup": "https://l.ead.me/bh2MEM"
-   },
    {
     "id": "run-polibatam-run-2026",
     "name": "Polibatam Run 2026",
