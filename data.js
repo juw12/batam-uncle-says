@@ -1377,6 +1377,26 @@ window.BUS_DATA = {
     "signup": "https://my.raceresult.com/426982/info"
    },
    {
+    "id": "run-max-move-walk-3k",
+    "name": "MAX MOVE WALK 3K",
+    "start": "2026-12-13",
+    "end": "2026-12-13",
+    "venue": "MaxOne Batam Hotel",
+    "confirmed": false,
+    "kind": "run",
+    "sources": [
+     {
+      "label": "Indonesia Marathon",
+      "url": "https://indonesiamarathon.com/event/max-move-walk-3k"
+     }
+    ],
+    "type": "Fun Run",
+    "distance": "3K",
+    "fee_low": 35000,
+    "fee_high": 50000,
+    "signup": "https://www.loket.com/event/max-move-walk-3k-wjr"
+   },
+   {
     "id": "run-tak-sabar-run-2027",
     "name": "Tak Sabar Run 2027",
     "start": "2027-01-17",
