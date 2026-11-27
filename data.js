@@ -1417,26 +1417,6 @@ window.BUS_DATA = {
     "signup": "https://docs.google.com/forms/d/e/1FAIpQLSe_PEmFf_ymTkfGjZplZ7Y-10nK6yhR6fxZ4R8CWhoiUdALyA/viewform"
    },
    {
-    "id": "run-batam-fun-run-78k",
-    "name": "Batam Fun Run 7.8K",
-    "start": "2027-01-24",
-    "end": "2027-01-24",
-    "venue": "Simpang Martabak Har Nagoya",
-    "confirmed": false,
-    "kind": "run",
-    "sources": [
-     {
-      "label": "Indonesia Marathon",
-      "url": "https://indonesiamarathon.com/event/batam-fun-run-78k"
-     }
-    ],
-    "type": "Fun Run",
-    "distance": "7.8K",
-    "fee_low": 200000,
-    "fee_high": 200000,
-    "signup": "https://batamfunrun.id/"
-   },
-   {
     "id": "run-six-to-six-night-trail-endurance",
     "name": "Six to Six Night Trail Endurance",
     "start": "2027-07-25",
